@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>NANAME Floors</name>
+  <packageId>oels.nanamefloors</packageId>
+  <author>OELS</author>
+  <description>éŒÇﬂÇÃè∞Çí«â¡ÇµÇ‹Ç∑ÅB
+  This mod adds a diagonal floors.
+</description>
+  <url></url>
+
+  <supportedVersions>
+    <li>1.4</li>
+    <li>1.5</li>
+  </supportedVersions>
+
+  <modDependencies>
+  </modDependencies>
+  <loadAfter>
+    <li></li>
+  </loadAfter>
+</ModMetaData>

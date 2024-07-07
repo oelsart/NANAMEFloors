@@ -1,0 +1,19 @@
+ManifestFileVersion: 0
+CRC: 222900035
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 2897e2b1780b01133f4a3ee079125db1
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 55d48f4ad9c3b13330b9eb5ee5686477
+HashAppended: 0
+ClassTypes:
+- Class: 48
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Data/NanameFloors/TerrainHardLinearBurnBlend.shader
+- Assets/Data/NanameFloors/TerrainFadeRoughLinearAddBlend.shader
+- Assets/Data/NanameFloors/TerrainHardBlend.shader
+Dependencies: []
