@@ -112,7 +112,7 @@ namespace NanameFloors
                                     field.SetValue(terrainMask, field.GetValue(coverTerrain));
                                 }
                                 terrainMask.defName = $"{coverTerrain.defName}_{terrainMaskTex.name}";
-                                terrainMask.label = $"{coverTerrain.label} {terrainMaskTex.name.Replace("_", " ")}";
+                                terrainMask.label = $"{coverTerrain.label} {terrainMaskTex.name.Translate()}";
                                 terrainMask.costList = coverTerrain.CostList?.Select(c => new ThingDefCountClass(c.thingDef, Mathf.CeilToInt(c.count / 2f))).ToList();
                                 terrainMask.modExtensions = new List<DefModExtension>() { new TerrainMask(terrainMaskTex.name, coverTerrain) };
                                 DefGenerator.AddImpliedDef(terrainMask);

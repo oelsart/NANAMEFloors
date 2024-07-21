@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
   <name>NANAME Floors</name>
-  <packageId>oels.nanamefloors</packageId>
+  <packageId>oels.nanamefloorsexperimental</packageId>
   <author>OELS</author>
-  <description>�΂߂̏���ǉ����܂��B
-  This mod adds a diagonal floors.
+  <description>斜めの床を追加するMODです。実際には任意のマスク画像に沿って2つのTerrainをブレンドすることができます。
+This mod adds a diagonal floors.　Actually, this can mix two terrains along any mask image.
 </description>
   <url></url>
 
   <supportedVersions>
-    <li>1.4</li>
     <li>1.5</li>
   </supportedVersions>
 

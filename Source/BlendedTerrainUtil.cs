@@ -71,7 +71,7 @@ namespace NanameFloors
                 else field.SetValue(newTerr, field.GetValue(coverTerrain));
             }
             newTerr.defName = $"{baseTerrain.defName}_{terrainMask.maskTextureName}_{coverTerrain.defName}";
-            newTerr.label = coverTerrain.label + " on " + baseTerrain.label;
+            newTerr.label = coverTerrain.label + "NAF.and" + baseTerrain.label;
             var costList = new List<ThingDefCountClass>();
             if (baseTerrain.CostList != null)
             {
