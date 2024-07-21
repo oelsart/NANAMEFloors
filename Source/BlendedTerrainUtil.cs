@@ -87,6 +87,7 @@ namespace NanameFloors
             newTerr.shortHash = 0;
             var takenHashes = AccessTools.StaticFieldRefAccess<Dictionary<Type, HashSet<ushort>>>(typeof(ShortHashGiver), "takenHashesPerDeftype");
             AccessTools.Method(typeof(ShortHashGiver), "GiveShortHash").Invoke(typeof(ShortHashGiver), new object[] { newTerr, typeof(TerrainDef), takenHashes[typeof(TerrainDef)] });
+            newTerr.modContentPack = NanameFloors.content;
             return newTerr;
         }
     }

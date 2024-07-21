@@ -113,7 +113,7 @@ namespace NanameFloors
                                 }
                                 terrainMask.defName = $"{coverTerrain.defName}_{terrainMaskTex.name}";
                                 terrainMask.label = $"{coverTerrain.label} {terrainMaskTex.name.Replace("_", " ")}";
-                                terrainMask.costList = coverTerrain.CostList.Select(c => new ThingDefCountClass(c.thingDef, Mathf.CeilToInt(c.count / 2f))).ToList();
+                                terrainMask.costList = coverTerrain.CostList?.Select(c => new ThingDefCountClass(c.thingDef, Mathf.CeilToInt(c.count / 2f))).ToList();
                                 terrainMask.modExtensions = new List<DefModExtension>() { new TerrainMask(terrainMaskTex.name, coverTerrain) };
                                 DefGenerator.AddImpliedDef(terrainMask);
                             }
