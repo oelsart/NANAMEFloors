@@ -20,7 +20,6 @@ namespace NanameFloors
                 newTerr.burnedDef = BlendInner(new TerrainMask(terrainMask.maskTextureName, baseTerrain.burnedDef ?? baseTerrain, coverTerrain.burnedDef ?? coverTerrain));
             }
             var takenHashes = AccessTools.StaticFieldRefAccess<Dictionary<Type, HashSet<ushort>>>(typeof(ShortHashGiver), "takenHashesPerDeftype");
-            DefGenerator.AddImpliedDef(newTerr);
             var bluePrintDef = (ThingDef)AccessTools.Method(typeof(ThingDefGenerator_Buildings), "NewBlueprintDef_Terrain").Invoke(typeof(ThingDefGenerator_Buildings), new object[] { newTerr, false });
             bluePrintDef.shortHash = 0;
             AccessTools.Method(typeof(ShortHashGiver), "GiveShortHash").Invoke(typeof(ShortHashGiver), new object[] { bluePrintDef, typeof(ThingDef), takenHashes[typeof(ThingDef)] });
@@ -43,11 +42,8 @@ namespace NanameFloors
                 newTerr.graphicPolluted = GraphicDatabase.Get(typeof(Graphic_Terrain), path, shader, Vector2.one, baseTerrain.DrawColor, coverTerrain.DrawColor, "NanameFloors/TerrainMasks/" + terrainMask.maskTextureName);
                 var matSingle = newTerr.graphicPolluted.MatSingle;
                 matSingle.SetTexture("_MainTexTwo", ContentFinder<Texture2D>.Get(coverTerrain.pollutedTexturePath ?? coverTerrain.texturePath));
-                if (!baseTerrain.pollutionOverlayTexturePath.NullOrEmpty()) matSingle.SetTexture("_BurnTex", ContentFinder<Texture2D>.Get(baseTerrain.pollutionOverlayTexturePath));
                 if (!coverTerrain.pollutionOverlayTexturePath.NullOrEmpty()) matSingle.SetTexture("_BurnTexTwo", ContentFinder<Texture2D>.Get(coverTerrain.pollutionOverlayTexturePath));
-                matSingle.SetColor("_BurnColor", baseTerrain.pollutionColor);
                 matSingle.SetColor("_BurnColorTwo", coverTerrain.pollutionColor);
-                matSingle.SetColor("_PollutionTintColor", baseTerrain.pollutionTintColor);
                 matSingle.SetColor("_PollutionTintColorTwo", coverTerrain.pollutionTintColor);
                 if (shader == AddedShaders.TerrainFadeRoughLinearAddBlend)
                 {
@@ -56,6 +52,7 @@ namespace NanameFloors
                 }
             });
             newTerr.modExtensions = new List<DefModExtension>() { terrainMask };
+            DefGenerator.AddImpliedDef(newTerr);
         }
 
         private static BlendedTerrainDef BlendInner(TerrainMask terrainMask)
@@ -71,7 +68,7 @@ namespace NanameFloors
                 else field.SetValue(newTerr, field.GetValue(coverTerrain));
             }
             newTerr.defName = $"{baseTerrain.defName}_{terrainMask.maskTextureName}_{coverTerrain.defName}";
-            newTerr.label = coverTerrain.label + "NAF.and" + baseTerrain.label;
+            newTerr.label = coverTerrain.label + "NAF.and".Translate() + baseTerrain.label;
             var costList = new List<ThingDefCountClass>();
             if (baseTerrain.CostList != null)
             {

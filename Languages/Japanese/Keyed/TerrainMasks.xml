@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <Half_NorthEast>斜め半分 北東</Half_NorthEast>
+  <Half_NorthWest>斜め半分 北西</Half_NorthWest>
+  <Half_SouthEast>斜め半分 南東</Half_SouthEast>
+  <Half_SouthWest>斜め半分 南西</Half_SouthWest>
+  <Quadrant_NorthEast>四分円 北東</Quadrant_NorthEast>
+  <Quadrant_NorthWest>四分円 北西</Quadrant_NorthWest>
+  <Quadrant_SouthEast>四分円 南東</Quadrant_SouthEast>
+  <Quadrant_SouthWest>四分円 南西</Quadrant_SouthWest>
+  <Quadrant_Nega_NorthEast>四分円ネガ 北東</Quadrant_Nega_NorthEast>
+  <Quadrant_Nega_NorthWest>四分円ネガ 北西</Quadrant_Nega_NorthWest>
+  <Quadrant_Nega_SouthEast>四分円ネガ 南東</Quadrant_Nega_SouthEast>
+  <Quadrant_Nega_SouthWest>四分円ネガ 南西</Quadrant_Nega_SouthWest>
+</LanguageData>

@@ -25,7 +25,7 @@ namespace NanameFloors
     {
         public static void Postfix(Shader shader, ref bool __result)
         {
-            __result = __result || shader == AddedShaders.TerrainHardBlend || shader == AddedShaders.TerrainHardPollutedBlend || AddedShaders.TerrainFadeRoughLinearAddBlend;
+            __result = __result || shader == AddedShaders.TerrainHardBlend || shader == AddedShaders.TerrainHardPollutedBlend || shader == AddedShaders.TerrainFadeRoughLinearAddBlend;
         }
     }
 
