@@ -7,15 +7,15 @@
       "RelativeMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|solutionrelative:dialog_selectterrainshape.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|e:\\program files (x86)\\steam\\steamapps\\common\\rimworld\\mods\\nanamefloorsexperimental\\source\\nanamefloors.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\nanamefloors.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|solutionrelative:nanamefloors.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|e:\\program files (x86)\\steam\\steamapps\\common\\rimworld\\mods\\nanamefloorsexperimental\\source\\settings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\settings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|solutionrelative:settings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|e:\\program files (x86)\\steam\\steamapps\\common\\rimworld\\mods\\nanamefloorsexperimental\\source\\terrainmask.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\terrainmask.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|solutionrelative:terrainmask.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -27,7 +27,7 @@
       "RelativeMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|solutionrelative:blendedterrainutil.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|e:\\program files (x86)\\steam\\steamapps\\common\\rimworld\\mods\\nanamefloorsexperimental\\source\\harmonypatches.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\harmonypatches.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|solutionrelative:harmonypatches.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -62,8 +62,7 @@
               "RelativeToolTip": "TerrainMask.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAACcAAAABAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-23T19:54:37.758Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-07-23T19:54:37.758Z"
             },
             {
               "$type": "Document",
@@ -75,8 +74,7 @@
               "RelativeToolTip": "Settings.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAABYAAABNAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-23T19:12:29.204Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-07-23T19:12:29.204Z"
             },
             {
               "$type": "Document",
@@ -86,7 +84,7 @@
               "RelativeDocumentMoniker": "Dialog_SelectTerrainShape.cs",
               "ToolTip": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\Dialog_SelectTerrainShape.cs*",
               "RelativeToolTip": "Dialog_SelectTerrainShape.cs*",
-              "ViewState": "AQIAAAkAAAAAAAAAAAAAAC4AAAARAAAA",
+              "ViewState": "AQIAABwAAAAAAAAAAAAUwD0AAAAjAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-07-23T19:09:49.838Z",
               "EditorCaption": ""
@@ -101,8 +99,7 @@
               "RelativeToolTip": "NanameFloors.cs",
               "ViewState": "AQIAAAMAAAAAAAAAAAAAAAwAAAAXAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-23T18:09:04.693Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-07-23T18:09:04.693Z"
             },
             {
               "$type": "Document",
@@ -114,8 +111,7 @@
               "RelativeToolTip": "BlendedTerrainDef.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-23T03:20:39.036Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-07-23T03:20:39.036Z"
             },
             {
               "$type": "Document",
@@ -127,8 +123,7 @@
               "RelativeToolTip": "BlendedTerrainUtil.cs",
               "ViewState": "AQIAAAkAAAAAAAAAAAAAAC0AAAA4AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-23T03:13:26.143Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-07-23T03:13:26.143Z"
             },
             {
               "$type": "Document",
@@ -140,8 +135,7 @@
               "RelativeToolTip": "HarmonyPatches.cs",
               "ViewState": "AQIAAA4AAAAAAAAAAAAswBoAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-23T03:11:38.595Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-07-23T03:11:38.595Z"
             }
           ]
         }

@@ -57,8 +57,6 @@ namespace NanameFloors
 
             var columnCount = Math.Min(terrainMasks.Count(), (int)(inRect.width / ButtonSize));
             var rowCount = Mathf.CeilToInt((float)terrainMasks.Count() / columnCount);
-            var marginX = Math.Max((parentRect.width - columnCount * ButtonSize) / 2f, 0f);
-            var marginY = Math.Max((parentRect.height - rowCount * ButtonSize) / 2f, 0f);
 
             var outRect = parentRect;
             var viewRect = outRect;
