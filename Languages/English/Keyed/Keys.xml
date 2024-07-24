@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
   <NAF.and> and </NAF.and>
+  <NAF.FloorShapes>Floor Shapes</NAF.FloorShapes>
+  
+  <NAF.Settings.ButtonSize>Button Size</NAF.Settings.ButtonSize>
 </LanguageData>

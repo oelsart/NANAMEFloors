@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
   <NAF.and>と</NAF.and>
+  <NAF.FloorShapes>床形状</NAF.FloorShapes>
+  
+  <NAF.Settings.ButtonSize>ボタンサイズ</NAF.Settings.ButtonSize>
 </LanguageData>

@@ -41,6 +41,10 @@
       <HintPath>..\..\..\RimWorldWin64_Data\Managed\1.5\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="DubsMintMenus">
+      <HintPath>..\..\..\..\..\workshop\content\294100\1446523594\1.5\Assemblies\DubsMintMenus.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="HugsLib">
       <HintPath>..\..\..\..\..\workshop\content\294100\818773962\v1.5\Assemblies\HugsLib.dll</HintPath>
       <Private>False</Private>
@@ -69,6 +73,14 @@
       <HintPath>..\..\..\RimWorldWin64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>..\..\..\RimWorldWin64_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.InputModule">
+      <HintPath>..\..\..\RimWorldWin64_Data\Managed\UnityEngine.InputModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="UnityEngine.TextRenderingModule">
       <HintPath>..\..\..\RimWorldWin64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
       <Private>False</Private>
@@ -79,11 +91,11 @@
     <Compile Include="BlendedTerrainDef.cs" />
     <Compile Include="BlendedTerrains.cs" />
     <Compile Include="BlendedTerrainUtil.cs" />
+    <Compile Include="Dialog_SelectTerrainShape.cs" />
     <Compile Include="HarmonyPatches.cs" />
     <Compile Include="NanameFloors.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="TerrainMaskDef.cs" />
     <Compile Include="TerrainMask.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

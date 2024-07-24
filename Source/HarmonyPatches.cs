@@ -7,6 +7,7 @@ using Verse;
 using RimWorld;
 using UnityEngine;
 using System.Reflection.Emit;
+using DubsMintMenus;
 
 namespace NanameFloors
 {
@@ -17,6 +18,10 @@ namespace NanameFloors
         {
             var harmony = new Harmony("com.harmony.rimworld.nanamefloors");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
+            if (ModsConfig.IsActive("dubwise.dubsmintmenus"))
+            {
+                harmony.Patch(AccessTools.Method(AccessTools.TypeByName("MainTabWindow_MintArchitect"), "DoWindowContents"), null, AccessTools.Method(typeof(MainTabWindow_MintArchitect_DoWindowContents_Patch), "Postfix"));
+            }
         }
     }
 
@@ -35,17 +40,17 @@ namespace NanameFloors
         public static void Prefix(IntVec3 c, ref BuildableDef ___entDef, Designator_Build __instance, ref BuildableDef __state)
         {
             __state = ___entDef;
-            TerrainMaskDef terrainMaskDef;
-            if ((terrainMaskDef = ___entDef as TerrainMaskDef) != null)
+            TerrainDef terrainDef;
+            if (NanameFloors.UI.selectedMask != null && (terrainDef = ___entDef as TerrainDef) != null)
             {
+                var maskTextureName = NanameFloors.UI.selectedMask.name;
                 var baseTerr = c.GetTerrain(__instance.Map);
                 if (baseTerr is BlendedTerrainDef) baseTerr = baseTerr.GetModExtension<TerrainMask>().baseTerrain;
-                var terrainMask = terrainMaskDef.GetModExtension<TerrainMask>();
-                var terrainMask2 = new TerrainMask(terrainMask.maskTextureName, baseTerr, terrainMask.coverTerrain);
-                var defName = $"{baseTerr.defName}_{terrainMask.maskTextureName}_{terrainMask.coverTerrain.defName}";
+                var defName = $"{baseTerr.defName}_{maskTextureName}_{terrainDef.defName}";
                 if (DefDatabase<BlendedTerrainDef>.GetNamedSilentFail(defName) == null)
                 {
-                    BlendedTerrainUtil.MakeBlendedTerrain(terrainMask2);
+                    var terrainMask = new TerrainMask(maskTextureName, baseTerr, terrainDef);
+                    BlendedTerrainUtil.MakeBlendedTerrain(terrainMask);
                 }
                 ___entDef = DefDatabase<BlendedTerrainDef>.GetNamed(defName);
             }
@@ -74,60 +79,27 @@ namespace NanameFloors
         }
     }
 
-    [HarmonyPatch(typeof(Designator_Place), "DoExtraGuiControls")]
-    public static class Designator_Place_DoExtraGuiControls_Patch
+    [HarmonyPatch(typeof(MainTabWindow_Architect), "DoWindowContents")]
+    public static class MainTabWindow_Architect_DoWindowContents_Patch
     {
-        private static readonly IEnumerable<Texture2D> terrainMasks = TerrainMask.cachedTerrainMasks.Where(m => !NanameFloors.settings.exceptMaskList.Contains(m.name));
-
-        private static readonly float Margin = 10f;
-
-        private static readonly float ButtonSize = (200f - Margin * 2) / 4;
-
-        private static readonly float WindowHeight = ButtonSize * Mathf.Ceil(terrainMasks.Count() / 4f) + Margin * 2;
-
-        public static void Postfix(float leftX, float bottomY, Designator_Place __instance)
+        public static void Postfix(ArchitectCategoryTab ___selectedDesPanel)
         {
-            BuildableDef def = __instance.PlacingDef;
-            if (!(def is TerrainDef)) return;
-            Find.WindowStack.ImmediateWindow(73095, new Rect(leftX, bottomY - WindowHeight, 200f, WindowHeight), WindowLayer.GameUI, delegate
+            if (___selectedDesPanel?.def == DesignationCategoryDefOf.Floors)
             {
-                foreach (var (terrainMaskTex, index) in terrainMasks.Select((t, i) => (t, i)))
-                {
-                    bool isSelected = def.GetModExtension<TerrainMask>()?.maskTextureName == terrainMaskTex.name;
-                    Rect rect = new Rect(Margin + ButtonSize * (index % 4), Margin + ButtonSize * (index / 4), ButtonSize, ButtonSize);
-                    Widgets.DrawTextureFitted(rect.ContractedBy(5f), terrainMasks.ElementAt(index), 1f);
-                    Widgets.DrawBox(rect.ContractedBy(5f));
-                    Widgets.DrawHighlightIfMouseover(rect);
-                    if (Widgets.ButtonInvisible(rect))
-                    {
-                        if (!isSelected)
-                        {
-                            TerrainDef coverTerrain = def is TerrainMaskDef ? def.GetModExtension<TerrainMask>().coverTerrain : (TerrainDef)def;
-                            TerrainMaskDef terrainMask = DefDatabase<TerrainMaskDef>.GetNamedSilentFail($"{coverTerrain.defName}_{terrainMaskTex.name}");
-                            if (terrainMask == null)
-                            {
-                                terrainMask = new TerrainMaskDef();
-                                foreach (var field in typeof(TerrainDef).GetFields())
-                                {
-                                    field.SetValue(terrainMask, field.GetValue(coverTerrain));
-                                }
-                                terrainMask.defName = $"{coverTerrain.defName}_{terrainMaskTex.name}";
-                                terrainMask.label = $"{coverTerrain.label} {terrainMaskTex.name.Translate()}";
-                                terrainMask.costList = coverTerrain.CostList?.Select(c => new ThingDefCountClass(c.thingDef, Mathf.CeilToInt(c.count / 2f))).ToList();
-                                terrainMask.modExtensions = new List<DefModExtension>() { new TerrainMask(terrainMaskTex.name, coverTerrain) };
-                                DefGenerator.AddImpliedDef(terrainMask);
-                            }
-                            AccessTools.Field(typeof(Designator_Build), "entDef").SetValue(__instance, terrainMask);
-                        }
-                        else AccessTools.Field(typeof(Designator_Build), "entDef").SetValue(__instance, def.GetModExtension<TerrainMask>().coverTerrain);
-                        Event.current.Use();
-                    }
-                    if (isSelected)
-                    {
-                        Widgets.DrawHighlightSelected(rect);
-                    }
-                }
-            });
+                Find.WindowStack.ImmediateWindow(9359779, NanameFloors.UI.windowRect, WindowLayer.GameUI, () => NanameFloors.UI.DoWindowContents());
+            }
+        }
+
+    }
+
+    public static class MainTabWindow_MintArchitect_DoWindowContents_Patch
+    {
+        public static void Postfix(ArchitectCategoryTab ___SelectedTab)
+        {
+            if (___SelectedTab?.def == DesignationCategoryDefOf.Floors)
+            {
+                Find.WindowStack.ImmediateWindow(9359779, NanameFloors.UI.windowRect, WindowLayer.GameUI, () => NanameFloors.UI.DoWindowContents());
+            }
         }
     }
 
@@ -194,32 +166,6 @@ namespace NanameFloors
                 }
             }
             return material;
-        }
-    }
-
-    [HarmonyPatch(typeof(GenConstruct), "CanPlaceBlueprintAt_NewTemp")]
-    public static class GenConstruct_CanPlaceBlueprintAt_NewTemp_Patch
-    {
-        public static void Postfix(BuildableDef entDef, IntVec3 center, Map map, ref AcceptanceReport __result)
-        {
-            if (entDef is TerrainMaskDef)
-            {
-                var terrainMask = entDef.GetModExtension<TerrainMask>();
-                var baseTerrain = center.GetTerrain(map);
-                var coverTerrain = terrainMask.coverTerrain;
-                if (baseTerrain == coverTerrain || baseTerrain == coverTerrain.burnedDef)
-                {
-                    __result = new AcceptanceReport("TerrainIsAlready".Translate(baseTerrain.label));
-                }
-                else if (baseTerrain is BlendedTerrainDef)
-                {
-                    var terrainMask2 = baseTerrain.GetModExtension<TerrainMask>();
-                    if (terrainMask.maskTextureName == terrainMask2.maskTextureName && coverTerrain == terrainMask2.coverTerrain)
-                    {
-                        __result = new AcceptanceReport("TerrainIsAlready".Translate(coverTerrain.label));
-                    }
-                }
-            }
         }
     }
 }

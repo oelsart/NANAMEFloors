@@ -4,18 +4,26 @@ using Verse;
 
 namespace NanameFloors
 {
+    [StaticConstructorOnStartup]
     public class NanameFloors : Mod
     {
         public NanameFloors(ModContentPack content) : base(content)
         {
             NanameFloors.settings = GetSettings<Settings>();
             NanameFloors.content = content;
+            NanameFloors.UI = new UI_SelectTerrainShape();
         }
 
         public override void DoSettingsWindowContents(Rect inRect)
         {
             Text.Font = GameFont.Medium;
-            var outRect = inRect;
+            var buttonSizeRect = new Rect(inRect.x, inRect.y, inRect.width, Text.LineHeight);
+            Widgets.Label(buttonSizeRect.LeftHalf(), "NAF.Settings.ButtonSize".Translate());
+            this.buttonSize = (int)NanameFloors.settings.buttonSize;
+            Widgets.IntEntry(buttonSizeRect.RightHalf(), ref this.buttonSize, ref this.buff, 1);
+            NanameFloors.settings.buttonSize = this.buttonSize;
+
+            var outRect = inRect.BottomPartPixels(inRect.height - buttonSizeRect.height);
             var viewRect = new Rect(outRect.x, outRect.y, outRect.width, TerrainMask.cachedTerrainMasks.Count() * Text.LineHeight);
             Widgets.DrawMenuSection(outRect);
             Widgets.AdjustRectsForScrollView(inRect, ref outRect, ref viewRect);
@@ -26,7 +34,7 @@ namespace NanameFloors
                 Widgets.DrawTextureFitted(new Rect(rect.x, rect.y, Text.LineHeight, Text.LineHeight), terrainMask, 0.8f);
 
                 var labelRect = new Rect(rect.x + Text.LineHeight + 10f, rect.y, rect.width - Text.LineHeight * 2 - 20f, rect.height);
-                Widgets.Label(labelRect, terrainMask.name.Truncate(labelRect.width));
+                Widgets.Label(labelRect, terrainMask.name.Translate().Truncate(labelRect.width));
 
                 var checkBoxRect = new Rect(rect.xMax - Text.LineHeight, rect.y, Text.LineHeight, Text.LineHeight);
                 Widgets.CheckboxDraw(checkBoxRect.x, checkBoxRect.y, !settings.exceptMaskList.Contains(terrainMask.name), false, Text.LineHeight);
@@ -44,6 +52,7 @@ namespace NanameFloors
                 rect.y += Text.LineHeight;
             }
             Widgets.EndScrollView();
+            Text.Font = GameFont.Small;
         }
 
         public override string SettingsCategory()
@@ -55,6 +64,12 @@ namespace NanameFloors
 
         public static Settings settings;
 
-        private static Vector2 scrollPosition = Vector2.zero;
+        public static UI_SelectTerrainShape UI;
+
+        private int buttonSize;
+
+        private string buff;
+
+        private Vector2 scrollPosition = Vector2.zero;
     }
 }
