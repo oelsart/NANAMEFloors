@@ -17,13 +17,16 @@ namespace NanameFloors
         public override void DoSettingsWindowContents(Rect inRect)
         {
             Text.Font = GameFont.Medium;
-            var buttonSizeRect = new Rect(inRect.x, inRect.y, inRect.width, Text.LineHeight);
-            Widgets.Label(buttonSizeRect.LeftHalf(), "NAF.Settings.ButtonSize".Translate());
+            var Rect = new Rect(inRect.x, inRect.y, inRect.width, Text.LineHeight);
+            Widgets.CheckboxLabeled(Rect, "NAF.Settings.AllowPlaceFloor".Translate(), ref settings.allowPlaceFloor);
+            var Rect2 = new Rect(inRect.x, Rect.yMax, inRect.width, Text.LineHeight);
+            Widgets.Label(Rect2.LeftHalf(), "NAF.Settings.ButtonSize".Translate());
             this.buttonSize = (int)NanameFloors.settings.buttonSize;
-            Widgets.IntEntry(buttonSizeRect.RightHalf(), ref this.buttonSize, ref this.buff, 1);
+            Widgets.IntEntry(Rect2.RightHalf(), ref this.buttonSize, ref this.buff, 1);
             NanameFloors.settings.buttonSize = this.buttonSize;
 
-            var outRect = inRect.BottomPartPixels(inRect.height - buttonSizeRect.height);
+            var outRect = new Rect(inRect.x, Rect2.yMax, inRect.width, Text.LineHeight);
+            outRect.yMax = inRect.yMax;
             var viewRect = new Rect(outRect.x, outRect.y, outRect.width, TerrainMask.cachedTerrainMasks.Count() * Text.LineHeight);
             Widgets.DrawMenuSection(outRect);
             Widgets.AdjustRectsForScrollView(inRect, ref outRect, ref viewRect);

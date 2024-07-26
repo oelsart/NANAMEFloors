@@ -91,7 +91,7 @@
     <Compile Include="BlendedTerrainDef.cs" />
     <Compile Include="BlendedTerrains.cs" />
     <Compile Include="BlendedTerrainUtil.cs" />
-    <Compile Include="Dialog_SelectTerrainShape.cs" />
+    <Compile Include="UI_SelectTerrainShape.cs" />
     <Compile Include="HarmonyPatches.cs" />
     <Compile Include="NanameFloors.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

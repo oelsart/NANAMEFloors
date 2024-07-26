@@ -4,7 +4,7 @@
   <packageId>oels.nanamefloorsexperimental</packageId>
   <author>OELS</author>
   <description>斜めの床を追加するMODです。実際には任意のマスク画像に沿って2つのTerrainをブレンドすることができます。
-This mod adds a diagonal floors.　Actually, this can mix two terrains along any mask image.
+This mod adds a diagonal floors. Actually, this can mix two terrains along any mask image.
 </description>
   <url></url>
 
@@ -13,6 +13,12 @@ This mod adds a diagonal floors.　Actually, this can mix two terrains along any
   </supportedVersions>
 
   <modDependencies>
+    <li>
+     <packageId>brrainz.harmony</packageId>
+     <displayName>Harmony</displayName>
+     <downloadUrl>https://github.com/pardeike/HarmonyRimWorld</downloadUrl>
+     <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
   </modDependencies>
   <loadAfter>
     <li></li>

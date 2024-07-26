@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 using Verse;
 
@@ -7,14 +6,6 @@ namespace NanameFloors
 {
     public class TerrainMask : DefModExtension, IExposable
     {
-        public TerrainMask() { }
-
-        public TerrainMask(string name, TerrainDef coverTerr)
-        {
-            this.maskTextureName = name;
-            this.coverTerrain = coverTerr;
-        }
-
         public TerrainMask(string name, TerrainDef baseTerr, TerrainDef coverTerr)
         {
             this.maskTextureName = name;

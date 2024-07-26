@@ -3,5 +3,6 @@
   <NAF.and> and </NAF.and>
   <NAF.FloorShapes>Floor Shapes</NAF.FloorShapes>
   
+  <NAF.Settings.AllowPlaceFloor>Allow to place floor after building. (Restart required)</NAF.Settings.AllowPlaceFloor>
   <NAF.Settings.ButtonSize>Button Size</NAF.Settings.ButtonSize>
 </LanguageData>

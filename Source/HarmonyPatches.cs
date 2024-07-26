@@ -7,7 +7,6 @@ using Verse;
 using RimWorld;
 using UnityEngine;
 using System.Reflection.Emit;
-using DubsMintMenus;
 
 namespace NanameFloors
 {
@@ -20,13 +19,17 @@ namespace NanameFloors
             harmony.PatchAll(Assembly.GetExecutingAssembly());
             if (ModsConfig.IsActive("dubwise.dubsmintmenus"))
             {
-                harmony.Patch(AccessTools.Method(AccessTools.TypeByName("MainTabWindow_MintArchitect"), "DoWindowContents"), null, AccessTools.Method(typeof(MainTabWindow_MintArchitect_DoWindowContents_Patch), "Postfix"));
+                harmony.Patch(AccessTools.Method(AccessTools.TypeByName("MainTabWindow_MintArchitect"), "DoWindowContents"), null, AccessTools.Method(typeof(Patch_MainTabWindow_MintArchitect_DoWindowContents), "Postfix"));
+            }
+            if (NanameFloors.settings.allowPlaceFloor)
+            {
+                harmony.Patch(AccessTools.Method(typeof(GenConstruct), "CanPlaceBlueprintAt_NewTemp"), null, null, AccessTools.Method(typeof(Patch_GenConstruct_CanPlaceBlueprintAt_NewTemp), "Transpiler"));
             }
         }
     }
 
     [HarmonyPatch(typeof(ShaderUtility), "SupportsMaskTex")]
-    public static class ShaderUtility_SupportsMaskTex_Patch
+    public static class Patch_ShaderUtility_SupportsMaskTex
     {
         public static void Postfix(Shader shader, ref bool __result)
         {
@@ -35,7 +38,8 @@ namespace NanameFloors
     }
 
     [HarmonyPatch(typeof(Designator_Build), "DesignateSingleCell")]
-    public static class Designator_Build_DesignateSingleCell_Patch
+    [HarmonyBefore("Uuugggg.rimworld.Replace_Stuff.main")]
+    public static class Patch_Designator_Build_DesignateSingleCell
     {
         public static void Prefix(IntVec3 c, ref BuildableDef ___entDef, Designator_Build __instance, ref BuildableDef __state)
         {
@@ -80,7 +84,7 @@ namespace NanameFloors
     }
 
     [HarmonyPatch(typeof(MainTabWindow_Architect), "DoWindowContents")]
-    public static class MainTabWindow_Architect_DoWindowContents_Patch
+    public static class Patch_MainTabWindow_Architect_DoWindowContents
     {
         public static void Postfix(ArchitectCategoryTab ___selectedDesPanel)
         {
@@ -92,7 +96,7 @@ namespace NanameFloors
 
     }
 
-    public static class MainTabWindow_MintArchitect_DoWindowContents_Patch
+    public static class Patch_MainTabWindow_MintArchitect_DoWindowContents
     {
         public static void Postfix(ArchitectCategoryTab ___SelectedTab)
         {
@@ -104,7 +108,7 @@ namespace NanameFloors
     }
 
     [HarmonyPatch(typeof(MaterialPool), "MatFrom", new Type[] { typeof(MaterialRequest) })]
-    public static class MaterialPool_MatFrom_Patch
+    public static class Patch_MaterialPool_MatFrom
     {
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator ILGenerator)
         {
@@ -130,7 +134,7 @@ namespace NanameFloors
                 CodeInstruction.Call(typeof(UnityEngine.Object), "op_Equality"),
                 new CodeInstruction(OpCodes.Brfalse_S, labelFalse),
                 CodeInstruction.LoadArgument(0).WithLabels(labelTrue),
-                CodeInstruction.Call(typeof(MaterialPool_MatFrom_Patch), "ForceCreateMaterial"),
+                CodeInstruction.Call(typeof(Patch_MaterialPool_MatFrom), "ForceCreateMaterial"),
                 new CodeInstruction(OpCodes.Ret)
             };
             codes[pos + 1] = codes[pos + 1].WithLabels(labelFalse);
@@ -166,6 +170,25 @@ namespace NanameFloors
                 }
             }
             return material;
+        }
+    }
+
+    public static class Patch_GenConstruct_CanPlaceBlueprintAt_NewTemp
+    {
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+            var pos = codes.FindIndex(c => c.opcode == OpCodes.Ldloc_S && (c.operand as LocalBuilder).LocalIndex == 29);
+            var label = codes[pos + 2].operand;
+
+            codes.InsertRange(pos, new List<CodeInstruction>
+            {
+                CodeInstruction.LoadArgument(0),
+                new CodeInstruction(OpCodes.Isinst, typeof(TerrainDef)),
+                new CodeInstruction(OpCodes.Brtrue_S, label)
+            });
+
+            return codes;
         }
     }
 }

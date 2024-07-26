@@ -10,6 +10,7 @@ namespace NanameFloors
         public List<string> exceptMaskList = new List<string>();
         public Rect windowRect = new Rect(0f, 0f, 156f, 144f);
         public float buttonSize = 38f;
+        public bool allowPlaceFloor = true;
 
         public override void ExposeData()
         {
@@ -23,6 +24,7 @@ namespace NanameFloors
             Scribe_Values.Look(ref windowRectWidth, "windowRectWidth", 156f);
             Scribe_Values.Look(ref windowRectHeight, "windowRectHeight", 144f);
             Scribe_Values.Look(ref buttonSize, "buttonSize", 38f);
+            Scribe_Values.Look(ref allowPlaceFloor, "allowPlaceFloor", true);
 
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
