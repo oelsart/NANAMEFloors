@@ -66,7 +66,7 @@ namespace NanameFloors
         }
     }
 
-    [HarmonyPatch(typeof(TerrainGrid), "ExposeTerrainGrid")]
+        [HarmonyPatch(typeof(TerrainGrid), "ExposeTerrainGrid")]
     public static class TerrainGrid_ExposeTerrainGrid_Patch
     {
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)

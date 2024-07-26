@@ -22,6 +22,13 @@ namespace NanameFloors
 
         public void DoWindowContents()
         {
+            var selectedDesignator = Find.DesignatorManager.SelectedDesignator;
+            if (selectedDesignator != this.designator)
+            {
+                this.designator = selectedDesignator;
+                this.selectedMask = null;
+            }
+
             var inRect = this.windowRect.AtZero().ContractedBy(this.Margin);
             if (terrainMasks.Count() == 0) return;
             Rect labelRect;
@@ -74,7 +81,7 @@ namespace NanameFloors
                 }
                 if (isSelected)
                 {
-                    Widgets.DrawHighlightSelected(rect);
+                    Widgets.DrawStrongHighlight(rect, Color.yellow * 0.8f);
                 }
             }
             Widgets.EndScrollView();
@@ -92,5 +99,7 @@ namespace NanameFloors
         private Vector2 scrollPosition = Vector2.zero;
 
         private WindowResizer resizer;
+
+        private Designator designator;
     }
 }
