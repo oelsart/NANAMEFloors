@@ -6,6 +6,8 @@ namespace NanameFloors
 {
     public class TerrainMask : DefModExtension, IExposable
     {
+        public TerrainMask() { }
+
         public TerrainMask(string name, TerrainDef baseTerr, TerrainDef coverTerr)
         {
             this.maskTextureName = name;
@@ -26,6 +28,6 @@ namespace NanameFloors
 
         public TerrainDef coverTerrain;
 
-        public static IEnumerable<Texture2D> cachedTerrainMasks = ContentFinder<Texture2D>.GetAllInFolder("NanameFloors");
+        public static IEnumerable<Texture2D> cachedTerrainMasks = ContentFinder<Texture2D>.GetAllInFolder("NanameFloors/TerrainMasks");
     }
 }
