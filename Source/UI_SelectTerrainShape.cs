@@ -63,7 +63,14 @@ namespace NanameFloors
             var outRect = parentRect;
             var viewRect = outRect;
             viewRect.height = Math.Max(outRect.height - 1f, rowCount * ButtonSize);
-            Widgets.AdjustRectsForScrollView(parentRect, ref outRect, ref viewRect);
+
+            if (viewRect.height >= outRect.height)
+            {
+                viewRect.width -= 20f;
+                outRect.xMax -= 4f;
+                outRect.yMin = Mathf.Max(parentRect.yMin + 6f, outRect.yMin);
+                outRect.yMax = Mathf.Min(parentRect.yMax - 6f, outRect.yMax);
+            }
 
             Widgets.BeginScrollView(outRect, ref scrollPosition, viewRect);
             foreach (var (terrainMaskTex, index) in terrainMasks.Select((t, i) => (t, i)))

@@ -19,11 +19,11 @@ namespace NanameFloors
             harmony.PatchAll(Assembly.GetExecutingAssembly());
             if (ModsConfig.IsActive("dubwise.dubsmintmenus"))
             {
-                harmony.Patch(AccessTools.Method(AccessTools.TypeByName("MainTabWindow_MintArchitect"), "DoWindowContents"), null, AccessTools.Method(typeof(Patch_MainTabWindow_MintArchitect_DoWindowContents), "Postfix"));
+                harmony.Patch(AccessTools.Method(AccessTools.TypeByName("MainTabWindow_MintArchitect"), "DoWindowContents"), null, new HarmonyMethod(AccessTools.Method(typeof(Patch_MainTabWindow_MintArchitect_DoWindowContents), "Postfix")));
             }
             if (NanameFloors.settings.allowPlaceFloor)
             {
-                harmony.Patch(AccessTools.Method(typeof(GenConstruct), "CanPlaceBlueprintAt_NewTemp"), null, null, AccessTools.Method(typeof(Patch_GenConstruct_CanPlaceBlueprintAt_NewTemp), "Transpiler"));
+                harmony.Patch(AccessTools.Method(typeof(GenConstruct), "CanPlaceBlueprintAt"), null, null, new HarmonyMethod(AccessTools.Method(typeof(Patch_GenConstruct_CanPlaceBlueprintAt), "Transpiler")));
             }
         }
     }
@@ -118,22 +118,22 @@ namespace NanameFloors
             var labelFalse = ILGenerator.DefineLabel();
             var addedCodes = new List<CodeInstruction>
             {
-                CodeInstruction.LoadArgument(0),
+                new CodeInstruction(OpCodes.Ldarg_0),
                 CodeInstruction.LoadField(typeof(MaterialRequest), "shader"),
                 CodeInstruction.LoadField(typeof(AddedShaders), "TerrainHardBlend"),
                 CodeInstruction.Call(typeof(UnityEngine.Object), "op_Equality"),
                 new CodeInstruction(OpCodes.Brtrue_S, labelTrue),
-                CodeInstruction.LoadArgument(0),
+                new CodeInstruction(OpCodes.Ldarg_0),
                 CodeInstruction.LoadField(typeof(MaterialRequest), "shader"),
                 CodeInstruction.LoadField(typeof(AddedShaders), "TerrainHardPollutedBlend"),
                 CodeInstruction.Call(typeof(UnityEngine.Object), "op_Equality"),
                 new CodeInstruction(OpCodes.Brtrue_S, labelTrue),
-                CodeInstruction.LoadArgument(0),
+                new CodeInstruction(OpCodes.Ldarg_0),
                 CodeInstruction.LoadField(typeof(MaterialRequest), "shader"),
                 CodeInstruction.LoadField(typeof(AddedShaders), "TerrainFadeRoughLinearAddBlend"),
                 CodeInstruction.Call(typeof(UnityEngine.Object), "op_Equality"),
                 new CodeInstruction(OpCodes.Brfalse_S, labelFalse),
-                CodeInstruction.LoadArgument(0).WithLabels(labelTrue),
+                new CodeInstruction(OpCodes.Ldarg_0).WithLabels(labelTrue),
                 CodeInstruction.Call(typeof(Patch_MaterialPool_MatFrom), "ForceCreateMaterial"),
                 new CodeInstruction(OpCodes.Ret)
             };
@@ -173,17 +173,17 @@ namespace NanameFloors
         }
     }
 
-    public static class Patch_GenConstruct_CanPlaceBlueprintAt_NewTemp
+    public static class Patch_GenConstruct_CanPlaceBlueprintAt
     {
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             var codes = instructions.ToList();
-            var pos = codes.FindIndex(c => c.opcode == OpCodes.Ldloc_S && (c.operand as LocalBuilder).LocalIndex == 29);
+            var pos = codes.FindIndex(c => c.opcode == OpCodes.Ldloc_S && (c.operand as LocalBuilder).LocalIndex == 27);
             var label = codes[pos + 2].operand;
 
             codes.InsertRange(pos, new List<CodeInstruction>
             {
-                CodeInstruction.LoadArgument(0),
+                new CodeInstruction(OpCodes.Ldarg_0),
                 new CodeInstruction(OpCodes.Isinst, typeof(TerrainDef)),
                 new CodeInstruction(OpCodes.Brtrue_S, label)
             });
