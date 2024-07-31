@@ -20,11 +20,11 @@ namespace NanameFloors
                 newTerr.burnedDef = BlendInner(new TerrainMask(terrainMask.maskTextureName, baseTerrain.burnedDef ?? baseTerrain, coverTerrain.burnedDef ?? coverTerrain));
             }
             var takenHashes = AccessTools.StaticFieldRefAccess<Dictionary<Type, HashSet<ushort>>>(typeof(ShortHashGiver), "takenHashesPerDeftype");
-            var bluePrintDef = (ThingDef)AccessTools.Method(typeof(ThingDefGenerator_Buildings), "NewBlueprintDef_Terrain").Invoke(typeof(ThingDefGenerator_Buildings), new object[] { newTerr });
+            var bluePrintDef = (ThingDef)AccessTools.Method(typeof(ThingDefGenerator_Buildings), "NewBlueprintDef_Terrain").Invoke(typeof(ThingDefGenerator_Buildings), new object[] { newTerr, false });
             bluePrintDef.shortHash = 0;
             AccessTools.Method(typeof(ShortHashGiver), "GiveShortHash").Invoke(typeof(ShortHashGiver), new object[] { bluePrintDef, typeof(ThingDef), takenHashes[typeof(ThingDef)] });
             DefGenerator.AddImpliedDef(bluePrintDef);
-            var frameDef = (ThingDef)AccessTools.Method(typeof(ThingDefGenerator_Buildings), "NewFrameDef_Terrain").Invoke(typeof(ThingDefGenerator_Buildings), new object[] { newTerr });
+            var frameDef = (ThingDef)AccessTools.Method(typeof(ThingDefGenerator_Buildings), "NewFrameDef_Terrain").Invoke(typeof(ThingDefGenerator_Buildings), new object[] { newTerr, false });
             frameDef.shortHash = 0;
             AccessTools.Method(typeof(ShortHashGiver), "GiveShortHash").Invoke(typeof(ShortHashGiver), new object[] { frameDef, typeof(ThingDef), takenHashes[typeof(ThingDef)] });
             DefGenerator.AddImpliedDef(frameDef);
