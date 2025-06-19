@@ -10,7 +10,6 @@ namespace NanameFloors
     {
         public static Shader LoadShader(string shaderPath)
         {
-            var lookup = AccessTools.FieldRefAccess<Dictionary<string, Shader>>(typeof(ShaderDatabase), "lookup")();
             if (lookup == null)
             {
                 lookup = new Dictionary<string, Shader>();
@@ -29,10 +28,30 @@ namespace NanameFloors
             return shader;
         }
 
+        public static Shader Invert(Shader shader)
+        {
+            if (shader == TerrainHardBlend) return TerrainHardBlendInvert;
+            if (shader == TerrainHardBlendInvert) return TerrainHardBlend;
+            if (shader == TerrainHardPollutedBlend) return TerrainHardPollutedBlendInvert;
+            if (shader == TerrainHardPollutedBlendInvert) return TerrainHardPollutedBlend;
+            if (shader == TerrainFadeRoughLinearAddBlend) return TerrainFadeRoughLinearAddBlendInvert;
+            if (shader == TerrainFadeRoughLinearAddBlendInvert) return TerrainFadeRoughLinearAddBlend;
+            Log.Error($"[NANAMEFloors] Could not get invert shader for {shader}");
+            return null;
+        }
+
         public static readonly Shader TerrainHardBlend = AddedShaders.LoadShader("TerrainHardBlend");
+
+        public static readonly Shader TerrainHardBlendInvert = AddedShaders.LoadShader("TerrainHardBlendInvert");
 
         public static readonly Shader TerrainHardPollutedBlend = AddedShaders.LoadShader("TerrainHardLinearBurnBlend");
 
+        public static readonly Shader TerrainHardPollutedBlendInvert = AddedShaders.LoadShader("TerrainHardLinearBurnBlendInvert");
+
         public static readonly Shader TerrainFadeRoughLinearAddBlend = AddedShaders.LoadShader("TerrainFadeRoughLinearAddBlend");
+
+        public static readonly Shader TerrainFadeRoughLinearAddBlendInvert = AddedShaders.LoadShader("TerrainFadeRoughLinearAddBlendInvert");
+
+        private static Dictionary<string, Shader> lookup = (Dictionary<string, Shader>)AccessTools.Field(typeof(ShaderDatabase), "lookup")?.GetValue(null);
     }
 }

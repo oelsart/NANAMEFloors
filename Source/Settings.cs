@@ -32,7 +32,8 @@ namespace NanameFloors
             }
             if (Scribe.mode == LoadSaveMode.Saving)
             {
-                NanameFloors.UI.terrainMasks = TerrainMask.cachedTerrainMasks.Where(m => !this.exceptMaskList.Contains(m.name));
+                NanameFloors.UI.terrainMasks.Clear();
+                NanameFloors.UI.terrainMasks.AddRange(TerrainMask.cachedTerrainMasks.Where(m => !exceptMaskList.Contains(m.name)));
             }
             base.ExposeData();
         }
