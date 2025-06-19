@@ -88,19 +88,28 @@ namespace NanameFloors
     {
         public static void Postfix(ArchitectCategoryTab ___selectedDesPanel)
         {
-            if (___selectedDesPanel?.def == DesignationCategoryDefOf.Floors)
+            var def = ___selectedDesPanel?.def;
+            if (def == DesignationCategoryDefOf.Floors || TerraInMenuOpened(def))
             {
                 Find.WindowStack.ImmediateWindow(9359779, NanameFloors.UI.windowRect, WindowLayer.GameUI, () => NanameFloors.UI.DoWindowContents());
             }
         }
 
+        public static bool TerraInMenuOpened(DesignationCategoryDef def)
+        {
+            if (TerraIn_ArchitectMenu == null) return false;
+            return def == TerraIn_ArchitectMenu;
+        }
+
+        public static DesignationCategoryDef TerraIn_ArchitectMenu = DefDatabase<DesignationCategoryDef>.GetNamedSilentFail("TerraIn_ArchitectMenu");
     }
 
     public static class Patch_MainTabWindow_MintArchitect_DoWindowContents
     {
         public static void Postfix(ArchitectCategoryTab ___SelectedTab)
         {
-            if (___SelectedTab?.def == DesignationCategoryDefOf.Floors)
+            var def = ___SelectedTab?.def;
+            if (___SelectedTab?.def == DesignationCategoryDefOf.Floors || Patch_MainTabWindow_Architect_DoWindowContents.TerraInMenuOpened(def))
             {
                 Find.WindowStack.ImmediateWindow(9359779, NanameFloors.UI.windowRect, WindowLayer.GameUI, () => NanameFloors.UI.DoWindowContents());
             }
@@ -162,7 +171,7 @@ namespace NanameFloors
             {
                 material.renderQueue = req.renderQueue;
             }
-            if (!req.shaderParameters.NullOrEmpty<ShaderParameter>())
+            if (!req.shaderParameters.NullOrEmpty())
             {
                 for (int i = 0; i < req.shaderParameters.Count; i++)
                 {
@@ -178,7 +187,7 @@ namespace NanameFloors
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             var codes = instructions.ToList();
-            var pos = codes.FindIndex(c => c.opcode == OpCodes.Ldloc_S && (c.operand as LocalBuilder).LocalIndex == 29);
+            var pos = codes.FindIndex(c => c.opcode == OpCodes.Ldloc_S && ((LocalBuilder)c.operand).LocalIndex == 29);
             var label = codes[pos + 2].operand;
 
             codes.InsertRange(pos, new List<CodeInstruction>

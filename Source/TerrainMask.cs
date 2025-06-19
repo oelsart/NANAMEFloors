@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Verse;
 
@@ -28,6 +29,6 @@ namespace NanameFloors
 
         public TerrainDef coverTerrain;
 
-        public static IEnumerable<Texture2D> cachedTerrainMasks = ContentFinder<Texture2D>.GetAllInFolder("NanameFloors/TerrainMasks");
+        public static List<Texture2D> cachedTerrainMasks = ContentFinder<Texture2D>.GetAllInFolder("NanameFloors/TerrainMasks").ToList();
     }
 }

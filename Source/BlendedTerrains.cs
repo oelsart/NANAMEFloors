@@ -15,9 +15,9 @@ namespace NanameFloors
             var terrainMaskList = new HashSet<TerrainMask>();
             if (Scribe.mode == LoadSaveMode.Saving)
             {
-                terrainMaskList = DefDatabase<BlendedTerrainDef>.AllDefs
+                terrainMaskList.AddRange(DefDatabase<BlendedTerrainDef>.AllDefs
                     .Where(d => Find.Maps.Any(m => m.terrainGrid.topGrid.Any(t => t == d)))
-                    .Select(d => d.GetModExtension<TerrainMask>()).ToHashSet();
+                    .Select(d => d.GetModExtension<TerrainMask>()));
                 terrainMaskList.AddRange(Find.Maps.SelectMany(m => m.listerThings.ThingsInGroup(ThingRequestGroup.Blueprint).Concat(m.listerThings.ThingsInGroup(ThingRequestGroup.BuildingFrame)
                     .Where(t => t.def.entityDefToBuild is BlendedTerrainDef)))
                     .Select(t => t.def.entityDefToBuild.GetModExtension<TerrainMask>()));
