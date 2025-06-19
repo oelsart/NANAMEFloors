@@ -1,11 +1,12 @@
 ﻿using HarmonyLib;
-using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
-using UnityEngine;
 using Verse;
+using RimWorld;
+using UnityEngine;
+using System.Reflection.Emit;
 
 namespace NanameFloors
 {
@@ -65,14 +66,13 @@ namespace NanameFloors
         }
     }
 
-    [HarmonyPatch(typeof(TerrainGrid), "ExposeTerrainGrid")]
+        [HarmonyPatch(typeof(TerrainGrid), "ExposeTerrainGrid")]
     public static class TerrainGrid_ExposeTerrainGrid_Patch
     {
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             var codes = instructions.ToList();
-            var g_AllDefs = AccessTools.PropertyGetter(typeof(DefDatabase<TerrainDef>), "AllDefs");
-            var pos = codes.FindIndex(c => c.Calls(g_AllDefs));
+            var pos = codes.FindIndex(c => c.opcode == OpCodes.Call && c.operand as MethodInfo == AccessTools.PropertyGetter(typeof(DefDatabase<TerrainDef>), "AllDefs"));
             codes.Insert(pos + 1, CodeInstruction.Call(typeof(TerrainGrid_ExposeTerrainGrid_Patch), "ConcatDefs"));
             return codes;
         }
@@ -81,166 +81,6 @@ namespace NanameFloors
         {
             return terrainDefs.Concat(DefDatabase<BlendedTerrainDef>.AllDefs);
         }
-    }
-
-    [HarmonyPatch("Verse.SectionLayer_Terrain", "Regenerate")]
-    public static class Patch_SectionLayer_Terrain_Regenerate
-    {
-        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-        {
-            var codes = instructions.ToList();
-            var m_MoveNext = AccessTools.Method(typeof(CellRect.Enumerator), nameof(CellRect.Enumerator.MoveNext));
-            var pos = codes.FindIndex(c => c.Calls(m_MoveNext));
-
-            codes.InsertRange(pos, new[]
-            {
-                CodeInstruction.LoadArgument(0),
-                CodeInstruction.LoadArgument(0),
-                new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(SectionLayer), "Map")),
-                CodeInstruction.LoadLocal(0),
-                CodeInstruction.LoadLocal(2),
-                CodeInstruction.LoadLocal(3),
-                CodeInstruction.LoadLocal(5),
-                CodeInstruction.LoadLocal(6),
-                CodeInstruction.LoadLocal(7),
-                CodeInstruction.Call(typeof(Patch_SectionLayer_Terrain_Regenerate), nameof(GenerateExtraMesh))
-            });
-            return codes;
-        }
-
-        public static void GenerateExtraMesh(SectionLayer instance, Map map, TerrainGrid terrainGrid, CellTerrain cellTerrain, IntVec3 intVec, CellTerrain[] array, HashSet<CellTerrain> hashSet, bool[] array2)
-        {
-            bool AllowRenderingFor(TerrainDef terrain)
-            {
-                return DebugViewSettings.drawTerrainWater || !terrain.HasTag("Water");
-            }
-
-            if (cellTerrain.def is BlendedTerrainDef blendedTerrainDef)
-            {
-                Material GetMaterialFor(CellTerrain cellTerr)
-                {
-                    bool polluted = cellTerr.polluted && cellTerr.snowCoverage < 0.4f && cellTerr.def.graphicPolluted != BaseContent.BadGraphic;
-                    var color = cellTerr.color;
-                    var key = (blendedTerrainDef, polluted, color);
-                    if (!terrainMatCache.ContainsKey(key))
-                    {
-                        Graphic graphic = polluted ? blendedTerrainDef.CoverGraphicPolluted : blendedTerrainDef.CoverGraphic;
-                        if (color != null)
-                        {
-                            terrainMatCache[key] = graphic.GetColoredVersion(graphic.Shader, color.color, Color.white).MatSingle;
-                        }
-                        else
-                        {
-                            terrainMatCache[key] = graphic.MatSingle;
-                        }
-                    }
-                    return terrainMatCache[key];
-                }
-
-                hashSet.Clear();
-                LayerSubMesh subMesh = instance.GetSubMesh(GetMaterialFor(cellTerrain));
-                if (subMesh != null && AllowRenderingFor(cellTerrain.def))
-                {
-                    int count = subMesh.verts.Count;
-                    subMesh.verts.Add(new Vector3((float)intVec.x, 0f, (float)intVec.z));
-                    subMesh.verts.Add(new Vector3((float)intVec.x, 0f, (float)(intVec.z + 1)));
-                    subMesh.verts.Add(new Vector3((float)(intVec.x + 1), 0f, (float)(intVec.z + 1)));
-                    subMesh.verts.Add(new Vector3((float)(intVec.x + 1), 0f, (float)intVec.z));
-                    subMesh.colors.Add(ColorWhite);
-                    subMesh.colors.Add(ColorWhite);
-                    subMesh.colors.Add(ColorWhite);
-                    subMesh.colors.Add(ColorWhite);
-                    subMesh.tris.Add(count);
-                    subMesh.tris.Add(count + 1);
-                    subMesh.tris.Add(count + 2);
-                    subMesh.tris.Add(count);
-                    subMesh.tris.Add(count + 2);
-                    subMesh.tris.Add(count + 3);
-                }
-                for (int i = 0; i < 8; i++)
-                {
-                    IntVec3 c = intVec + GenAdj.AdjacentCellsAroundBottom[i];
-                    if (!c.InBounds(map))
-                    {
-                        array[i] = cellTerrain;
-                        continue;
-                    }
-                    CellTerrain cellTerrain2 = new CellTerrain(terrainGrid.TerrainAt(c), c.IsPolluted(map), map.snowGrid.GetDepth(c), terrainGrid.ColorAt(c));
-                    Thing edifice = c.GetEdifice(map);
-                    if (edifice != null && edifice.def.coversFloor)
-                    {
-                        cellTerrain2.def = TerrainDefOf.Underwall;
-                    }
-                    array[i] = cellTerrain2;
-                    if (!cellTerrain2.Equals(cellTerrain) && cellTerrain2.def.edgeType != TerrainDef.TerrainEdgeType.Hard && cellTerrain2.def.renderPrecedence >= cellTerrain.def.renderPrecedence && !hashSet.Contains(cellTerrain2))
-                    {
-                        hashSet.Add(cellTerrain2);
-                    }
-                }
-                foreach (CellTerrain intVec2 in hashSet)
-                {
-                    LayerSubMesh subMesh2 = instance.GetSubMesh(GetMaterialFor(intVec2));
-                    if (subMesh2 == null || !AllowRenderingFor(intVec2.def))
-                    {
-                        continue;
-                    }
-                    int count = subMesh2.verts.Count;
-                    subMesh2.verts.Add(new Vector3((float)intVec.x + 0.5f, 0f, (float)intVec.z));
-                    subMesh2.verts.Add(new Vector3((float)intVec.x, 0f, (float)intVec.z));
-                    subMesh2.verts.Add(new Vector3((float)intVec.x, 0f, (float)intVec.z + 0.5f));
-                    subMesh2.verts.Add(new Vector3((float)intVec.x, 0f, (float)(intVec.z + 1)));
-                    subMesh2.verts.Add(new Vector3((float)intVec.x + 0.5f, 0f, (float)(intVec.z + 1)));
-                    subMesh2.verts.Add(new Vector3((float)(intVec.x + 1), 0f, (float)(intVec.z + 1)));
-                    subMesh2.verts.Add(new Vector3((float)(intVec.x + 1), 0f, (float)intVec.z + 0.5f));
-                    subMesh2.verts.Add(new Vector3((float)(intVec.x + 1), 0f, (float)intVec.z));
-                    subMesh2.verts.Add(new Vector3((float)intVec.x + 0.5f, 0f, (float)intVec.z + 0.5f));
-                    for (int j = 0; j < 8; j++)
-                    {
-                        array2[j] = false;
-                    }
-                    for (int k = 0; k < 8; k++)
-                    {
-                        if (k % 2 == 0)
-                        {
-                            if (array[k].Equals(intVec2))
-                            {
-                                array2[(k - 1 + 8) % 8] = true;
-                                array2[k] = true;
-                                array2[(k + 1) % 8] = true;
-                            }
-                        }
-                        else if (array[k].Equals(intVec2))
-                        {
-                            array2[k] = true;
-                        }
-                    }
-                    for (int l = 0; l < 8; l++)
-                    {
-                        if (array2[l])
-                        {
-                            subMesh2.colors.Add(ColorWhite);
-                        }
-                        else
-                        {
-                            subMesh2.colors.Add(ColorClear);
-                        }
-                    }
-                    subMesh2.colors.Add(ColorClear);
-                    for (int m = 0; m < 8; m++)
-                    {
-                        subMesh2.tris.Add(count + m);
-                        subMesh2.tris.Add(count + (m + 1) % 8);
-                        subMesh2.tris.Add(count + 8);
-                    }
-                }
-            }
-        }
-
-        private static readonly Color32 ColorClear = new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, 0);
-
-        private static readonly Color32 ColorWhite = new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, byte.MaxValue);
-
-        private static readonly Dictionary<(BlendedTerrainDef, bool, ColorDef), Material> terrainMatCache = new Dictionary<(BlendedTerrainDef, bool, ColorDef), Material>();
     }
 
     [HarmonyPatch(typeof(MainTabWindow_Architect), "DoWindowContents")]
@@ -273,6 +113,72 @@ namespace NanameFloors
             {
                 Find.WindowStack.ImmediateWindow(9359779, NanameFloors.UI.windowRect, WindowLayer.GameUI, () => NanameFloors.UI.DoWindowContents());
             }
+        }
+    }
+
+    [HarmonyPatch(typeof(MaterialPool), "MatFrom", new Type[] { typeof(MaterialRequest) })]
+    public static class Patch_MaterialPool_MatFrom
+    {
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator ILGenerator)
+        {
+            var codes = instructions.ToList();
+            var pos = codes.FirstIndexOf(c => c.opcode == OpCodes.Stfld && (c.operand as FieldInfo) == AccessTools.Field(typeof(MaterialRequest), "colorTwo"));
+            var labelTrue = ILGenerator.DefineLabel();
+            var labelFalse = ILGenerator.DefineLabel();
+            var addedCodes = new List<CodeInstruction>
+            {
+                CodeInstruction.LoadArgument(0),
+                CodeInstruction.LoadField(typeof(MaterialRequest), "shader"),
+                CodeInstruction.LoadField(typeof(AddedShaders), "TerrainHardBlend"),
+                CodeInstruction.Call(typeof(UnityEngine.Object), "op_Equality"),
+                new CodeInstruction(OpCodes.Brtrue_S, labelTrue),
+                CodeInstruction.LoadArgument(0),
+                CodeInstruction.LoadField(typeof(MaterialRequest), "shader"),
+                CodeInstruction.LoadField(typeof(AddedShaders), "TerrainHardPollutedBlend"),
+                CodeInstruction.Call(typeof(UnityEngine.Object), "op_Equality"),
+                new CodeInstruction(OpCodes.Brtrue_S, labelTrue),
+                CodeInstruction.LoadArgument(0),
+                CodeInstruction.LoadField(typeof(MaterialRequest), "shader"),
+                CodeInstruction.LoadField(typeof(AddedShaders), "TerrainFadeRoughLinearAddBlend"),
+                CodeInstruction.Call(typeof(UnityEngine.Object), "op_Equality"),
+                new CodeInstruction(OpCodes.Brfalse_S, labelFalse),
+                CodeInstruction.LoadArgument(0).WithLabels(labelTrue),
+                CodeInstruction.Call(typeof(Patch_MaterialPool_MatFrom), "ForceCreateMaterial"),
+                new CodeInstruction(OpCodes.Ret)
+            };
+            codes[pos + 1] = codes[pos + 1].WithLabels(labelFalse);
+            codes.InsertRange(pos + 1, addedCodes);
+            return codes;
+        }
+
+        public static Material ForceCreateMaterial(MaterialRequest req)
+        {
+            Material material = new Material(req.shader);
+            material.name = req.shader.name;
+            if (req.mainTex != null)
+            {
+                Material material2 = material;
+                material2.name = material2.name + "_" + req.mainTex.name;
+                material.mainTexture = req.mainTex;
+            }
+            material.color = req.color;
+            if (req.maskTex != null)
+            {
+                material.SetTexture(ShaderPropertyIDs.MaskTex, req.maskTex);
+                material.SetColor(ShaderPropertyIDs.ColorTwo, req.colorTwo);
+            }
+            if (req.renderQueue != 0)
+            {
+                material.renderQueue = req.renderQueue;
+            }
+            if (!req.shaderParameters.NullOrEmpty())
+            {
+                for (int i = 0; i < req.shaderParameters.Count; i++)
+                {
+                    req.shaderParameters[i].Apply(material);
+                }
+            }
+            return material;
         }
     }
 

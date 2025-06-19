@@ -5,25 +5,15 @@ using Verse;
 
 namespace NanameFloors
 {
-    [StaticConstructorOnStartup]
     public class TerrainMask : DefModExtension, IExposable
     {
-        static TerrainMask()
-        {
-            LongEventHandler.ExecuteWhenFinished(() =>
-            {
-                cachedTerrainMasks = ContentFinder<Texture2D>.GetAllInFolder("NanameFloors/TerrainMasks").ToList();
-                NanameFloors.UI.terrainMasks = cachedTerrainMasks.Where(m => !NanameFloors.settings.exceptMaskList.Contains(m.name)).ToList();
-            });
-        }
-
         public TerrainMask() { }
 
         public TerrainMask(string name, TerrainDef baseTerr, TerrainDef coverTerr)
         {
-            maskTextureName = name;
-            baseTerrain = baseTerr;
-            coverTerrain = coverTerr;
+            this.maskTextureName = name;
+            this.baseTerrain = baseTerr;
+            this.coverTerrain = coverTerr;
         }
 
         public void ExposeData()
@@ -39,6 +29,6 @@ namespace NanameFloors
 
         public TerrainDef coverTerrain;
 
-        public static List<Texture2D> cachedTerrainMasks;
+        public static List<Texture2D> cachedTerrainMasks = ContentFinder<Texture2D>.GetAllInFolder("NanameFloors/TerrainMasks").ToList();
     }
 }

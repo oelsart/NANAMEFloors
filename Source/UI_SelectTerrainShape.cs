@@ -15,26 +15,26 @@ namespace NanameFloors
 
         public UI_SelectTerrainShape()
         {
-            windowRect = NanameFloors.settings.windowRect;
-            resizer = new WindowResizer();
-            resizer.minWindowSize = new Vector2(ButtonSize + Margin * 2f, ButtonSize + Margin * 2f + Text.LineHeightOf(GameFont.Small) + 2f);
+            this.windowRect = NanameFloors.settings.windowRect;
+            this.resizer = new WindowResizer();
+            this.resizer.minWindowSize = new Vector2(ButtonSize + this.Margin * 2f, ButtonSize + this.Margin * 2f + Text.LineHeightOf(GameFont.Small) + 2f);
         }
 
         public void DoWindowContents()
         {
             var selectedDesignator = Find.DesignatorManager.SelectedDesignator;
-            if (selectedDesignator != designator)
+            if (selectedDesignator != this.designator)
             {
-                designator = selectedDesignator;
-                selectedMask = null;
+                this.designator = selectedDesignator;
+                this.selectedMask = null;
             }
 
-            var inRect = windowRect.AtZero().ContractedBy(Margin);
+            var inRect = this.windowRect.AtZero().ContractedBy(this.Margin);
             if (terrainMasks.Count() == 0) return;
             Rect labelRect;
             using (new TextBlock(GameFont.Small))
             {
-                labelRect = new Rect(inRect.x, inRect.y, windowRect.width, Text.LineHeight);
+                labelRect = new Rect(inRect.x, inRect.y, this.windowRect.width, Text.LineHeight);
                 Widgets.Label(labelRect, "NAF.FloorShapes".Translate());
                 Widgets.DrawLineHorizontal(labelRect.x, labelRect.yMax, labelRect.width);
             }
@@ -45,15 +45,15 @@ namespace NanameFloors
                 if (Input.GetMouseButton(0))
                 {
                     Window window = Find.WindowStack.Windows.FirstOrDefault(w => w.ID == -9359779);
-                    windowRect = window.windowRect;
+                    this.windowRect = window.windowRect;
                 }
                 if (Input.GetMouseButtonUp(0))
                 {
-                    NanameFloors.settings.windowRect = windowRect;
+                    NanameFloors.settings.windowRect = this.windowRect;
                     NanameFloors.settings.Write();
                 }
             }
-            windowRect = resizer.DoResizeControl(windowRect);
+            this.windowRect = this.resizer.DoResizeControl(this.windowRect);
 
             var parentRect = new Rect(inRect.x, labelRect.yMax + 2f, inRect.width, inRect.height - labelRect.height);
 
@@ -68,7 +68,7 @@ namespace NanameFloors
             Widgets.BeginScrollView(outRect, ref scrollPosition, viewRect);
             foreach (var (terrainMaskTex, index) in terrainMasks.Select((t, i) => (t, i)))
             {
-                bool isSelected = terrainMaskTex == selectedMask;
+                bool isSelected = terrainMaskTex == this.selectedMask;
                 Rect rect = new Rect(viewRect.x + ButtonSize * (index % columnCount), viewRect.y + ButtonSize * (index / columnCount), ButtonSize, ButtonSize);
                 Rect rect2 = rect.ContractedBy(5f);
                 Widgets.DrawTextureFitted(rect2, terrainMaskTex, 1f);
@@ -76,7 +76,7 @@ namespace NanameFloors
                 Widgets.DrawHighlightIfMouseover(rect);
                 if (Widgets.ButtonInvisible(rect))
                 {
-                    selectedMask = isSelected ? null : terrainMaskTex;
+                    this.selectedMask = isSelected ? null : terrainMaskTex;
                     Event.current.Use();
                 }
                 if (isSelected)
@@ -88,7 +88,7 @@ namespace NanameFloors
             Text.Font = GameFont.Small;
         }
 
-        public List<Texture2D> terrainMasks;
+        public IEnumerable<Texture2D> terrainMasks = TerrainMask.cachedTerrainMasks.Where(m => !NanameFloors.settings.exceptMaskList.Contains(m.name));
 
         public Texture2D selectedMask;
 
