@@ -10,7 +10,7 @@ namespace NanameFloors
     {
         public static Shader LoadShader(string shaderPath)
         {
-            var lookup = AccessTools.FieldRefAccess<Dictionary<string, Shader>>(typeof(ShaderDatabase), "lookup")();
+            Dictionary<string, Shader> lookup = AccessTools.StaticFieldRefAccess<Dictionary<string, Shader>>(typeof(ShaderDatabase), "lookup");
             if (lookup == null)
             {
                 lookup = new Dictionary<string, Shader>();
