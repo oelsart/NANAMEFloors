@@ -17,10 +17,6 @@ namespace NanameFloors
         {
             var harmony = new Harmony("com.harmony.rimworld.nanamefloors");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
-            if (NanameFloors.settings.allowPlaceFloor)
-            {
-                harmony.Patch(AccessTools.Method(typeof(GenConstruct), "CanPlaceBlueprintAt_NewTemp"), null, null, AccessTools.Method(typeof(Patch_GenConstruct_CanPlaceBlueprintAt_NewTemp), "Transpiler"));
-            }
         }
     }
 
@@ -29,7 +25,9 @@ namespace NanameFloors
     {
         public static void Postfix(Shader shader, ref bool __result)
         {
-            __result = __result || shader == AddedShaders.TerrainHardBlend || shader == AddedShaders.TerrainHardPollutedBlend || shader == AddedShaders.TerrainFadeRoughLinearAddBlend;
+            __result = __result || shader == NAF_DefOf.TerrainHardBlend.Shader ||
+                shader == NAF_DefOf.TerrainHardLinearBurnBlend.Shader ||
+                shader == NAF_DefOf.TerrainHardLinearBurnBlend.Shader;
         }
     }
 
@@ -99,23 +97,27 @@ namespace NanameFloors
         {
             var codes = instructions.ToList();
             var pos = codes.FirstIndexOf(c => c.opcode == OpCodes.Stfld && (c.operand as FieldInfo) == AccessTools.Field(typeof(MaterialRequest), "colorTwo"));
+            var g_Shader = AccessTools.PropertyGetter(typeof(ShaderTypeDef), nameof(ShaderTypeDef.Shader));
             var labelTrue = ILGenerator.DefineLabel();
             var labelFalse = ILGenerator.DefineLabel();
             var addedCodes = new List<CodeInstruction>
             {
                 CodeInstruction.LoadArgument(0),
                 CodeInstruction.LoadField(typeof(MaterialRequest), "shader"),
-                CodeInstruction.LoadField(typeof(AddedShaders), "TerrainHardBlend"),
+                CodeInstruction.LoadField(typeof(NAF_DefOf), nameof(NAF_DefOf.TerrainHardBlend)),
+                new CodeInstruction(OpCodes.Callvirt, g_Shader),
                 CodeInstruction.Call(typeof(UnityEngine.Object), "op_Equality"),
                 new CodeInstruction(OpCodes.Brtrue_S, labelTrue),
                 CodeInstruction.LoadArgument(0),
                 CodeInstruction.LoadField(typeof(MaterialRequest), "shader"),
-                CodeInstruction.LoadField(typeof(AddedShaders), "TerrainHardPollutedBlend"),
+                CodeInstruction.LoadField(typeof(NAF_DefOf), nameof(NAF_DefOf.TerrainHardLinearBurnBlend)),
+                new CodeInstruction(OpCodes.Callvirt, g_Shader),
                 CodeInstruction.Call(typeof(UnityEngine.Object), "op_Equality"),
                 new CodeInstruction(OpCodes.Brtrue_S, labelTrue),
                 CodeInstruction.LoadArgument(0),
                 CodeInstruction.LoadField(typeof(MaterialRequest), "shader"),
-                CodeInstruction.LoadField(typeof(AddedShaders), "TerrainFadeRoughLinearAddBlend"),
+                CodeInstruction.LoadField(typeof(NAF_DefOf), nameof(NAF_DefOf.TerrainFadeRoughLinearAddBlend)),
+                new CodeInstruction(OpCodes.Callvirt, g_Shader),
                 CodeInstruction.Call(typeof(UnityEngine.Object), "op_Equality"),
                 new CodeInstruction(OpCodes.Brfalse_S, labelFalse),
                 CodeInstruction.LoadArgument(0).WithLabels(labelTrue),
@@ -158,12 +160,18 @@ namespace NanameFloors
         }
     }
 
-    public static class Patch_GenConstruct_CanPlaceBlueprintAt_NewTemp
+    [HarmonyPatch(typeof(GenConstruct), nameof(GenConstruct.CanPlaceBlueprintAt))]
+    public static class Patch_GenConstruct_CanPlaceBlueprintAt
     {
+        public static bool Prepare()
+        {
+            return NanameFloors.settings.allowPlaceFloor;
+        }
+
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             var codes = instructions.ToList();
-            var pos = codes.FindIndex(c => c.opcode == OpCodes.Ldloc_S && ((LocalBuilder)c.operand).LocalIndex == 29);
+            var pos = codes.FindIndex(c => c.opcode == OpCodes.Ldloc_S && ((LocalBuilder)c.operand).LocalIndex == 18);
             var label = codes[pos + 2].operand;
 
             codes.InsertRange(pos, new List<CodeInstruction>

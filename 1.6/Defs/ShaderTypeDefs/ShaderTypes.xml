@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <ShaderTypeDef>
+    <defName>TerrainHardBlend</defName>
+    <shaderPath>NanameFloors/TerrainHardBlend</shaderPath>
+  </ShaderTypeDef>
+
+  <ShaderTypeDef>
+    <defName>TerrainHardLinearBurnBlend</defName>
+    <shaderPath>NanameFloors/TerrainHardLinearBurnBlend</shaderPath>
+  </ShaderTypeDef>
+
+  <ShaderTypeDef>
+    <defName>TerrainFadeRoughLinearAddBlend</defName>
+    <shaderPath>NanameFloors/TerrainFadeRoughLinearAddBlend</shaderPath>
+  </ShaderTypeDef>
+
+</Defs>

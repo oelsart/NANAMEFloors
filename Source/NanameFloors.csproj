@@ -26,7 +26,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\1.5\Assemblies\</OutputPath>
+    <OutputPath>..\1.6\Assemblies\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -38,7 +38,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\RimWorldWin64_Data\Managed\1.5\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\..\RimWorldWin64_Data\Managed\1.6\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="DubsMintMenus">
@@ -47,6 +47,10 @@
     </Reference>
     <Reference Include="HugsLib">
       <HintPath>..\..\..\..\..\workshop\content\294100\818773962\v1.5\Assemblies\HugsLib.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="netstandard">
+      <HintPath>..\..\..\RimWorldWin64_Data\Managed\1.6\netstandard.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -87,10 +91,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddedShaders.cs" />
     <Compile Include="BlendedTerrainDef.cs" />
     <Compile Include="BlendedTerrains.cs" />
     <Compile Include="BlendedTerrainUtil.cs" />
+    <Compile Include="NAF_DefOf.cs" />
     <Compile Include="UI_SelectTerrainShape.cs" />
     <Compile Include="HarmonyPatches.cs" />
     <Compile Include="NanameFloors.cs" />

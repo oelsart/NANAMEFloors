@@ -39,8 +39,6 @@ namespace NanameFloors
 
         public TerrainDef coverTerrain;
 
-        //ここは本当はListに変更したけど互換性のためにIEnumerableのままにしとく
-        //1.6からはListにするからね
-        public static IEnumerable<Texture2D> cachedTerrainMasks;
+        public static List<Texture2D> cachedTerrainMasks;
     }
 }
