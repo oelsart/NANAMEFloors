@@ -17,7 +17,7 @@ namespace NanameFloors
             }
             if (!lookup.ContainsKey(shaderPath))
             {
-                lookup[shaderPath] = NanameFloors.content.assetBundles.loadedAssetBundles.Find(a => a.name == "nanamefloors").LoadAsset<Shader>($"Assets/Data/NanameFloors/{shaderPath}.shader");
+                lookup[shaderPath] = NanameFloors.Bundle.LoadAsset<Shader>($"Assets/Data/NanameFloors/{shaderPath}.shader");
             }
             Shader shader = lookup[shaderPath];
 
