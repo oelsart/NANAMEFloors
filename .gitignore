@@ -366,3 +366,4 @@ Source/.vs/NanameFloors/v17/.suo
 *.cache
 /Source/.vs
 /Source/Shader
+/Source/obj/Release/NanameFloors.csproj.AssemblyReference.cache
