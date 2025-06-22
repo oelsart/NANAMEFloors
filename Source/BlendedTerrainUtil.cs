@@ -38,16 +38,24 @@ namespace NanameFloors
                 newTerr.graphic.MatSingle.GetTexture("_MainTexTwo").filterMode = FilterMode.Point;
                 if (!ModsConfig.BiotechActive) return;
                 Shader shader = baseTerrain.pollutionShaderType == ShaderTypeDefOf.TerrainFadeRoughLinearAdd ? AddedShaders.TerrainFadeRoughLinearAddBlend : AddedShaders.TerrainHardPollutedBlend;
-                string path = baseTerrain.pollutedTexturePath.NullOrEmpty() ? baseTerrain.texturePath : baseTerrain.pollutedTexturePath;
+                string path = baseTerrain.pollutedTexturePath ?? baseTerrain.texturePath;
                 newTerr.graphicPolluted = GraphicDatabase.Get(typeof(Graphic_Terrain), path, shader, Vector2.one, baseTerrain.DrawColor, coverTerrain.DrawColor, "NanameFloors/TerrainMasks/" + terrainMask.maskTextureName);
                 var matSingle = newTerr.graphicPolluted.MatSingle;
+                if (!coverTerrain.pollutionOverlayTexturePath.NullOrEmpty())
+                {
+                    matSingle.SetTexture("_BurnTex", ContentFinder<Texture2D>.Get(baseTerrain.pollutionOverlayTexturePath, true));
+                }
+                matSingle.SetColor("_BurnColor", baseTerrain.pollutionColor);
+                matSingle.SetVector("_ScrollSpeed", baseTerrain.pollutionOverlayScrollSpeed);
+                matSingle.SetVector("_BurnScale", baseTerrain.pollutionOverlayScale);
+                matSingle.SetColor("_PollutionTintColor", baseTerrain.pollutionTintColor);
+
                 matSingle.SetTexture("_MainTexTwo", ContentFinder<Texture2D>.Get(coverTerrain.pollutedTexturePath ?? coverTerrain.texturePath));
                 if (!coverTerrain.pollutionOverlayTexturePath.NullOrEmpty()) matSingle.SetTexture("_BurnTexTwo", ContentFinder<Texture2D>.Get(coverTerrain.pollutionOverlayTexturePath));
                 matSingle.SetColor("_BurnColorTwo", coverTerrain.pollutionColor);
                 matSingle.SetColor("_PollutionTintColorTwo", coverTerrain.pollutionTintColor);
                 if (shader == AddedShaders.TerrainFadeRoughLinearAddBlend)
                 {
-                    matSingle.SetVector("_BurnScale", baseTerrain.pollutionOverlayScale);
                     matSingle.SetTexture("_AlphaAddTex", TexGame.AlphaAddTex);
                 }
             });
