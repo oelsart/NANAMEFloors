@@ -3,42 +3,43 @@
   "WorkspaceRootPath": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\blendedterrainutil.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|solutionrelative:blendedterrainutil.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\harmonypatches.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|solutionrelative:harmonypatches.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\ui_selectterrainshape.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|solutionrelative:ui_selectterrainshape.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{00000000-0000-0000-0000-000000000000}|\u003CSolution\u003E|NanameFloors||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|e:\\program files (x86)\\steam\\steamapps\\common\\rimworld\\mods\\nanamefloorsexperimental\\source\\blendedterrains.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|solutionrelative:blendedterrains.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\addedshaders.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|solutionrelative:addedshaders.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\terrainmask.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|solutionrelative:terrainmask.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\nanamefloors.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|solutionrelative:nanamefloors.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\harmonypatches.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|solutionrelative:harmonypatches.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\settings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|solutionrelative:settings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\nanamefloors.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|solutionrelative:nanamefloors.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|e:\\program files (x86)\\steam\\steamapps\\common\\rimworld\\mods\\nanamefloorsexperimental\\source\\blendedterrainutil.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|solutionrelative:blendedterrainutil.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\ui_selectterrainshape.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|solutionrelative:ui_selectterrainshape.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\blendedterrains.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|solutionrelative:blendedterrains.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\blendedterraindef.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|solutionrelative:blendedterraindef.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8593EB6A-F506-41EC-8809-09A04DC5EF84}|NanameFloors.csproj|e:\\program files (x86)\\steam\\steamapps\\common\\rimworld\\mods\\nanamefloorsexperimental\\source\\||{B270807C-D8C6-49EB-8EBE-8E8D566637A1}|a54ad834-9219-4aa6-b589-607af21c3e26"
+      "AbsoluteMoniker": "D:0:0:{00000000-0000-0000-0000-000000000000}|\u003CSolution\u003E|NanameFloors||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
     }
   ],
   "DocumentGroupContainers": [
@@ -48,88 +49,43 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 7,
+          "SelectedChildIndex": 5,
           "Children": [
             {
-              "$type": "Bookmark",
-              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:129:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:128:0:{13b12e3e-c1b4-4539-9371-4fe9a0d523fc}"
-            },
-            {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "NanameFloors",
-              "DocumentMoniker": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\NanameFloors.csproj",
-              "RelativeDocumentMoniker": "NanameFloors.csproj",
-              "ToolTip": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\NanameFloors.csproj",
-              "RelativeToolTip": "NanameFloors.csproj",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2024-07-29T23:59:28.666Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "BlendedTerrains.cs",
-              "DocumentMoniker": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\BlendedTerrains.cs",
-              "RelativeDocumentMoniker": "BlendedTerrains.cs",
-              "ToolTip": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\BlendedTerrains.cs",
-              "RelativeToolTip": "BlendedTerrains.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAACcAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-26T21:35:17.213Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 5,
               "Title": "BlendedTerrainUtil.cs",
               "DocumentMoniker": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\BlendedTerrainUtil.cs",
               "RelativeDocumentMoniker": "BlendedTerrainUtil.cs",
               "ToolTip": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\BlendedTerrainUtil.cs",
               "RelativeToolTip": "BlendedTerrainUtil.cs",
-              "ViewState": "AQIAACgAAAAAAAAAAAAAwCgAAAAFAAAA",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAF4AAACMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-07-23T03:13:26.143Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "TerrainMask.cs",
-              "DocumentMoniker": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\TerrainMask.cs",
-              "RelativeDocumentMoniker": "TerrainMask.cs",
-              "ToolTip": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\TerrainMask.cs",
-              "RelativeToolTip": "TerrainMask.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAAAAAAA",
+              "DocumentIndex": 3,
+              "Title": "HarmonyPatches.cs",
+              "DocumentMoniker": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\HarmonyPatches.cs",
+              "RelativeDocumentMoniker": "HarmonyPatches.cs",
+              "ToolTip": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\HarmonyPatches.cs",
+              "RelativeToolTip": "HarmonyPatches.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAD8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-23T19:54:37.758Z",
+              "WhenOpened": "2024-07-23T03:11:38.595Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 4,
               "Title": "Settings.cs",
               "DocumentMoniker": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\Settings.cs",
               "RelativeDocumentMoniker": "Settings.cs",
               "ToolTip": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\Settings.cs",
               "RelativeToolTip": "Settings.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAFAAAA",
+              "ViewState": "AgIAAAwAAAAAAAAAAADwvyQAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-07-23T19:12:29.204Z",
               "EditorCaption": ""
@@ -137,27 +93,66 @@
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "UI_SelectTerrainShape.cs",
-              "DocumentMoniker": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\UI_SelectTerrainShape.cs",
-              "RelativeDocumentMoniker": "UI_SelectTerrainShape.cs",
-              "ToolTip": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\UI_SelectTerrainShape.cs",
-              "RelativeToolTip": "UI_SelectTerrainShape.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAEEAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-23T19:09:49.838Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
               "Title": "NanameFloors.cs",
               "DocumentMoniker": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\NanameFloors.cs",
               "RelativeDocumentMoniker": "NanameFloors.cs",
               "ToolTip": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\NanameFloors.cs",
               "RelativeToolTip": "NanameFloors.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAB0AAAAlAAAA",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAswBIAAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-07-23T18:09:04.693Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "AddedShaders.cs",
+              "DocumentMoniker": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\AddedShaders.cs",
+              "RelativeDocumentMoniker": "AddedShaders.cs",
+              "ToolTip": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\AddedShaders.cs",
+              "RelativeToolTip": "AddedShaders.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-18T22:57:16.906Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "TerrainMask.cs",
+              "DocumentMoniker": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\TerrainMask.cs",
+              "RelativeDocumentMoniker": "TerrainMask.cs",
+              "ToolTip": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\TerrainMask.cs",
+              "RelativeToolTip": "TerrainMask.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-23T19:54:37.758Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "BlendedTerrains.cs",
+              "DocumentMoniker": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\BlendedTerrains.cs",
+              "RelativeDocumentMoniker": "BlendedTerrains.cs",
+              "ToolTip": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\BlendedTerrains.cs",
+              "RelativeToolTip": "BlendedTerrains.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-26T21:35:17.213Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "UI_SelectTerrainShape.cs",
+              "DocumentMoniker": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\UI_SelectTerrainShape.cs",
+              "RelativeDocumentMoniker": "UI_SelectTerrainShape.cs",
+              "ToolTip": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\UI_SelectTerrainShape.cs",
+              "RelativeToolTip": "UI_SelectTerrainShape.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAADwvy0AAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-23T19:09:49.838Z",
               "EditorCaption": ""
             },
             {
@@ -168,23 +163,20 @@
               "RelativeDocumentMoniker": "BlendedTerrainDef.cs",
               "ToolTip": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\BlendedTerrainDef.cs",
               "RelativeToolTip": "BlendedTerrainDef.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAQwAYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-23T03:20:39.036Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-07-23T03:20:39.036Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "HarmonyPatches.cs",
-              "DocumentMoniker": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\HarmonyPatches.cs",
-              "RelativeDocumentMoniker": "HarmonyPatches.cs",
-              "ToolTip": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\HarmonyPatches.cs",
-              "RelativeToolTip": "HarmonyPatches.cs",
-              "ViewState": "AQIAABYAAAAAAAAAAAAAwDgAAAA5AAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-23T03:11:38.595Z",
-              "EditorCaption": ""
+              "DocumentIndex": 9,
+              "Title": "NanameFloors",
+              "DocumentMoniker": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\NanameFloors.csproj",
+              "RelativeDocumentMoniker": "NanameFloors.csproj",
+              "ToolTip": "E:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\NANAMEFloorsExperimental\\Source\\NanameFloors.csproj",
+              "RelativeToolTip": "NanameFloors.csproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2024-07-29T23:59:28.666Z"
             }
           ]
         }

@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using Verse;
 
@@ -7,6 +8,39 @@ namespace NanameFloors
     [StaticConstructorOnStartup]
     public class NanameFloors : Mod
     {
+        public static AssetBundle Bundle
+        {
+            get
+            {
+                if (bundleInt == null)
+                {
+                    bundleInt = AssetBundle.LoadFromFile($@"{content.RootDir}\Shaders_1.5\{PlatformInfo}");
+                }
+                return bundleInt;
+            }
+        }
+
+        private static string PlatformInfo
+        {
+            get
+            {
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    return "StandaloneWindows64";
+                }
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    return "StandaloneLinux64";
+                }
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    return "StandaloneOSX";
+                }
+                Log.Error($"[VehicleMapFramework] {RuntimeInformation.OSDescription} is not supported platform. Please let the mod author know the OS info.");
+                return null;
+            }
+        }
+
         public NanameFloors(ModContentPack content) : base(content)
         {
             NanameFloors.settings = GetSettings<Settings>();
@@ -27,18 +61,9 @@ namespace NanameFloors
 
             var outRect = new Rect(inRect.x, Rect2.yMax, inRect.width, Text.LineHeight);
             outRect.yMax = inRect.yMax;
-            var parentRect = outRect;
             var viewRect = new Rect(outRect.x, outRect.y, outRect.width, TerrainMask.cachedTerrainMasks.Count() * Text.LineHeight);
             Widgets.DrawMenuSection(outRect);
-
-            if (viewRect.height >= outRect.height)
-            {
-                viewRect.width -= 20f;
-                outRect.xMax -= 4f;
-                outRect.yMin = Mathf.Max(parentRect.yMin + 6f, outRect.yMin);
-                outRect.yMax = Mathf.Min(parentRect.yMax - 6f, outRect.yMax);
-            }
-
+            Widgets.AdjustRectsForScrollView(inRect, ref outRect, ref viewRect);
             var rect = new Rect(viewRect.x, viewRect.y, viewRect.width, Text.LineHeight);
             Widgets.BeginScrollView(outRect, ref scrollPosition, viewRect);
             foreach(var terrainMask in TerrainMask.cachedTerrainMasks)
@@ -75,6 +100,8 @@ namespace NanameFloors
         public static ModContentPack content;
 
         public static Settings settings;
+
+        private static AssetBundle bundleInt;
 
         public static UI_SelectTerrainShape UI;
 

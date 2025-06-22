@@ -30,7 +30,7 @@ namespace NanameFloors
             }
 
             var inRect = this.windowRect.AtZero().ContractedBy(this.Margin);
-            if (terrainMasks.Count() == 0) return;
+            if (terrainMasks.Count == 0) return;
             Rect labelRect;
             using (new TextBlock(GameFont.Small))
             {
@@ -57,20 +57,13 @@ namespace NanameFloors
 
             var parentRect = new Rect(inRect.x, labelRect.yMax + 2f, inRect.width, inRect.height - labelRect.height);
 
-            var columnCount = Math.Min(terrainMasks.Count(), (int)(inRect.width / ButtonSize));
-            var rowCount = Mathf.CeilToInt((float)terrainMasks.Count() / columnCount);
+            var columnCount = Math.Min(terrainMasks.Count, (int)(inRect.width / ButtonSize));
+            var rowCount = Mathf.CeilToInt((float)terrainMasks.Count / columnCount);
 
             var outRect = parentRect;
             var viewRect = outRect;
             viewRect.height = Math.Max(outRect.height - 1f, rowCount * ButtonSize);
-
-            if (viewRect.height >= outRect.height)
-            {
-                viewRect.width -= 20f;
-                outRect.xMax -= 4f;
-                outRect.yMin = Mathf.Max(parentRect.yMin + 6f, outRect.yMin);
-                outRect.yMax = Mathf.Min(parentRect.yMax - 6f, outRect.yMax);
-            }
+            Widgets.AdjustRectsForScrollView(parentRect, ref outRect, ref viewRect);
 
             Widgets.BeginScrollView(outRect, ref scrollPosition, viewRect);
             foreach (var (terrainMaskTex, index) in terrainMasks.Select((t, i) => (t, i)))
@@ -95,7 +88,7 @@ namespace NanameFloors
             Text.Font = GameFont.Small;
         }
 
-        public IEnumerable<Texture2D> terrainMasks = TerrainMask.cachedTerrainMasks.Where(m => !NanameFloors.settings.exceptMaskList.Contains(m.name));
+        public List<Texture2D> terrainMasks;
 
         public Texture2D selectedMask;
 

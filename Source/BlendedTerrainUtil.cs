@@ -1,10 +1,9 @@
-﻿using System;
+﻿using HarmonyLib;
+using RimWorld;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using Verse;
-using RimWorld;
-using HarmonyLib;
 
 namespace NanameFloors
 {
@@ -19,14 +18,13 @@ namespace NanameFloors
             {
                 newTerr.burnedDef = BlendInner(new TerrainMask(terrainMask.maskTextureName, baseTerrain.burnedDef ?? baseTerrain, coverTerrain.burnedDef ?? coverTerrain));
             }
-            var takenHashes = AccessTools.StaticFieldRefAccess<Dictionary<Type, HashSet<ushort>>>(typeof(ShortHashGiver), "takenHashesPerDeftype");
-            var bluePrintDef = (ThingDef)AccessTools.Method(typeof(ThingDefGenerator_Buildings), "NewBlueprintDef_Terrain").Invoke(typeof(ThingDefGenerator_Buildings), new object[] { newTerr });
+            var bluePrintDef = NewBlueprintDef_Terrain(newTerr, false);
             bluePrintDef.shortHash = 0;
-            AccessTools.Method(typeof(ShortHashGiver), "GiveShortHash").Invoke(typeof(ShortHashGiver), new object[] { bluePrintDef, typeof(ThingDef), takenHashes[typeof(ThingDef)] });
+            GiveShortHash(bluePrintDef, typeof(ThingDef), takenHashesPerDeftype[typeof(ThingDef)]);
             DefGenerator.AddImpliedDef(bluePrintDef);
-            var frameDef = (ThingDef)AccessTools.Method(typeof(ThingDefGenerator_Buildings), "NewFrameDef_Terrain").Invoke(typeof(ThingDefGenerator_Buildings), new object[] { newTerr });
+            var frameDef = NewFrameDef_Terrain(newTerr, false);
             frameDef.shortHash = 0;
-            AccessTools.Method(typeof(ShortHashGiver), "GiveShortHash").Invoke(typeof(ShortHashGiver), new object[] { frameDef, typeof(ThingDef), takenHashes[typeof(ThingDef)] });
+            GiveShortHash(frameDef, typeof(ThingDef), takenHashesPerDeftype[typeof(ThingDef)]);
             DefGenerator.AddImpliedDef(frameDef);
 
             LongEventHandler.ExecuteWhenFinished(delegate
@@ -36,6 +34,8 @@ namespace NanameFloors
                 newTerr.graphic = new Graphic_Terrain();
                 newTerr.graphic.Init(req);
                 newTerr.graphic.MatSingle.SetTexture("_MainTexTwo", ContentFinder<Texture2D>.Get(coverTerrain.texturePath));
+                newTerr.graphic.MatSingle.GetTexture("_MainTex").filterMode = FilterMode.Point;
+                newTerr.graphic.MatSingle.GetTexture("_MainTexTwo").filterMode = FilterMode.Point;
                 if (!ModsConfig.BiotechActive) return;
                 Shader shader = baseTerrain.pollutionShaderType == ShaderTypeDefOf.TerrainFadeRoughLinearAdd ? AddedShaders.TerrainFadeRoughLinearAddBlend : AddedShaders.TerrainHardPollutedBlend;
                 string path = baseTerrain.pollutedTexturePath.NullOrEmpty() ? baseTerrain.texturePath : baseTerrain.pollutedTexturePath;
@@ -69,23 +69,33 @@ namespace NanameFloors
             }
             newTerr.defName = $"{baseTerrain.defName}_{terrainMask.maskTextureName}_{coverTerrain.defName}";
             newTerr.label = coverTerrain.label + "NAF.and".Translate() + baseTerrain.label;
-            var costList = new List<ThingDefCountClass>();
+            newTerr.costList = new List<ThingDefCountClass>();
             if (baseTerrain.CostList != null)
             {
-                costList.AddRange(baseTerrain.CostList);
+                newTerr.costList.AddRange(baseTerrain.CostList);
             }
             if (coverTerrain.CostList != null)
             {
-                costList.AddRange(coverTerrain.CostList);
+                newTerr.costList.AddRange(coverTerrain.CostList);
             }
-            newTerr.costList = costList.Select(c => new ThingDefCountClass(c.thingDef, Mathf.CeilToInt(c.count / 2f))).ToList();
+            for (var i = 0; i < newTerr.costList.Count; i++)
+            {
+                newTerr.costList[i] = new ThingDefCountClass(newTerr.costList[i].thingDef, Mathf.CeilToInt(newTerr.costList[i].count / 2f));
+            }
             newTerr.statBases = null;
             coverTerrain.statBases.ForEach(s => newTerr.SetStatBaseValue(s.stat, (s.value + baseTerrain.GetStatValueAbstract(s.stat)) / 2));
             newTerr.shortHash = 0;
-            var takenHashes = AccessTools.StaticFieldRefAccess<Dictionary<Type, HashSet<ushort>>>(typeof(ShortHashGiver), "takenHashesPerDeftype");
-            AccessTools.Method(typeof(ShortHashGiver), "GiveShortHash").Invoke(typeof(ShortHashGiver), new object[] { newTerr, typeof(TerrainDef), takenHashes[typeof(TerrainDef)] });
+            GiveShortHash(newTerr, typeof(TerrainDef), takenHashesPerDeftype[typeof(TerrainDef)]);
             newTerr.modContentPack = NanameFloors.content;
             return newTerr;
         }
+
+        private readonly static Action<Def, Type, HashSet<ushort>> GiveShortHash = (Action<Def, Type, HashSet<ushort>>)AccessTools.Method(typeof(ShortHashGiver), "GiveShortHash").CreateDelegate(typeof(Action<Def, Type, HashSet<ushort>>));
+
+        private readonly static Func<TerrainDef, bool, ThingDef> NewBlueprintDef_Terrain = (Func<TerrainDef, bool, ThingDef>)AccessTools.Method(typeof(ThingDefGenerator_Buildings), "NewBlueprintDef_Terrain").CreateDelegate(typeof(Func<TerrainDef, bool, ThingDef>));
+
+        private readonly static Func<TerrainDef, bool, ThingDef> NewFrameDef_Terrain = (Func<TerrainDef, bool, ThingDef>)AccessTools.Method(typeof(ThingDefGenerator_Buildings), "NewFrameDef_Terrain").CreateDelegate(typeof(Func<TerrainDef, bool, ThingDef>));
+
+        private readonly static Dictionary<Type, HashSet<ushort>> takenHashesPerDeftype = AccessTools.StaticFieldRefAccess<Dictionary<Type, HashSet<ushort>>>(typeof(ShortHashGiver), "takenHashesPerDeftype");
     }
 }

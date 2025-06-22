@@ -1,11 +1,22 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Verse;
 
 namespace NanameFloors
 {
+    [StaticConstructorOnStartup]
     public class TerrainMask : DefModExtension, IExposable
     {
+        static TerrainMask()
+        {
+            LongEventHandler.ExecuteWhenFinished(() =>
+            {
+                cachedTerrainMasks = ContentFinder<Texture2D>.GetAllInFolder("NanameFloors/TerrainMasks").ToList();
+                NanameFloors.UI.terrainMasks = cachedTerrainMasks.Where(m => !NanameFloors.settings.exceptMaskList.Contains(m.name)).ToList();
+            });
+        }
+
         public TerrainMask() { }
 
         public TerrainMask(string name, TerrainDef baseTerr, TerrainDef coverTerr)
@@ -28,6 +39,8 @@ namespace NanameFloors
 
         public TerrainDef coverTerrain;
 
-        public static IEnumerable<Texture2D> cachedTerrainMasks = ContentFinder<Texture2D>.GetAllInFolder("NanameFloors/TerrainMasks");
+        //ここは本当はListに変更したけど互換性のためにIEnumerableのままにしとく
+        //1.6からはListにするからね
+        public static IEnumerable<Texture2D> cachedTerrainMasks;
     }
 }
