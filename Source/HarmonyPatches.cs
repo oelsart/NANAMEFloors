@@ -17,10 +17,6 @@ namespace NanameFloors
         {
             var harmony = new Harmony("com.harmony.rimworld.nanamefloors");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
-            if (ModsConfig.IsActive("dubwise.dubsmintmenus"))
-            {
-                harmony.Patch(AccessTools.Method(AccessTools.TypeByName("MainTabWindow_MintArchitect"), "DoWindowContents"), null, AccessTools.Method(typeof(Patch_MainTabWindow_MintArchitect_DoWindowContents), "Postfix"));
-            }
             if (NanameFloors.settings.allowPlaceFloor)
             {
                 harmony.Patch(AccessTools.Method(typeof(GenConstruct), "CanPlaceBlueprintAt_NewTemp"), null, null, AccessTools.Method(typeof(Patch_GenConstruct_CanPlaceBlueprintAt_NewTemp), "Transpiler"));
@@ -66,7 +62,20 @@ namespace NanameFloors
         }
     }
 
-        [HarmonyPatch(typeof(TerrainGrid), "ExposeTerrainGrid")]
+    //DubsMintMenusなどでDoExtraGuiControlsが呼ばれないことがあるので、DesignatorManagerから確実に実行されるDrawMouseAttachmentsにフックしてます
+    [HarmonyPatch(typeof(Designator_Place), nameof(Designator_Place.DrawMouseAttachments))]
+    public static class Patch_Designator_Place_DrawMouseAttachments
+    {
+        public static void Postfix(Designator_Place __instance)
+        {
+            if (__instance.PlacingDef is TerrainDef)
+            {
+                Find.WindowStack.ImmediateWindow(9359779, NanameFloors.UI.windowRect, WindowLayer.GameUI, () => NanameFloors.UI.DoWindowContents());
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(TerrainGrid), "ExposeTerrainGrid")]
     public static class TerrainGrid_ExposeTerrainGrid_Patch
     {
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
@@ -80,39 +89,6 @@ namespace NanameFloors
         public static IEnumerable<TerrainDef> ConcatDefs(IEnumerable<TerrainDef> terrainDefs)
         {
             return terrainDefs.Concat(DefDatabase<BlendedTerrainDef>.AllDefs);
-        }
-    }
-
-    [HarmonyPatch(typeof(MainTabWindow_Architect), "DoWindowContents")]
-    public static class Patch_MainTabWindow_Architect_DoWindowContents
-    {
-        public static void Postfix(ArchitectCategoryTab ___selectedDesPanel)
-        {
-            var def = ___selectedDesPanel?.def;
-            if (def == DesignationCategoryDefOf.Floors || TerraInMenuOpened(def))
-            {
-                Find.WindowStack.ImmediateWindow(9359779, NanameFloors.UI.windowRect, WindowLayer.GameUI, () => NanameFloors.UI.DoWindowContents());
-            }
-        }
-
-        public static bool TerraInMenuOpened(DesignationCategoryDef def)
-        {
-            if (TerraIn_ArchitectMenu == null) return false;
-            return def == TerraIn_ArchitectMenu;
-        }
-
-        public static DesignationCategoryDef TerraIn_ArchitectMenu = DefDatabase<DesignationCategoryDef>.GetNamedSilentFail("TerraIn_ArchitectMenu");
-    }
-
-    public static class Patch_MainTabWindow_MintArchitect_DoWindowContents
-    {
-        public static void Postfix(ArchitectCategoryTab ___SelectedTab)
-        {
-            var def = ___SelectedTab?.def;
-            if (___SelectedTab?.def == DesignationCategoryDefOf.Floors || Patch_MainTabWindow_Architect_DoWindowContents.TerraInMenuOpened(def))
-            {
-                Find.WindowStack.ImmediateWindow(9359779, NanameFloors.UI.windowRect, WindowLayer.GameUI, () => NanameFloors.UI.DoWindowContents());
-            }
         }
     }
 

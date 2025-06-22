@@ -27,29 +27,30 @@ namespace NanameFloors
             GiveShortHash(frameDef, typeof(ThingDef), takenHashesPerDeftype[typeof(ThingDef)]);
             DefGenerator.AddImpliedDef(frameDef);
 
-            newTerr.graphic = baseTerrain.graphic;
-            //LongEventHandler.ExecuteWhenFinished(delegate
-            //{
-            //    GraphicRequest req = new GraphicRequest(typeof(Graphic_Terrain), baseTerrain.texturePath, AddedShaders.TerrainHardBlend, Vector2.one, baseTerrain.DrawColor, coverTerrain.DrawColor, null, 0, null, "NanameFloors/TerrainMasks/" + terrainMask.maskTextureName);
-            //    req.renderQueue = ((req.renderQueue == 0 && req.graphicData != null) ? req.graphicData.renderQueue : req.renderQueue);
-            //    newTerr.graphic = new Graphic_Terrain();
-            //    newTerr.graphic.Init(req);
-            //    newTerr.graphic.MatSingle.SetTexture("_MainTexTwo", ContentFinder<Texture2D>.Get(coverTerrain.texturePath));
-            //    if (!ModsConfig.BiotechActive) return;
-            //    Shader shader = baseTerrain.pollutionShaderType == ShaderTypeDefOf.TerrainFadeRoughLinearAdd ? AddedShaders.TerrainFadeRoughLinearAddBlend : AddedShaders.TerrainHardPollutedBlend;
-            //    string path = baseTerrain.pollutedTexturePath.NullOrEmpty() ? baseTerrain.texturePath : baseTerrain.pollutedTexturePath;
-            //    newTerr.graphicPolluted = GraphicDatabase.Get(typeof(Graphic_Terrain), path, shader, Vector2.one, baseTerrain.DrawColor, coverTerrain.DrawColor, "NanameFloors/TerrainMasks/" + terrainMask.maskTextureName);
-            //    var matSingle = newTerr.graphicPolluted.MatSingle;
-            //    matSingle.SetTexture("_MainTexTwo", ContentFinder<Texture2D>.Get(coverTerrain.pollutedTexturePath ?? coverTerrain.texturePath));
-            //    if (!coverTerrain.pollutionOverlayTexturePath.NullOrEmpty()) matSingle.SetTexture("_BurnTexTwo", ContentFinder<Texture2D>.Get(coverTerrain.pollutionOverlayTexturePath));
-            //    matSingle.SetColor("_BurnColorTwo", coverTerrain.pollutionColor);
-            //    matSingle.SetColor("_PollutionTintColorTwo", coverTerrain.pollutionTintColor);
-            //    if (shader == AddedShaders.TerrainFadeRoughLinearAddBlend)
-            //    {
-            //        matSingle.SetVector("_BurnScale", baseTerrain.pollutionOverlayScale);
-            //        matSingle.SetTexture("_AlphaAddTex", TexGame.AlphaAddTex);
-            //    }
-            //});
+            LongEventHandler.ExecuteWhenFinished(delegate
+            {
+                GraphicRequest req = new GraphicRequest(typeof(Graphic_Terrain), baseTerrain.texturePath, AddedShaders.TerrainHardBlend, Vector2.one, baseTerrain.DrawColor, coverTerrain.DrawColor, null, 0, null, "NanameFloors/TerrainMasks/" + terrainMask.maskTextureName);
+                req.renderQueue = ((req.renderQueue == 0 && req.graphicData != null) ? req.graphicData.renderQueue : req.renderQueue);
+                newTerr.graphic = new Graphic_Terrain();
+                newTerr.graphic.Init(req);
+                newTerr.graphic.MatSingle.SetTexture("_MainTexTwo", ContentFinder<Texture2D>.Get(coverTerrain.texturePath));
+                newTerr.graphic.MatSingle.GetTexture("_MainTex").filterMode = FilterMode.Point;
+                newTerr.graphic.MatSingle.GetTexture("_MainTexTwo").filterMode = FilterMode.Point;
+                if (!ModsConfig.BiotechActive) return;
+                Shader shader = baseTerrain.pollutionShaderType == ShaderTypeDefOf.TerrainFadeRoughLinearAdd ? AddedShaders.TerrainFadeRoughLinearAddBlend : AddedShaders.TerrainHardPollutedBlend;
+                string path = baseTerrain.pollutedTexturePath.NullOrEmpty() ? baseTerrain.texturePath : baseTerrain.pollutedTexturePath;
+                newTerr.graphicPolluted = GraphicDatabase.Get(typeof(Graphic_Terrain), path, shader, Vector2.one, baseTerrain.DrawColor, coverTerrain.DrawColor, "NanameFloors/TerrainMasks/" + terrainMask.maskTextureName);
+                var matSingle = newTerr.graphicPolluted.MatSingle;
+                matSingle.SetTexture("_MainTexTwo", ContentFinder<Texture2D>.Get(coverTerrain.pollutedTexturePath ?? coverTerrain.texturePath));
+                if (!coverTerrain.pollutionOverlayTexturePath.NullOrEmpty()) matSingle.SetTexture("_BurnTexTwo", ContentFinder<Texture2D>.Get(coverTerrain.pollutionOverlayTexturePath));
+                matSingle.SetColor("_BurnColorTwo", coverTerrain.pollutionColor);
+                matSingle.SetColor("_PollutionTintColorTwo", coverTerrain.pollutionTintColor);
+                if (shader == AddedShaders.TerrainFadeRoughLinearAddBlend)
+                {
+                    matSingle.SetVector("_BurnScale", baseTerrain.pollutionOverlayScale);
+                    matSingle.SetTexture("_AlphaAddTex", TexGame.AlphaAddTex);
+                }
+            });
             newTerr.modExtensions = new List<DefModExtension>() { terrainMask };
             DefGenerator.AddImpliedDef(newTerr);
         }
@@ -89,11 +90,11 @@ namespace NanameFloors
             return newTerr;
         }
 
-        private readonly static Action<Def, Type, HashSet<ushort>> GiveShortHash = AccessTools.MethodDelegate<Action<Def, Type, HashSet<ushort>>>(AccessTools.Method(typeof(ShortHashGiver), "GiveShortHash"));
+        private readonly static Action<Def, Type, HashSet<ushort>> GiveShortHash = (Action<Def, Type, HashSet<ushort>>)AccessTools.Method(typeof(ShortHashGiver), "GiveShortHash").CreateDelegate(typeof(Action<Def, Type, HashSet<ushort>>));
 
-        private readonly static Func<TerrainDef, bool, ThingDef> NewBlueprintDef_Terrain = AccessTools.MethodDelegate<Func<TerrainDef, bool, ThingDef>>(AccessTools.Method(typeof(ThingDefGenerator_Buildings), "NewBlueprintDef_Terrain"));
+        private readonly static Func<TerrainDef, bool, ThingDef> NewBlueprintDef_Terrain = (Func<TerrainDef, bool, ThingDef>)AccessTools.Method(typeof(ThingDefGenerator_Buildings), "NewBlueprintDef_Terrain").CreateDelegate(typeof(Func<TerrainDef, bool, ThingDef>));
 
-        private readonly static Func<TerrainDef, bool, ThingDef> NewFrameDef_Terrain = AccessTools.MethodDelegate<Func<TerrainDef, bool, ThingDef>>(AccessTools.Method(typeof(ThingDefGenerator_Buildings), "NewFrameDef_Terrain"));
+        private readonly static Func<TerrainDef, bool, ThingDef> NewFrameDef_Terrain = (Func<TerrainDef, bool, ThingDef>)AccessTools.Method(typeof(ThingDefGenerator_Buildings), "NewFrameDef_Terrain").CreateDelegate(typeof(Func<TerrainDef, bool, ThingDef>));
 
         private readonly static Dictionary<Type, HashSet<ushort>> takenHashesPerDeftype = AccessTools.StaticFieldRefAccess<Dictionary<Type, HashSet<ushort>>>(typeof(ShortHashGiver), "takenHashesPerDeftype");
     }

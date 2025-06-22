@@ -30,7 +30,7 @@ namespace NanameFloors
             }
 
             var inRect = this.windowRect.AtZero().ContractedBy(this.Margin);
-            if (terrainMasks.Count() == 0) return;
+            if (terrainMasks.Count == 0) return;
             Rect labelRect;
             using (new TextBlock(GameFont.Small))
             {
@@ -57,8 +57,8 @@ namespace NanameFloors
 
             var parentRect = new Rect(inRect.x, labelRect.yMax + 2f, inRect.width, inRect.height - labelRect.height);
 
-            var columnCount = Math.Min(terrainMasks.Count(), (int)(inRect.width / ButtonSize));
-            var rowCount = Mathf.CeilToInt((float)terrainMasks.Count() / columnCount);
+            var columnCount = Math.Min(terrainMasks.Count, (int)(inRect.width / ButtonSize));
+            var rowCount = Mathf.CeilToInt((float)terrainMasks.Count / columnCount);
 
             var outRect = parentRect;
             var viewRect = outRect;
@@ -88,7 +88,7 @@ namespace NanameFloors
             Text.Font = GameFont.Small;
         }
 
-        public IEnumerable<Texture2D> terrainMasks = TerrainMask.cachedTerrainMasks.Where(m => !NanameFloors.settings.exceptMaskList.Contains(m.name));
+        public List<Texture2D> terrainMasks;
 
         public Texture2D selectedMask;
 

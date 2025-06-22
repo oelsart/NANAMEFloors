@@ -12,9 +12,10 @@ namespace NanameFloors
 
         public override void ExposeData()
         {
-            var terrainMaskList = new HashSet<TerrainMask>();
+            HashSet<TerrainMask> terrainMaskList = null;
             if (Scribe.mode == LoadSaveMode.Saving)
             {
+                terrainMaskList = new HashSet<TerrainMask>();
                 terrainMaskList.AddRange(DefDatabase<BlendedTerrainDef>.AllDefs
                     .Where(d => Find.Maps.Any(m => m.terrainGrid.topGrid.Any(t => t == d)))
                     .Select(d => d.GetModExtension<TerrainMask>()));
