@@ -29,7 +29,7 @@ namespace NanameFloors
 
             LongEventHandler.ExecuteWhenFinished(delegate
             {
-                GraphicRequest req = new GraphicRequest(typeof(Graphic_Terrain), baseTerrain.texturePath, AddedShaders.TerrainHardBlend, Vector2.one, baseTerrain.DrawColor, coverTerrain.DrawColor, null, 0, null, "NanameFloors/TerrainMasks/" + terrainMask.maskTextureName);
+                GraphicRequest req = new GraphicRequest(typeof(Graphic_Terrain), baseTerrain.texturePath, NAF_DefOf.TerrainHardBlend.Shader, Vector2.one, baseTerrain.DrawColor, coverTerrain.DrawColor, null, 0, null, "NanameFloors/TerrainMasks/" + terrainMask.maskTextureName);
                 req.renderQueue = ((req.renderQueue == 0 && req.graphicData != null) ? req.graphicData.renderQueue : req.renderQueue);
                 newTerr.graphic = new Graphic_Terrain();
                 newTerr.graphic.Init(req);
@@ -37,7 +37,7 @@ namespace NanameFloors
                 newTerr.graphic.MatSingle.GetTexture("_MainTex").filterMode = FilterMode.Point;
                 newTerr.graphic.MatSingle.GetTexture("_MainTexTwo").filterMode = FilterMode.Point;
                 if (!ModsConfig.BiotechActive) return;
-                Shader shader = baseTerrain.pollutionShaderType == ShaderTypeDefOf.TerrainFadeRoughLinearAdd ? AddedShaders.TerrainFadeRoughLinearAddBlend : AddedShaders.TerrainHardPollutedBlend;
+                Shader shader = baseTerrain.pollutionShaderType == ShaderTypeDefOf.TerrainFadeRoughLinearAdd ? NAF_DefOf.TerrainFadeRoughLinearAddBlend.Shader : NAF_DefOf.TerrainHardLinearBurnBlend.Shader;
                 string path = baseTerrain.pollutedTexturePath ?? baseTerrain.texturePath;
                 newTerr.graphicPolluted = GraphicDatabase.Get(typeof(Graphic_Terrain), path, shader, Vector2.one, baseTerrain.DrawColor, coverTerrain.DrawColor, "NanameFloors/TerrainMasks/" + terrainMask.maskTextureName);
                 var matSingle = newTerr.graphicPolluted.MatSingle;
@@ -54,7 +54,7 @@ namespace NanameFloors
                 if (!coverTerrain.pollutionOverlayTexturePath.NullOrEmpty()) matSingle.SetTexture("_BurnTexTwo", ContentFinder<Texture2D>.Get(coverTerrain.pollutionOverlayTexturePath));
                 matSingle.SetColor("_BurnColorTwo", coverTerrain.pollutionColor);
                 matSingle.SetColor("_PollutionTintColorTwo", coverTerrain.pollutionTintColor);
-                if (shader == AddedShaders.TerrainFadeRoughLinearAddBlend)
+                if (shader == NAF_DefOf.TerrainFadeRoughLinearAddBlend.Shader)
                 {
                     matSingle.SetTexture("_AlphaAddTex", TexGame.AlphaAddTex);
                 }
