@@ -361,8 +361,8 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/Source/Shader
+/Source/.vs
+Source/.vs/NanameFloors/v17/.suo
+*.cache
 /Source/.vs
 /Source/Shader
-/Source/Shader/Library/SourceAssetDB
-/Source/Shader/Library/ArtifactDB

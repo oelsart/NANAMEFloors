@@ -29,7 +29,7 @@ namespace NanameFloors
 
             LongEventHandler.ExecuteWhenFinished(delegate
             {
-                GraphicRequest req = new GraphicRequest(typeof(Graphic_Terrain), baseTerrain.texturePath, NAF_DefOf.TerrainHardBlend.Shader, Vector2.one, baseTerrain.DrawColor, coverTerrain.DrawColor, null, 0, null, "NanameFloors/TerrainMasks/" + terrainMask.maskTextureName);
+                GraphicRequest req = new GraphicRequest(typeof(Graphic_Terrain), baseTerrain.texturePath, AddedShaders.TerrainHardBlend, Vector2.one, baseTerrain.DrawColor, coverTerrain.DrawColor, null, 0, null, "NanameFloors/TerrainMasks/" + terrainMask.maskTextureName);
                 req.renderQueue = ((req.renderQueue == 0 && req.graphicData != null) ? req.graphicData.renderQueue : req.renderQueue);
                 newTerr.graphic = new Graphic_Terrain();
                 newTerr.graphic.Init(req);
@@ -37,17 +37,25 @@ namespace NanameFloors
                 newTerr.graphic.MatSingle.GetTexture("_MainTex").filterMode = FilterMode.Point;
                 newTerr.graphic.MatSingle.GetTexture("_MainTexTwo").filterMode = FilterMode.Point;
                 if (!ModsConfig.BiotechActive) return;
-                Shader shader = baseTerrain.pollutionShaderType == ShaderTypeDefOf.TerrainFadeRoughLinearAdd ? NAF_DefOf.TerrainFadeRoughLinearAddBlend.Shader : NAF_DefOf.TerrainHardLinearBurnBlend.Shader;
-                string path = baseTerrain.pollutedTexturePath.NullOrEmpty() ? baseTerrain.texturePath : baseTerrain.pollutedTexturePath;
+                Shader shader = baseTerrain.pollutionShaderType == ShaderTypeDefOf.TerrainFadeRoughLinearAdd ? AddedShaders.TerrainFadeRoughLinearAddBlend : AddedShaders.TerrainHardPollutedBlend;
+                string path = baseTerrain.pollutedTexturePath ?? baseTerrain.texturePath;
                 newTerr.graphicPolluted = GraphicDatabase.Get(typeof(Graphic_Terrain), path, shader, Vector2.one, baseTerrain.DrawColor, coverTerrain.DrawColor, "NanameFloors/TerrainMasks/" + terrainMask.maskTextureName);
                 var matSingle = newTerr.graphicPolluted.MatSingle;
+                if (!coverTerrain.pollutionOverlayTexturePath.NullOrEmpty())
+                {
+                    matSingle.SetTexture("_BurnTex", ContentFinder<Texture2D>.Get(baseTerrain.pollutionOverlayTexturePath, true));
+                }
+                matSingle.SetColor("_BurnColor", baseTerrain.pollutionColor);
+                matSingle.SetVector("_ScrollSpeed", baseTerrain.pollutionOverlayScrollSpeed);
+                matSingle.SetVector("_BurnScale", baseTerrain.pollutionOverlayScale);
+                matSingle.SetColor("_PollutionTintColor", baseTerrain.pollutionTintColor);
+
                 matSingle.SetTexture("_MainTexTwo", ContentFinder<Texture2D>.Get(coverTerrain.pollutedTexturePath ?? coverTerrain.texturePath));
                 if (!coverTerrain.pollutionOverlayTexturePath.NullOrEmpty()) matSingle.SetTexture("_BurnTexTwo", ContentFinder<Texture2D>.Get(coverTerrain.pollutionOverlayTexturePath));
                 matSingle.SetColor("_BurnColorTwo", coverTerrain.pollutionColor);
                 matSingle.SetColor("_PollutionTintColorTwo", coverTerrain.pollutionTintColor);
-                if (shader == NAF_DefOf.TerrainFadeRoughLinearAddBlend.Shader)
+                if (shader == AddedShaders.TerrainFadeRoughLinearAddBlend)
                 {
-                    matSingle.SetVector("_BurnScale", baseTerrain.pollutionOverlayScale);
                     matSingle.SetTexture("_AlphaAddTex", TexGame.AlphaAddTex);
                 }
             });
