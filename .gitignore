@@ -364,3 +364,5 @@ FodyWeavers.xsd
 /Source/Shader
 /Source/.vs
 /Source/Shader
+/Source/Shader/Library/SourceAssetDB
+/Source/Shader/Library/ArtifactDB
