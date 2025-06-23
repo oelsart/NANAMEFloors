@@ -1,0 +1,10 @@
+E:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\NANAMEFloors\1.5\Assemblies\NanameFloors.dll
+E:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\NANAMEFloors\Source\obj\Release\NanameFloors.csproj.AssemblyReference.cache
+E:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\NANAMEFloors\Source\obj\Release\NanameFloors.csproj.CoreCompileInputs.cache
+E:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\NANAMEFloors\Source\obj\Release\NanameFloors.dll
+E:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\NANAMEFloorsExperimental\1.5\Assemblies\NanameFloors.dll
+E:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\NANAMEFloorsExperimental\Source\obj\Release\NanameFloors.csproj.AssemblyReference.cache
+E:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\NANAMEFloorsExperimental\Source\obj\Release\NanameFloors.csproj.CoreCompileInputs.cache
+E:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\NANAMEFloorsExperimental\Source\obj\Release\NanameFloors.dll
+E:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\NANAMEFloorsExperimental\1.4\Assemblies\NanameFloors.dll
+E:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\NANAMEFloorsExperimental\1\Assemblies\NanameFloors.dll

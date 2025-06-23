@@ -29,7 +29,6 @@ namespace NanameFloors
             outRect.yMax = inRect.yMax;
             var viewRect = new Rect(outRect.x, outRect.y, outRect.width, TerrainMask.cachedTerrainMasks.Count() * Text.LineHeight);
             Widgets.DrawMenuSection(outRect);
-            Widgets.AdjustRectsForScrollView(inRect, ref outRect, ref viewRect);
             var rect = new Rect(viewRect.x, viewRect.y, viewRect.width, Text.LineHeight);
             Widgets.BeginScrollView(outRect, ref scrollPosition, viewRect);
             foreach(var terrainMask in TerrainMask.cachedTerrainMasks)
