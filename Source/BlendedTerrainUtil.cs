@@ -30,30 +30,6 @@ namespace NanameFloors
             GiveShortHash(frameDef, typeof(ThingDef), takenHashesPerDeftype[typeof(ThingDef)]);
             DefGenerator.AddImpliedDef(frameDef);
 
-            if (baseTerrain.graphic == BaseContent.BadGraphic)
-            {
-                GraphicRequest req = new GraphicRequest(typeof(Graphic_Terrain), baseTerrain.texturePath, AddedShaders.TerrainHardBlend, Vector2.one, baseTerrain.DrawColor, coverTerrain.DrawColor, null, 0, null, "NanameFloors/TerrainMasks/" + terrainMask.maskTextureName);
-                req.renderQueue = ((req.renderQueue == 0 && req.graphicData != null) ? req.graphicData.renderQueue : req.renderQueue);
-                newTerr.graphic = new Graphic_Terrain();
-                newTerr.graphic.Init(req);
-                newTerr.graphic.MatSingle.SetTexture("_MainTexTwo", ContentFinder<Texture2D>.Get(coverTerrain.texturePath));
-                newTerr.graphic.MatSingle.GetTexture("_MainTex").filterMode = FilterMode.Point;
-                newTerr.graphic.MatSingle.GetTexture("_MainTexTwo").filterMode = FilterMode.Point;
-                if (!ModsConfig.BiotechActive) return;
-                Shader shader = baseTerrain.pollutionShaderType == ShaderTypeDefOf.TerrainFadeRoughLinearAdd ? AddedShaders.TerrainFadeRoughLinearAddBlend : AddedShaders.TerrainHardPollutedBlend;
-                string path = baseTerrain.pollutedTexturePath.NullOrEmpty() ? baseTerrain.texturePath : baseTerrain.pollutedTexturePath;
-                newTerr.graphicPolluted = GraphicDatabase.Get(typeof(Graphic_Terrain), path, shader, Vector2.one, baseTerrain.DrawColor, coverTerrain.DrawColor, "NanameFloors/TerrainMasks/" + terrainMask.maskTextureName);
-                var matSingle = newTerr.graphicPolluted.MatSingle;
-                matSingle.SetTexture("_MainTexTwo", ContentFinder<Texture2D>.Get(coverTerrain.pollutedTexturePath ?? coverTerrain.texturePath));
-                if (!coverTerrain.pollutionOverlayTexturePath.NullOrEmpty()) matSingle.SetTexture("_BurnTexTwo", ContentFinder<Texture2D>.Get(coverTerrain.pollutionOverlayTexturePath));
-                matSingle.SetColor("_BurnColorTwo", coverTerrain.pollutionColor);
-                matSingle.SetColor("_PollutionTintColorTwo", coverTerrain.pollutionTintColor);
-                if (shader == AddedShaders.TerrainFadeRoughLinearAddBlend)
-                {
-                    matSingle.SetVector("_BurnScale", baseTerrain.pollutionOverlayScale);
-                    matSingle.SetTexture("_AlphaAddTex", TexGame.AlphaAddTex);
-                }
-            });
             newTerr.modExtensions = new List<DefModExtension>() { terrainMask };
             DefGenerator.AddImpliedDef(newTerr);
         }

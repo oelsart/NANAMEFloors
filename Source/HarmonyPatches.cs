@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Security.Cryptography;
 using UnityEngine;
 using Verse;
 
@@ -97,7 +96,7 @@ namespace NanameFloors
                 CodeInstruction.LoadField(typeof(MaterialRequest), "shader"),
                 CodeInstruction.Call(typeof(AddedShaders), nameof(AddedShaders.IsAddedShader)),
                 new CodeInstruction(OpCodes.Brfalse_S, label),
-                CodeInstruction.LoadArgument(0),
+                new CodeInstruction(OpCodes.Ldarg_0),
                 CodeInstruction.Call(typeof(Patch_MaterialPool_MatFrom), nameof(ForceCreateMaterial)),
                 new CodeInstruction(OpCodes.Ret)
             });
@@ -144,9 +143,9 @@ namespace NanameFloors
             var pos = codes.FindIndex(c => c.Calls(m_MoveNext));
             codes.InsertRange(pos, new[]
             {
-                CodeInstruction.LoadArgument(0),
-                CodeInstruction.LoadLocal(2),
-                CodeInstruction.LoadLocal(10),
+                new CodeInstruction(OpCodes.Ldarg_0),
+                new CodeInstruction(OpCodes.Ldloc_2),
+                new CodeInstruction(OpCodes.Ldloc_S, 10),
                 CodeInstruction.Call(typeof(Patch_SectionLayer_Terrain_Regenerate), nameof(GenerateCover))
             });
             return codes;
