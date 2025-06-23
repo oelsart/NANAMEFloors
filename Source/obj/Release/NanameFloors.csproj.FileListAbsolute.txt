@@ -8,3 +8,4 @@ E:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\NANAMEFloorsExperime
 E:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\NANAMEFloorsExperimental\Source\obj\Release\NanameFloors.dll
 E:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\NANAMEFloorsExperimental\1.4\Assemblies\NanameFloors.dll
 E:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\NANAMEFloorsExperimental\1\Assemblies\NanameFloors.dll
+E:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\NANAMEFloorsExperimental\1.6\Assemblies\NanameFloors.dll

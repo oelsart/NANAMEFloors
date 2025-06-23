@@ -7,8 +7,38 @@
   </ShaderTypeDef>
 
   <ShaderTypeDef>
+    <defName>TerrainFadeBlend</defName>
+    <shaderPath>NanameFloors/TerrainFadeBlend</shaderPath>
+  </ShaderTypeDef>
+
+  <ShaderTypeDef>
+    <defName>TerrainFadeRoughBlend</defName>
+    <shaderPath>NanameFloors/TerrainFadeRoughBlend</shaderPath>
+  </ShaderTypeDef>
+
+  <ShaderTypeDef>
+    <defName>TerrainWaterBlend</defName>
+    <shaderPath>NanameFloors/TerrainWaterBlend</shaderPath>
+  </ShaderTypeDef>
+
+  <ShaderTypeDef>
+    <defName>TerrainWaterPollutedBlend</defName>
+    <shaderPath>NanameFloors/TerrainWaterPollutedBlend</shaderPath>
+  </ShaderTypeDef>
+
+  <ShaderTypeDef>
     <defName>TerrainHardLinearBurnBlend</defName>
     <shaderPath>NanameFloors/TerrainHardLinearBurnBlend</shaderPath>
+  </ShaderTypeDef>
+
+  <ShaderTypeDef>
+    <defName>TerrainFadeLinearBurnBlend</defName>
+    <shaderPath>NanameFloors/TerrainFadeLinearBurnBlend</shaderPath>
+  </ShaderTypeDef>
+
+  <ShaderTypeDef>
+    <defName>TerrainFadeRoughSoftLightBlend</defName>
+    <shaderPath>NanameFloors/TerrainFadeRoughSoftLightBlend</shaderPath>
   </ShaderTypeDef>
 
   <ShaderTypeDef>
@@ -16,4 +46,14 @@
     <shaderPath>NanameFloors/TerrainFadeRoughLinearAddBlend</shaderPath>
   </ShaderTypeDef>
 
+  <ShaderTypeDef>
+    <defName>TerrainFadeRoughLinearBurnBlend</defName>
+    <shaderPath>NanameFloors/TerrainFadeRoughLinearBurnBlend</shaderPath>
+  </ShaderTypeDef>
+
+  <ShaderTypeDef>
+    <defName>WaterDepthBlend</defName>
+    <shaderPath>NanameFloors/WaterDepthBlend</shaderPath>
+  </ShaderTypeDef>
+  
 </Defs>

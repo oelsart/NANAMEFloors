@@ -66,7 +66,7 @@ namespace NanameFloors
                 {
                     Shader shader = BlendedTerrainUtil.GetBlendShader(CoverTerrain.Shader);
                     CoverGraphic = GraphicDatabase.Get<Graphic_Terrain>(CoverTerrain.texturePath, shader, Vector2.one, CoverTerrain.DrawColor, Color.white, null, maskPath);
-                    if (shader == AddedShaders.TerrainFadeRoughBlend || shader == AddedShaders.TerrainWaterBlend)
+                    if (shader == NAF_DefOf.TerrainFadeRoughBlend.Shader || shader == NAF_DefOf.TerrainWaterBlend.Shader)
                     {
                         CoverGraphic.MatSingle.SetTexture("_AlphaAddTex", TexGame.AlphaAddTex);
                     }
@@ -105,7 +105,7 @@ namespace NanameFloors
                     matSingle.SetVector("_ScrollSpeed", CoverTerrain.pollutionOverlayScrollSpeed);
                     matSingle.SetVector("_BurnScale", CoverTerrain.pollutionOverlayScale);
                     matSingle.SetColor("_PollutionTintColor", CoverTerrain.pollutionTintColor);
-                    if (shader == AddedShaders.TerrainFadeRoughLinearBurnBlend)
+                    if (shader == NAF_DefOf.TerrainFadeRoughLinearBurnBlend.Shader)
                     {
                         matSingle.SetTexture("_AlphaAddTex", TexGame.AlphaAddTex);
                     }

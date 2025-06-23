@@ -21,14 +21,19 @@ namespace NanameFloors
                 newTerr.burnedDef.graphicPolluted = baseTerrain.burnedDef.graphicPolluted;
                 newTerr.burnedDef.PostLoad();
             }
-            var bluePrintDef = NewBlueprintDef_Terrain(newTerr);
+            var bluePrintDef = NewBlueprintDef_Terrain(newTerr, false);
             bluePrintDef.shortHash = 0;
             GiveShortHash(bluePrintDef, typeof(ThingDef), takenHashesPerDeftype[typeof(ThingDef)]);
             DefGenerator.AddImpliedDef(bluePrintDef);
-            var frameDef = NewFrameDef_Terrain(newTerr);
+            var frameDef = NewFrameDef_Terrain(newTerr, false);
             frameDef.shortHash = 0;
             GiveShortHash(frameDef, typeof(ThingDef), takenHashesPerDeftype[typeof(ThingDef)]);
             DefGenerator.AddImpliedDef(frameDef);
+
+            if (baseTerrain.graphic == BaseContent.BadGraphic)
+            {
+                baseTerrain.PostLoad();
+            }
 
             newTerr.modExtensions = new List<DefModExtension>() { terrainMask };
             DefGenerator.AddImpliedDef(newTerr);
@@ -77,60 +82,68 @@ namespace NanameFloors
             }
             if (shader == ShaderDatabase.TerrainHard)
             {
-                return AddedShaders.TerrainHardBlend;
+                return NAF_DefOf.TerrainHardBlend.Shader;
             }
             if (shader == ShaderDatabase.TerrainFade)
             {
-                return AddedShaders.TerrainFadeBlend;
+                return NAF_DefOf.TerrainFadeBlend.Shader;
             }
             if (shader == ShaderDatabase.TerrainWater)
             {
-                return AddedShaders.TerrainWaterBlend;
+                return NAF_DefOf.TerrainWaterBlend.Shader;
             }
             if (shader == ShaderDatabase.TerrainFadeRough)
             {
-                return AddedShaders.TerrainFadeRoughBlend;
+                return NAF_DefOf.TerrainFadeRoughBlend.Shader;
             }
             if (shader == ShaderTypeDefOf.TerrainFadeRoughLinearAdd.Shader)
             {
-                return AddedShaders.TerrainFadeRoughLinearAddBlend;
+                return NAF_DefOf.TerrainFadeRoughLinearAddBlend.Shader;
             }
             if (shader == DefDatabase<ShaderTypeDef>.GetNamed("TerrainFadeRoughSoftLight", false)?.Shader)
             {
-                return AddedShaders.TerrainFadeRoughSoftLightBlend;
+                return NAF_DefOf.TerrainFadeRoughSoftLightBlend.Shader;
             }
             if (shader == ShaderDatabase.LoadShader("Map/WaterDepth"))
             {
-                return AddedShaders.WaterDepthBlend;
+                return NAF_DefOf.WaterDepthBlend.Shader;
             }
             if (ModsConfig.BiotechActive)
             {
                 if (shader == ShaderDatabase.TerrainHardPolluted)
                 {
-                    return AddedShaders.TerrainHardPollutedBlend;
+                    return NAF_DefOf.TerrainHardLinearBurnBlend.Shader;
                 }
                 if (shader == ShaderDatabase.TerrainFadePolluted)
                 {
-                    return AddedShaders.TerrainFadePollutedBlend;
+                    return NAF_DefOf.TerrainFadeLinearBurnBlend.Shader;
                 }
                 if (shader == ShaderDatabase.TerrainFadeRoughPolluted)
                 {
-                    return AddedShaders.TerrainFadeRoughLinearBurnBlend;
+                    return NAF_DefOf.TerrainFadeRoughLinearBurnBlend.Shader;
                 }
                 if (shader == DefDatabase<ShaderTypeDef>.GetNamed("TerrainWaterPolluted", false)?.Shader)
                 {
-                    return AddedShaders.TerrainWaterPollutedBlend;
+                    return NAF_DefOf.TerrainWaterPollutedBlend.Shader;
                 }
             }
             Log.Warning($"[NanameFloors] {shader.name} is unsupported terrain shader. Using TerrainHardBlend instead.");
-            return AddedShaders.TerrainHardBlend;
+            return NAF_DefOf.TerrainHardBlend.Shader;
+        }
+
+        public static bool IsAddedShader(Shader shader)
+        {
+            return shader == NAF_DefOf.TerrainHardBlend.Shader || shader == NAF_DefOf.TerrainFadeBlend.Shader || shader == NAF_DefOf.TerrainWaterBlend.Shader ||
+                shader == NAF_DefOf.TerrainFadeRoughBlend.Shader || shader == NAF_DefOf.TerrainFadeRoughLinearAddBlend.Shader || shader == NAF_DefOf.TerrainFadeRoughSoftLightBlend.Shader ||
+                shader == NAF_DefOf.WaterDepthBlend.Shader || shader == NAF_DefOf.TerrainHardLinearBurnBlend.Shader || shader == NAF_DefOf.TerrainFadeLinearBurnBlend.Shader ||
+                shader == NAF_DefOf.TerrainFadeRoughLinearBurnBlend.Shader || shader == NAF_DefOf.TerrainWaterPollutedBlend.Shader;
         }
 
         private readonly static Action<Def, Type, HashSet<ushort>> GiveShortHash = (Action<Def, Type, HashSet<ushort>>)AccessTools.Method(typeof(ShortHashGiver), "GiveShortHash").CreateDelegate(typeof(Action<Def, Type, HashSet<ushort>>));
 
-        private readonly static Func<TerrainDef, ThingDef> NewBlueprintDef_Terrain = (Func<TerrainDef, ThingDef>)AccessTools.Method(typeof(ThingDefGenerator_Buildings), "NewBlueprintDef_Terrain").CreateDelegate(typeof(Func<TerrainDef, ThingDef>));
+        private readonly static Func<TerrainDef, bool, ThingDef> NewBlueprintDef_Terrain = (Func<TerrainDef, bool, ThingDef>)AccessTools.Method(typeof(ThingDefGenerator_Buildings), "NewBlueprintDef_Terrain").CreateDelegate(typeof(Func<TerrainDef, bool, ThingDef>));
 
-        private readonly static Func<TerrainDef, ThingDef> NewFrameDef_Terrain = (Func<TerrainDef, ThingDef>)AccessTools.Method(typeof(ThingDefGenerator_Buildings), "NewFrameDef_Terrain").CreateDelegate(typeof(Func<TerrainDef, ThingDef>));
+        private readonly static Func<TerrainDef, bool, ThingDef> NewFrameDef_Terrain = (Func<TerrainDef, bool, ThingDef>)AccessTools.Method(typeof(ThingDefGenerator_Buildings), "NewFrameDef_Terrain").CreateDelegate(typeof(Func<TerrainDef, bool, ThingDef>));
 
         private readonly static Dictionary<Type, HashSet<ushort>> takenHashesPerDeftype = AccessTools.StaticFieldRefAccess<Dictionary<Type, HashSet<ushort>>>(typeof(ShortHashGiver), "takenHashesPerDeftype");
     }

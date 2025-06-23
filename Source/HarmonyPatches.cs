@@ -94,7 +94,7 @@ namespace NanameFloors
             {
                 new CodeInstruction(OpCodes.Ldarg_0),
                 CodeInstruction.LoadField(typeof(MaterialRequest), "shader"),
-                CodeInstruction.Call(typeof(AddedShaders), nameof(AddedShaders.IsAddedShader)),
+                CodeInstruction.Call(typeof(BlendedTerrainUtil), nameof(BlendedTerrainUtil.IsAddedShader)),
                 new CodeInstruction(OpCodes.Brfalse_S, label),
                 new CodeInstruction(OpCodes.Ldarg_0),
                 CodeInstruction.Call(typeof(Patch_MaterialPool_MatFrom), nameof(ForceCreateMaterial)),
@@ -143,9 +143,9 @@ namespace NanameFloors
             var pos = codes.FindIndex(c => c.Calls(m_MoveNext));
             codes.InsertRange(pos, new[]
             {
-                new CodeInstruction(OpCodes.Ldarg_0),
-                new CodeInstruction(OpCodes.Ldloc_2),
-                new CodeInstruction(OpCodes.Ldloc_S, 10),
+                CodeInstruction.LoadArgument(0),
+                CodeInstruction.LoadLocal(8),
+                CodeInstruction.LoadLocal(6),
                 CodeInstruction.Call(typeof(Patch_SectionLayer_Terrain_Regenerate), nameof(GenerateCover))
             });
             return codes;
@@ -161,9 +161,8 @@ namespace NanameFloors
                     return blendedTerrainDef.CoverWaterDepthMaterial;
                 }
 
-                var baseTerrain = blendedTerrainDef.BaseTerrain;
                 var coverTerrain = blendedTerrainDef.CoverTerrain;
-                var polluted = cellTerrain.polluted && cellTerrain.snowCoverage < 0.4f && blendedTerrainDef.CoverGraphicPolluted != BaseContent.BadGraphic;
+                var polluted = cellTerrain.polluted && cellTerrain.snowCoverage < 0.4f && cellTerrain.sandCoverage < 0.4f && blendedTerrainDef.CoverGraphicPolluted != BaseContent.BadGraphic;
                 var color = cellTerrain.color;
                 var key = (coverTerrain, polluted, color, blendedTerrainDef.MaskTex);
                 if (!terrainMatCache.ContainsKey(key))
@@ -186,15 +185,15 @@ namespace NanameFloors
             {
                 return DebugViewSettings.drawTerrainWater || !terrain.HasTag("Water");
             }
-
-            LayerSubMesh subMesh = instance.GetSubMesh(GetMaterial());
+            LayerSubMesh subMesh = instance.GetSubMesh(blendedTerrainDef.CoverTerrain.dontRender ? MatBases.ShadowMask : GetMaterial());
+            float y = AltitudeLayer.Terrain.AltitudeFor();
             if (subMesh != null && AllowRenderingFor(cellTerrain.def))
             {
                 int count = subMesh.verts.Count;
-                subMesh.verts.Add(new Vector3((float)intVec.x, 0f, (float)intVec.z));
-                subMesh.verts.Add(new Vector3((float)intVec.x, 0f, (float)(intVec.z + 1)));
-                subMesh.verts.Add(new Vector3((float)(intVec.x + 1), 0f, (float)(intVec.z + 1)));
-                subMesh.verts.Add(new Vector3((float)(intVec.x + 1), 0f, (float)intVec.z));
+                subMesh.verts.Add(new Vector3((float)intVec.x, y, (float)intVec.z));
+                subMesh.verts.Add(new Vector3((float)intVec.x, y, (float)(intVec.z + 1)));
+                subMesh.verts.Add(new Vector3((float)(intVec.x + 1), y, (float)(intVec.z + 1)));
+                subMesh.verts.Add(new Vector3((float)(intVec.x + 1), y, (float)intVec.z));
                 subMesh.colors.Add(Color.white);
                 subMesh.colors.Add(Color.white);
                 subMesh.colors.Add(Color.white);
@@ -229,7 +228,7 @@ namespace NanameFloors
 
             codes.InsertRange(pos, new List<CodeInstruction>
             {
-                new CodeInstruction(OpCodes.Ldarg_0),
+                CodeInstruction.LoadArgument(0),
                 new CodeInstruction(OpCodes.Isinst, typeof(TerrainDef)),
                 new CodeInstruction(OpCodes.Brtrue_S, label)
             });

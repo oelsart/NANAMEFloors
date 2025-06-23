@@ -41,14 +41,6 @@
       <HintPath>..\..\..\RimWorldWin64_Data\Managed\1.6\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="DubsMintMenus">
-      <HintPath>..\..\..\..\..\workshop\content\294100\1446523594\1.5\Assemblies\DubsMintMenus.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="HugsLib">
-      <HintPath>..\..\..\..\..\workshop\content\294100\818773962\v1.5\Assemblies\HugsLib.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="netstandard">
       <HintPath>..\..\..\RimWorldWin64_Data\Managed\1.6\netstandard.dll</HintPath>
       <Private>False</Private>
