@@ -14,9 +14,12 @@ namespace NanameFloors
             var baseTerrain = terrainMask.baseTerrain;
             var coverTerrain = terrainMask.coverTerrain;
             var newTerr = BlendInner(terrainMask);
-            if (!(baseTerrain.burnedDef != null && coverTerrain.burnedDef != null))
+            if (baseTerrain.burnedDef != null)
             {
-                newTerr.burnedDef = BlendInner(new TerrainMask(terrainMask.maskTextureName, baseTerrain.burnedDef ?? baseTerrain, coverTerrain.burnedDef ?? coverTerrain));
+                newTerr.burnedDef = BlendInner(new TerrainMask(terrainMask.maskTextureName, baseTerrain.burnedDef, coverTerrain.burnedDef ?? coverTerrain));
+                newTerr.burnedDef.graphic = baseTerrain.burnedDef.graphic;
+                newTerr.burnedDef.graphicPolluted = baseTerrain.burnedDef.graphicPolluted;
+                newTerr.burnedDef.PostLoad();
             }
             var bluePrintDef = NewBlueprintDef_Terrain(newTerr, false);
             bluePrintDef.shortHash = 0;
@@ -27,38 +30,11 @@ namespace NanameFloors
             GiveShortHash(frameDef, typeof(ThingDef), takenHashesPerDeftype[typeof(ThingDef)]);
             DefGenerator.AddImpliedDef(frameDef);
 
-            LongEventHandler.ExecuteWhenFinished(delegate
+            if (baseTerrain.graphic == BaseContent.BadGraphic)
             {
-                GraphicRequest req = new GraphicRequest(typeof(Graphic_Terrain), baseTerrain.texturePath, AddedShaders.TerrainHardBlend, Vector2.one, baseTerrain.DrawColor, coverTerrain.DrawColor, null, 0, null, "NanameFloors/TerrainMasks/" + terrainMask.maskTextureName);
-                req.renderQueue = ((req.renderQueue == 0 && req.graphicData != null) ? req.graphicData.renderQueue : req.renderQueue);
-                newTerr.graphic = new Graphic_Terrain();
-                newTerr.graphic.Init(req);
-                newTerr.graphic.MatSingle.SetTexture("_MainTexTwo", ContentFinder<Texture2D>.Get(coverTerrain.texturePath));
-                newTerr.graphic.MatSingle.GetTexture("_MainTex").filterMode = FilterMode.Point;
-                newTerr.graphic.MatSingle.GetTexture("_MainTexTwo").filterMode = FilterMode.Point;
-                if (!ModsConfig.BiotechActive) return;
-                Shader shader = baseTerrain.pollutionShaderType == ShaderTypeDefOf.TerrainFadeRoughLinearAdd ? AddedShaders.TerrainFadeRoughLinearAddBlend : AddedShaders.TerrainHardPollutedBlend;
-                string path = baseTerrain.pollutedTexturePath ?? baseTerrain.texturePath;
-                newTerr.graphicPolluted = GraphicDatabase.Get(typeof(Graphic_Terrain), path, shader, Vector2.one, baseTerrain.DrawColor, coverTerrain.DrawColor, "NanameFloors/TerrainMasks/" + terrainMask.maskTextureName);
-                var matSingle = newTerr.graphicPolluted.MatSingle;
-                if (!coverTerrain.pollutionOverlayTexturePath.NullOrEmpty())
-                {
-                    matSingle.SetTexture("_BurnTex", ContentFinder<Texture2D>.Get(baseTerrain.pollutionOverlayTexturePath, true));
-                }
-                matSingle.SetColor("_BurnColor", baseTerrain.pollutionColor);
-                matSingle.SetVector("_ScrollSpeed", baseTerrain.pollutionOverlayScrollSpeed);
-                matSingle.SetVector("_BurnScale", baseTerrain.pollutionOverlayScale);
-                matSingle.SetColor("_PollutionTintColor", baseTerrain.pollutionTintColor);
+                baseTerrain.PostLoad();
+            }
 
-                matSingle.SetTexture("_MainTexTwo", ContentFinder<Texture2D>.Get(coverTerrain.pollutedTexturePath ?? coverTerrain.texturePath));
-                if (!coverTerrain.pollutionOverlayTexturePath.NullOrEmpty()) matSingle.SetTexture("_BurnTexTwo", ContentFinder<Texture2D>.Get(coverTerrain.pollutionOverlayTexturePath));
-                matSingle.SetColor("_BurnColorTwo", coverTerrain.pollutionColor);
-                matSingle.SetColor("_PollutionTintColorTwo", coverTerrain.pollutionTintColor);
-                if (shader == AddedShaders.TerrainFadeRoughLinearAddBlend)
-                {
-                    matSingle.SetTexture("_AlphaAddTex", TexGame.AlphaAddTex);
-                }
-            });
             newTerr.modExtensions = new List<DefModExtension>() { terrainMask };
             DefGenerator.AddImpliedDef(newTerr);
         }
@@ -73,7 +49,7 @@ namespace NanameFloors
                 if (field.Name == "fertility") field.SetValue(newTerr, 0f);
                 else if (field.FieldType == typeof(float)) field.SetValue(newTerr, ((float)field.GetValue(baseTerrain) + (float)field.GetValue(coverTerrain)) / 2f);
                 else if (field.FieldType == typeof(int)) field.SetValue(newTerr, (int)Mathf.Round(((int)field.GetValue(baseTerrain) + (int)field.GetValue(coverTerrain)) / 2f));
-                else field.SetValue(newTerr, field.GetValue(coverTerrain));
+                else field.SetValue(newTerr, field.GetValue(baseTerrain));
             }
             newTerr.defName = $"{baseTerrain.defName}_{terrainMask.maskTextureName}_{coverTerrain.defName}";
             newTerr.label = coverTerrain.label + "NAF.and".Translate() + baseTerrain.label;
@@ -96,6 +72,63 @@ namespace NanameFloors
             GiveShortHash(newTerr, typeof(TerrainDef), takenHashesPerDeftype[typeof(TerrainDef)]);
             newTerr.modContentPack = NanameFloors.content;
             return newTerr;
+        }
+
+        public static Shader GetBlendShader(this Shader shader)
+        {
+            if (shader == null)
+            {
+                return BaseContent.BadGraphic.Shader;
+            }
+            if (shader == ShaderDatabase.TerrainHard)
+            {
+                return AddedShaders.TerrainHardBlend;
+            }
+            if (shader == ShaderDatabase.TerrainFade)
+            {
+                return AddedShaders.TerrainFadeBlend;
+            }
+            if (shader == ShaderDatabase.TerrainWater)
+            {
+                return AddedShaders.TerrainWaterBlend;
+            }
+            if (shader == ShaderDatabase.TerrainFadeRough)
+            {
+                return AddedShaders.TerrainFadeRoughBlend;
+            }
+            if (shader == ShaderTypeDefOf.TerrainFadeRoughLinearAdd.Shader)
+            {
+                return AddedShaders.TerrainFadeRoughLinearAddBlend;
+            }
+            if (shader == DefDatabase<ShaderTypeDef>.GetNamed("TerrainFadeRoughSoftLight", false)?.Shader)
+            {
+                return AddedShaders.TerrainFadeRoughSoftLightBlend;
+            }
+            if (shader == ShaderDatabase.LoadShader("Map/WaterDepth"))
+            {
+                return AddedShaders.WaterDepthBlend;
+            }
+            if (ModsConfig.BiotechActive)
+            {
+                if (shader == ShaderDatabase.TerrainHardPolluted)
+                {
+                    return AddedShaders.TerrainHardPollutedBlend;
+                }
+                if (shader == ShaderDatabase.TerrainFadePolluted)
+                {
+                    return AddedShaders.TerrainFadePollutedBlend;
+                }
+                if (shader == ShaderDatabase.TerrainFadeRoughPolluted)
+                {
+                    return AddedShaders.TerrainFadeRoughLinearBurnBlend;
+                }
+                if (shader == DefDatabase<ShaderTypeDef>.GetNamed("TerrainWaterPolluted", false)?.Shader)
+                {
+                    return AddedShaders.TerrainWaterPollutedBlend;
+                }
+            }
+            Log.Warning($"[NanameFloors] {shader.name} is unsupported terrain shader. Using TerrainHardBlend instead.");
+            return AddedShaders.TerrainHardBlend;
         }
 
         private readonly static Action<Def, Type, HashSet<ushort>> GiveShortHash = (Action<Def, Type, HashSet<ushort>>)AccessTools.Method(typeof(ShortHashGiver), "GiveShortHash").CreateDelegate(typeof(Action<Def, Type, HashSet<ushort>>));

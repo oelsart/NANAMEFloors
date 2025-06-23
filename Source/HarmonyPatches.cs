@@ -1,12 +1,13 @@
 ﻿using HarmonyLib;
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Verse;
-using RimWorld;
-using UnityEngine;
 using System.Reflection.Emit;
+using System.Security.Cryptography;
+using UnityEngine;
+using Verse;
 
 namespace NanameFloors
 {
@@ -21,15 +22,6 @@ namespace NanameFloors
             {
                 harmony.Patch(AccessTools.Method(typeof(GenConstruct), "CanPlaceBlueprintAt_NewTemp"), null, null, AccessTools.Method(typeof(Patch_GenConstruct_CanPlaceBlueprintAt_NewTemp), "Transpiler"));
             }
-        }
-    }
-
-    [HarmonyPatch(typeof(ShaderUtility), "SupportsMaskTex")]
-    public static class Patch_ShaderUtility_SupportsMaskTex
-    {
-        public static void Postfix(Shader shader, ref bool __result)
-        {
-            __result = __result || shader == AddedShaders.TerrainHardBlend || shader == AddedShaders.TerrainHardPollutedBlend || shader == AddedShaders.TerrainFadeRoughLinearAddBlend;
         }
     }
 
@@ -95,35 +87,24 @@ namespace NanameFloors
     [HarmonyPatch(typeof(MaterialPool), "MatFrom", new Type[] { typeof(MaterialRequest) })]
     public static class Patch_MaterialPool_MatFrom
     {
-        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator ILGenerator)
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             var codes = instructions.ToList();
-            var pos = codes.FirstIndexOf(c => c.opcode == OpCodes.Stfld && (c.operand as FieldInfo) == AccessTools.Field(typeof(MaterialRequest), "colorTwo"));
-            var labelTrue = ILGenerator.DefineLabel();
-            var labelFalse = ILGenerator.DefineLabel();
-            var addedCodes = new List<CodeInstruction>
+            var f_colorTwo = AccessTools.Field(typeof(MaterialRequest), "colorTwo");
+            var pos = codes.FindIndex(c => c.StoresField(f_colorTwo)) + 1;
+            var label = generator.DefineLabel();
+
+            codes[pos].labels.Add(label);
+            codes.InsertRange(pos, new[]
             {
                 CodeInstruction.LoadArgument(0),
                 CodeInstruction.LoadField(typeof(MaterialRequest), "shader"),
-                CodeInstruction.LoadField(typeof(AddedShaders), "TerrainHardBlend"),
-                CodeInstruction.Call(typeof(UnityEngine.Object), "op_Equality"),
-                new CodeInstruction(OpCodes.Brtrue_S, labelTrue),
+                CodeInstruction.Call(typeof(AddedShaders), nameof(AddedShaders.IsAddedShader)),
+                new CodeInstruction(OpCodes.Brfalse_S, label),
                 CodeInstruction.LoadArgument(0),
-                CodeInstruction.LoadField(typeof(MaterialRequest), "shader"),
-                CodeInstruction.LoadField(typeof(AddedShaders), "TerrainHardPollutedBlend"),
-                CodeInstruction.Call(typeof(UnityEngine.Object), "op_Equality"),
-                new CodeInstruction(OpCodes.Brtrue_S, labelTrue),
-                CodeInstruction.LoadArgument(0),
-                CodeInstruction.LoadField(typeof(MaterialRequest), "shader"),
-                CodeInstruction.LoadField(typeof(AddedShaders), "TerrainFadeRoughLinearAddBlend"),
-                CodeInstruction.Call(typeof(UnityEngine.Object), "op_Equality"),
-                new CodeInstruction(OpCodes.Brfalse_S, labelFalse),
-                CodeInstruction.LoadArgument(0).WithLabels(labelTrue),
-                CodeInstruction.Call(typeof(Patch_MaterialPool_MatFrom), "ForceCreateMaterial"),
+                CodeInstruction.Call(typeof(Patch_MaterialPool_MatFrom), nameof(ForceCreateMaterial)),
                 new CodeInstruction(OpCodes.Ret)
-            };
-            codes[pos + 1] = codes[pos + 1].WithLabels(labelFalse);
-            codes.InsertRange(pos + 1, addedCodes);
+            });
             return codes;
         }
 
@@ -141,7 +122,6 @@ namespace NanameFloors
             if (req.maskTex != null)
             {
                 material.SetTexture(ShaderPropertyIDs.MaskTex, req.maskTex);
-                material.SetColor(ShaderPropertyIDs.ColorTwo, req.colorTwo);
             }
             if (req.renderQueue != 0)
             {
@@ -156,6 +136,86 @@ namespace NanameFloors
             }
             return material;
         }
+    }
+
+    [HarmonyPatch("Verse.SectionLayer_Terrain", "Regenerate")]
+    public static class Patch_SectionLayer_Terrain_Regenerate
+    {
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+            var m_MoveNext = AccessTools.Method(typeof(CellRect.Enumerator), nameof(CellRect.Enumerator.MoveNext));
+            var pos = codes.FindIndex(c => c.Calls(m_MoveNext));
+            codes.InsertRange(pos, new[]
+            {
+                CodeInstruction.LoadArgument(0),
+                CodeInstruction.LoadLocal(2),
+                CodeInstruction.LoadLocal(10),
+                CodeInstruction.Call(typeof(Patch_SectionLayer_Terrain_Regenerate), nameof(GenerateCover))
+            });
+            return codes;
+        }
+
+        public static void GenerateCover(SectionLayer instance, CellTerrain cellTerrain, IntVec3 intVec)
+        {
+            if (!(cellTerrain.def is BlendedTerrainDef blendedTerrainDef)) return;
+            Material GetMaterial()
+            {
+                if (SectionLayer_Watergen.IsAssignableFrom(instance.GetType()))
+                {
+                    return blendedTerrainDef.CoverWaterDepthMaterial;
+                }
+
+                var baseTerrain = blendedTerrainDef.BaseTerrain;
+                var coverTerrain = blendedTerrainDef.CoverTerrain;
+                var polluted = cellTerrain.polluted && cellTerrain.snowCoverage < 0.4f && blendedTerrainDef.CoverGraphicPolluted != BaseContent.BadGraphic;
+                var color = cellTerrain.color;
+                var key = (coverTerrain, polluted, color, blendedTerrainDef.MaskTex);
+                if (!terrainMatCache.ContainsKey(key))
+                {
+                    Graphic graphic = polluted ? blendedTerrainDef.CoverGraphicPolluted ?? blendedTerrainDef.CoverGraphic : blendedTerrainDef.CoverGraphic;
+                    if (color != null)
+                    {
+                        terrainMatCache[key] = graphic.GetColoredVersion(graphic.Shader, color.color, Color.white).MatSingle;
+                    }
+                    else
+                    {
+                        terrainMatCache[key] = graphic.MatSingle;
+                    }
+                }
+
+                return terrainMatCache[key];
+            }
+
+            bool AllowRenderingFor(TerrainDef terrain)
+            {
+                return DebugViewSettings.drawTerrainWater || !terrain.HasTag("Water");
+            }
+
+            LayerSubMesh subMesh = instance.GetSubMesh(GetMaterial());
+            if (subMesh != null && AllowRenderingFor(cellTerrain.def))
+            {
+                int count = subMesh.verts.Count;
+                subMesh.verts.Add(new Vector3((float)intVec.x, 0f, (float)intVec.z));
+                subMesh.verts.Add(new Vector3((float)intVec.x, 0f, (float)(intVec.z + 1)));
+                subMesh.verts.Add(new Vector3((float)(intVec.x + 1), 0f, (float)(intVec.z + 1)));
+                subMesh.verts.Add(new Vector3((float)(intVec.x + 1), 0f, (float)intVec.z));
+                subMesh.colors.Add(Color.white);
+                subMesh.colors.Add(Color.white);
+                subMesh.colors.Add(Color.white);
+                subMesh.colors.Add(Color.white);
+                subMesh.tris.Add(count);
+                subMesh.tris.Add(count + 1);
+                subMesh.tris.Add(count + 2);
+                subMesh.tris.Add(count);
+                subMesh.tris.Add(count + 2);
+                subMesh.tris.Add(count + 3);
+            }
+        }
+
+        private static readonly Dictionary<(TerrainDef, bool, ColorDef, Texture2D), Material> terrainMatCache = new Dictionary<(TerrainDef, bool, ColorDef, Texture2D), Material>();
+
+        private static readonly Type SectionLayer_Watergen = GenTypes.GetTypeInAnyAssembly("Verse.SectionLayer_Watergen", "Verse");
     }
 
     public static class Patch_GenConstruct_CanPlaceBlueprintAt_NewTemp

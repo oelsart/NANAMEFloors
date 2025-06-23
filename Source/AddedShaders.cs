@@ -29,10 +29,40 @@ namespace NanameFloors
             return shader;
         }
 
-        public static readonly Shader TerrainHardBlend = AddedShaders.LoadShader("TerrainHardBlend");
+        public static bool IsAddedShader(Shader shader)
+        {
+            return shader == TerrainHardBlend ||
+                shader == TerrainFadeBlend ||
+                shader == TerrainFadeRoughBlend ||
+                shader == TerrainWaterBlend ||
+                shader == TerrainWaterPollutedBlend ||
+                shader == TerrainHardPollutedBlend ||
+                shader == TerrainFadePollutedBlend ||
+                shader == TerrainFadeRoughSoftLightBlend ||
+                shader == TerrainFadeRoughLinearAddBlend ||
+                shader == TerrainFadeRoughLinearBurnBlend;
+        }
 
-        public static readonly Shader TerrainHardPollutedBlend = AddedShaders.LoadShader("TerrainHardLinearBurnBlend");
+        public static readonly Shader TerrainHardBlend = LoadShader("TerrainHardBlend");
 
-        public static readonly Shader TerrainFadeRoughLinearAddBlend = AddedShaders.LoadShader("TerrainFadeRoughLinearAddBlend");
+        public static readonly Shader TerrainFadeBlend = LoadShader("TerrainFadeBlend");
+
+        public static readonly Shader TerrainFadeRoughBlend = LoadShader("TerrainFadeRoughBlend");
+
+        public static readonly Shader TerrainWaterBlend = LoadShader("TerrainWaterBlend");
+
+        public static readonly Shader TerrainWaterPollutedBlend = LoadShader("TerrainWaterPollutedBlend");
+
+        public static readonly Shader TerrainHardPollutedBlend = LoadShader("TerrainHardLinearBurnBlend");
+
+        public static readonly Shader TerrainFadePollutedBlend = LoadShader("TerrainFadeLinearBurnBlend");
+
+        public static readonly Shader TerrainFadeRoughSoftLightBlend = LoadShader("TerrainFadeRoughSoftLightBlend");
+
+        public static readonly Shader TerrainFadeRoughLinearAddBlend = LoadShader("TerrainFadeRoughLinearAddBlend");
+
+        public static readonly Shader TerrainFadeRoughLinearBurnBlend = LoadShader("TerrainFadeRoughLinearBurnBlend");
+
+        public static readonly Shader WaterDepthBlend = LoadShader("WaterDepthBlend");
     }
 }
