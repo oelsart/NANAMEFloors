@@ -61,7 +61,7 @@ namespace NanameFloors
                 var maskPath = "NanameFloors/TerrainMasks/" + terrainmask.maskTextureName;
                 MaskTex = ContentFinder<Texture2D>.Get("NanameFloors/TerrainMasks/" + terrainmask.maskTextureName, false);
                 MaskTex.wrapMode = TextureWrapMode.Clamp;
-                MaskTex.mipMapBias = -0.35f;
+                MaskTex.mipMapBias = -2.5f;
                 if (CoverGraphic == null)
                 {
                     Shader shader = BlendedTerrainUtil.GetBlendShader(CoverTerrain.Shader);
@@ -101,7 +101,7 @@ namespace NanameFloors
                     {
                         matSingle.SetTexture("_BurnTex", texture2D);
                     }
-                    matSingle.SetColor("_BurnColor", CoverTerrain.pollutionColor);
+                    //matSingle.SetColor("_BurnColor", CoverTerrain.pollutionColor);
                     matSingle.SetVector("_ScrollSpeed", CoverTerrain.pollutionOverlayScrollSpeed);
                     matSingle.SetVector("_BurnScale", CoverTerrain.pollutionOverlayScale);
                     matSingle.SetColor("_PollutionTintColor", CoverTerrain.pollutionTintColor);
