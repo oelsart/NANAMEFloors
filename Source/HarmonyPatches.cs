@@ -172,6 +172,7 @@ namespace NanameFloors
                     if (color != null)
                     {
                         terrainMatCache[key] = graphic.GetColoredVersion(graphic.Shader, color.color, Color.white).MatSingle;
+                        terrainMatCache[key].SetTexture(ShaderPropertyIDs.MaskTex, blendedTerrainDef.MaskTex);
                     }
                     else
                     {
@@ -211,6 +212,34 @@ namespace NanameFloors
         private static readonly Dictionary<(TerrainDef, bool, ColorDef, Texture2D), Material> terrainMatCache = new Dictionary<(TerrainDef, bool, ColorDef, Texture2D), Material>();
 
         private static readonly Type SectionLayer_Watergen = GenTypes.GetTypeInAnyAssembly("Verse.SectionLayer_Watergen", "Verse");
+    }
+
+    //斜め床の下のTerrainが着色されるのを防ぐためにisPaintableじゃなければGetColoredVersionをスキップするパッチ
+    [HarmonyPatch(typeof(TerrainGrid), nameof(TerrainGrid.GetMaterial))]
+    public static class Patch_TerrainGrid_GetMaterial
+    {
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        {
+            var codes = instructions.ToList();
+            var m_GetColoredVersion = AccessTools.Method(typeof(Graphic), nameof(Graphic.GetColoredVersion));
+            var pos = codes.FindIndex(c => c.Calls(m_GetColoredVersion));
+            var label = generator.DefineLabel();
+            var label2 = generator.DefineLabel();
+
+            codes[pos].labels.Add(label);
+            codes[pos + 1].labels.Add(label2);
+            codes.InsertRange(pos, new[]
+            {
+                new CodeInstruction(OpCodes.Ldarg_0),
+                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(TerrainDef), nameof(TerrainDef.isPaintable))),
+                new CodeInstruction(OpCodes.Brtrue_S, label),
+                new CodeInstruction(OpCodes.Pop),
+                new CodeInstruction(OpCodes.Pop),
+                new CodeInstruction(OpCodes.Pop),
+                new CodeInstruction(OpCodes.Br_S, label2)
+            });
+            return codes;
+        }
     }
 
     [HarmonyPatch(typeof(GenConstruct), "CanPlaceBlueprintAt")]
