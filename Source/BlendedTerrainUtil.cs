@@ -21,11 +21,11 @@ namespace NanameFloors
                 newTerr.burnedDef.graphicPolluted = baseTerrain.burnedDef.graphicPolluted;
                 newTerr.burnedDef.PostLoad();
             }
-            var bluePrintDef = NewBlueprintDef_Terrain(newTerr);
+            var bluePrintDef = NewBlueprintDef_Terrain(newTerr, false);
             bluePrintDef.shortHash = 0;
             GiveShortHash(bluePrintDef, typeof(ThingDef), takenHashesPerDeftype[typeof(ThingDef)]);
             DefGenerator.AddImpliedDef(bluePrintDef);
-            var frameDef = NewFrameDef_Terrain(newTerr);
+            var frameDef = NewFrameDef_Terrain(newTerr, false);
             frameDef.shortHash = 0;
             GiveShortHash(frameDef, typeof(ThingDef), takenHashesPerDeftype[typeof(ThingDef)]);
             DefGenerator.AddImpliedDef(frameDef);
@@ -66,6 +66,7 @@ namespace NanameFloors
             newTerr.shortHash = 0;
             GiveShortHash(newTerr, typeof(TerrainDef), takenHashesPerDeftype[typeof(TerrainDef)]);
             newTerr.modContentPack = NanameFloors.content;
+            newTerr.edgeType = TerrainDef.TerrainEdgeType.Hard;
             return newTerr;
         }
 
@@ -128,9 +129,9 @@ namespace NanameFloors
 
         private readonly static Action<Def, Type, HashSet<ushort>> GiveShortHash = (Action<Def, Type, HashSet<ushort>>)AccessTools.Method(typeof(ShortHashGiver), "GiveShortHash").CreateDelegate(typeof(Action<Def, Type, HashSet<ushort>>));
 
-        private readonly static Func<TerrainDef, ThingDef> NewBlueprintDef_Terrain = (Func<TerrainDef, ThingDef>)AccessTools.Method(typeof(ThingDefGenerator_Buildings), "NewBlueprintDef_Terrain").CreateDelegate(typeof(Func<TerrainDef, ThingDef>));
+        private readonly static Func<TerrainDef, bool, ThingDef> NewBlueprintDef_Terrain = (Func<TerrainDef, bool, ThingDef>)AccessTools.Method(typeof(ThingDefGenerator_Buildings), "NewBlueprintDef_Terrain").CreateDelegate(typeof(Func<TerrainDef, bool, ThingDef>));
 
-        private readonly static Func<TerrainDef, ThingDef> NewFrameDef_Terrain = (Func<TerrainDef, ThingDef>)AccessTools.Method(typeof(ThingDefGenerator_Buildings), "NewFrameDef_Terrain").CreateDelegate(typeof(Func<TerrainDef, ThingDef>));
+        private readonly static Func<TerrainDef, bool, ThingDef> NewFrameDef_Terrain = (Func<TerrainDef, bool, ThingDef>)AccessTools.Method(typeof(ThingDefGenerator_Buildings), "NewFrameDef_Terrain").CreateDelegate(typeof(Func<TerrainDef, bool, ThingDef>));
 
         private readonly static Dictionary<Type, HashSet<ushort>> takenHashesPerDeftype = AccessTools.StaticFieldRefAccess<Dictionary<Type, HashSet<ushort>>>(typeof(ShortHashGiver), "takenHashesPerDeftype");
     }

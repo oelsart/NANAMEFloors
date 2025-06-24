@@ -1,12 +1,12 @@
-Shader "Custom/Terrain fade rough Linear add blend" {
+Shader "Custom/Terrain fade rough Linear burn blend" {
 	Properties {
 		_MainTex ("Main texture", 2D) = "white" {}
 		_Color ("Color", Color) = (1,1,1,1)
 		_PollutionTintColor ("PollutionTintColor", Color) = (1,1,1,1)
 		_BurnTex ("Burn texture", 2D) = "white" {}
 		_BurnColor ("BurnColor", Color) = (1,1,1,1)
-		_AlphaAddTex ("Alpha add texture", 2D) = "" {}
 		_BurnScale ("BurnScale", Vector) = (1,1,1,1)
+		_AlphaAddTex ("Alpha add texture", 2D) = "" {}
 		_MaskTex ("Mask texture", 2D) = "white" {}
 	}
 	SubShader {
@@ -15,7 +15,7 @@ Shader "Custom/Terrain fade rough Linear add blend" {
 			Tags { "RenderType" = "Transparent" }
 			Blend SrcAlpha OneMinusSrcAlpha, SrcAlpha OneMinusSrcAlpha
             ZWrite Off
-			GpuProgramID 5762
+			GpuProgramID 39794
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
@@ -71,6 +71,7 @@ Shader "Custom/Terrain fade rough Linear add blend" {
                 float4 tmp0;
                 float4 tmp1;
                 float4 tmp2;
+                float4 tmp3;
                 tmp0.xy = inp.texcoord.xy + inp.texcoord.xy;
                 tmp0 = tex2D(_AlphaAddTex, tmp0.xy);
                 tmp1 = inp.texcoord.xyxy * float4(5.0, 5.0, 10.0, 10.0);
@@ -92,11 +93,28 @@ Shader "Custom/Terrain fade rough Linear add blend" {
                 tmp0.x = max(tmp0.z, tmp0.x);
                 tmp0.w = min(tmp0.y, tmp0.x);
                 tmp2.xy = inp.texcoord.xy * _BurnScale.xy;
+                tmp2.zw = trunc(tmp2.xy);
+                tmp2.xy = frac(tmp2.xy);
+                tmp2.zw = asint(tmp2.zw);
+                tmp1.w = uint1(tmp2.z) & uint1(0.0);
+                tmp3.xy = tmp2.yx - float2(0.5, 0.5);
+                tmp2.w = tmp3.x * -0.0000001 + -tmp3.y;
+                tmp3.x = -tmp3.y * -0.0000001 + -tmp3.x;
+                tmp3.y = tmp3.x + 0.5;
+                tmp3.x = tmp2.w + 0.5;
+                tmp2.xy = tmp1.ww ? tmp2.xy : tmp3.xy;
+                tmp3.xy = tmp2.xy - float2(0.5, 0.5);
+                tmp1.w = tmp3.x * -0.0 + -tmp3.y;
+                tmp2.w = tmp3.y * -0.0 + tmp3.x;
+                tmp3.y = tmp2.w + 0.5;
+                tmp3.x = tmp1.w + 0.5;
+                tmp2.xy = tmp2.zz ? tmp2.xy : tmp3.xy;
                 tmp2 = tex2D(_BurnTex, tmp2.xy);
-                tmp2.xyz = tmp2.xyz * _BurnColor.xyz;
-                tmp1.w = -tmp2.w * _BurnColor.w + 1.0;
-                tmp2.xyz = tmp1.www * -tmp2.xyz + tmp2.xyz;
-                tmp0.xyz = tmp1.xyz * inp.color.xyz + tmp2.xyz;
+                tmp3.xyz = tmp2.xyz * _BurnColor.xyz;
+                tmp2 = -tmp2.wxyz * _BurnColor + float4(1.0, 1.0, 1.0, 1.0);
+                tmp2.xyz = tmp2.xxx * tmp2.yzw + tmp3.xyz;
+                tmp1.xyz = tmp1.xyz * inp.color.xyz + tmp2.xyz;
+                tmp0.xyz = tmp1.xyz - float3(1.0, 1.0, 1.0);
                 tmp0 = tmp0 * _Color;
                 o.sv_target = tmp0 * _PollutionTintColor;
 				o.sv_target.a *= tex2D(_MaskTex, inp.texcoord.xy * 16 % 1).a;

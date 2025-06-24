@@ -143,9 +143,9 @@ namespace NanameFloors
             var pos = codes.FindIndex(c => c.Calls(m_MoveNext));
             codes.InsertRange(pos, new[]
             {
-                new CodeInstruction(OpCodes.Ldarg_0),
-                new CodeInstruction(OpCodes.Ldloc_2),
-                new CodeInstruction(OpCodes.Ldloc_S, 10),
+                CodeInstruction.LoadArgument(0),
+                CodeInstruction.LoadLocal(2),
+                CodeInstruction.LoadLocal(10),
                 CodeInstruction.Call(typeof(Patch_SectionLayer_Terrain_Regenerate), nameof(GenerateCover))
             });
             return codes;
@@ -213,8 +213,8 @@ namespace NanameFloors
         private static readonly Type SectionLayer_Watergen = GenTypes.GetTypeInAnyAssembly("Verse.SectionLayer_Watergen", "Verse");
     }
 
-    [HarmonyPatch(typeof(GenConstruct), "CanPlaceBlueprintAt")]
-    public static class Patch_GenConstruct_CanPlaceBlueprintAt
+    [HarmonyPatch(typeof(GenConstruct), "CanPlaceBlueprintAt_NewTemp")]
+    public static class Patch_GenConstruct_CanPlaceBlueprintAt_NewTemp
     {
         public static bool Prepare()
         {
@@ -229,7 +229,7 @@ namespace NanameFloors
 
             codes.InsertRange(pos, new List<CodeInstruction>
             {
-                new CodeInstruction(OpCodes.Ldarg_0),
+                CodeInstruction.LoadArgument(0),
                 new CodeInstruction(OpCodes.Isinst, typeof(TerrainDef)),
                 new CodeInstruction(OpCodes.Brtrue_S, label)
             });
