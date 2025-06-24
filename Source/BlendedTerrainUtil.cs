@@ -47,9 +47,17 @@ namespace NanameFloors
             foreach (var field in typeof(BlendedTerrainDef).GetFields())
             {
                 if (field.Name == "fertility") field.SetValue(newTerr, 0f);
+                else if (field.Name == "graphic")
+                {
+                    newTerr.graphic = baseTerrain.graphic;
+                }
+                else if (field.Name == "graphicPolluted")
+                {
+                    newTerr.graphicPolluted = baseTerrain.graphicPolluted;
+                }
                 else if (field.FieldType == typeof(float)) field.SetValue(newTerr, ((float)field.GetValue(baseTerrain) + (float)field.GetValue(coverTerrain)) / 2f);
                 else if (field.FieldType == typeof(int)) field.SetValue(newTerr, (int)Mathf.Round(((int)field.GetValue(baseTerrain) + (int)field.GetValue(coverTerrain)) / 2f));
-                else field.SetValue(newTerr, field.GetValue(baseTerrain));
+                else field.SetValue(newTerr, field.GetValue(coverTerrain));
             }
             newTerr.defName = $"{baseTerrain.defName}_{terrainMask.maskTextureName}_{coverTerrain.defName}";
             newTerr.label = coverTerrain.label + "NAF.and".Translate() + baseTerrain.label;
