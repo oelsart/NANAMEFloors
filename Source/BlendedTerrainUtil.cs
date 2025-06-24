@@ -71,6 +71,7 @@ namespace NanameFloors
             newTerr.shortHash = 0;
             GiveShortHash(newTerr, typeof(TerrainDef), takenHashesPerDeftype[typeof(TerrainDef)]);
             newTerr.modContentPack = NanameFloors.content;
+            newTerr.edgeType = TerrainDef.TerrainEdgeType.Hard;
             return newTerr;
         }
 

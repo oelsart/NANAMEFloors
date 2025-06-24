@@ -1,4 +1,4 @@
-Shader "Custom/Terrain fade rough Linear add blend" {
+Shader "Custom/Terrain fade rough Soft light blend" {
 	Properties {
 		_MainTex ("Main texture", 2D) = "white" {}
 		_Color ("Color", Color) = (1,1,1,1)
@@ -6,16 +6,15 @@ Shader "Custom/Terrain fade rough Linear add blend" {
 		_BurnTex ("Burn texture", 2D) = "white" {}
 		_BurnColor ("BurnColor", Color) = (1,1,1,1)
 		_AlphaAddTex ("Alpha add texture", 2D) = "" {}
-		_BurnScale ("BurnScale", Vector) = (1,1,1,1)
 		_MaskTex ("Mask texture", 2D) = "white" {}
 	}
 	SubShader {
 		Tags { "RenderType" = "Transparent" }
 		Pass {
 			Tags { "RenderType" = "Transparent" }
-			Blend SrcAlpha OneMinusSrcAlpha, SrcAlpha OneMinusSrcAlpha
+			Blend SrcAlpha OneMinusSrcAlpha
             ZWrite Off
-			GpuProgramID 5762
+			GpuProgramID 55576
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
@@ -37,6 +36,8 @@ Shader "Custom/Terrain fade rough Linear add blend" {
 			float4 _PollutionTintColor;
 			float4 _BurnColor;
 			float4 _BurnScale;
+			float2 _ScrollSpeed;
+			float _GameSeconds;
 			// Custom ConstantBuffers for Vertex Shader
 			// Custom ConstantBuffers for Fragment Shader
 			// Texture params for Vertex Shader
@@ -71,6 +72,10 @@ Shader "Custom/Terrain fade rough Linear add blend" {
                 float4 tmp0;
                 float4 tmp1;
                 float4 tmp2;
+                float4 tmp3;
+                float4 tmp4;
+                float4 tmp5;
+                float4 tmp6;
                 tmp0.xy = inp.texcoord.xy + inp.texcoord.xy;
                 tmp0 = tex2D(_AlphaAddTex, tmp0.xy);
                 tmp1 = inp.texcoord.xyxy * float4(5.0, 5.0, 10.0, 10.0);
@@ -81,23 +86,38 @@ Shader "Custom/Terrain fade rough Linear add blend" {
                 tmp0.x = tmp1.z * 0.333 + tmp0.x;
                 tmp1 = tex2D(_MainTex, inp.texcoord.xy);
                 tmp0.x = -tmp1.w * inp.color.w + tmp0.x;
-                tmp0.y = tmp1.w * inp.color.w;
-                tmp0.x = tmp0.x * 0.6 + tmp0.y;
+                tmp1 = tmp1 * inp.color;
+                tmp0.x = tmp0.x * 0.6 + tmp1.w;
                 tmp0.x = tmp0.x - 0.3;
-                tmp0.z = tmp0.y * 1.5 + -1.5;
-                tmp0.xy = tmp0.xy * float2(2.5, 1.5);
+                tmp0.x = tmp0.x * 2.5;
+                tmp0.y = tmp1.w * 1.5 + -1.5;
+                tmp0.y = tmp0.y + 1.0;
+                tmp0.y = max(tmp0.y, 0.0);
+                tmp0.x = max(tmp0.y, tmp0.x);
+                tmp0.y = tmp1.w * 1.5;
+                tmp1.xyz = tmp1.xyz * _Color.xyz;
                 tmp0.y = min(tmp0.y, 1.0);
-                tmp0.z = tmp0.z + 1.0;
-                tmp0.z = max(tmp0.z, 0.0);
-                tmp0.x = max(tmp0.z, tmp0.x);
                 tmp0.w = min(tmp0.y, tmp0.x);
-                tmp2.xy = inp.texcoord.xy * _BurnScale.xy;
-                tmp2 = tex2D(_BurnTex, tmp2.xy);
-                tmp2.xyz = tmp2.xyz * _BurnColor.xyz;
-                tmp1.w = -tmp2.w * _BurnColor.w + 1.0;
-                tmp2.xyz = tmp1.www * -tmp2.xyz + tmp2.xyz;
-                tmp0.xyz = tmp1.xyz * inp.color.xyz + tmp2.xyz;
-                tmp0 = tmp0 * _Color;
+                tmp2.xyz = sqrt(tmp1.xyz);
+                tmp3.xyz = tmp1.xyz + tmp1.xyz;
+                tmp1.xyz = tmp1.xyz * tmp1.xyz;
+                tmp4.xy = _ScrollSpeed * _GameSeconds.xx;
+                tmp4.xy = inp.texcoord.xy * _BurnScale.xy + tmp4.xy;
+                tmp4 = tex2D(_BurnTex, tmp4.xy);
+                tmp1.w = -tmp4.w * _BurnColor.w + 1.0;
+                tmp5.xyz = float3(0.5, 0.5, 0.5) - tmp4.xyz;
+                tmp4.xyz = tmp1.www * tmp5.xyz + tmp4.xyz;
+                tmp5.xyz = float3(1.0, 1.0, 1.0) - tmp4.xyz;
+                tmp5.xyz = tmp3.xyz * tmp5.xyz;
+                tmp6.xyz = tmp4.xyz * float3(2.0, 2.0, 2.0) + float3(-1.0, -1.0, -1.0);
+                tmp2.xyz = tmp2.xyz * tmp6.xyz + tmp5.xyz;
+                tmp5.xyz = -tmp4.xyz * float3(2.0, 2.0, 2.0) + float3(1.0, 1.0, 1.0);
+                tmp1.xyz = tmp1.xyz * tmp5.xyz;
+                tmp1.xyz = tmp3.xyz * tmp4.xyz + tmp1.xyz;
+                tmp3.xyz = tmp4.xyz >= float3(0.5, 0.5, 0.5);
+                tmp3.xyz = tmp3.xyz ? 1.0 : 0.0;
+                tmp2.xyz = tmp2.xyz - tmp1.xyz;
+                tmp0.xyz = tmp3.xyz * tmp2.xyz + tmp1.xyz;
                 o.sv_target = tmp0 * _PollutionTintColor;
 				o.sv_target.a *= tex2D(_MaskTex, inp.texcoord.xy * 16 % 1).a;
                 return o;

@@ -2,14 +2,13 @@ Shader "Custom/Terrain hard blend" {
 	Properties {
 		_MainTex ("Main texture", 2D) = "white" {}
 		_Color ("Color", Color) = (1,1,1,1)
-		_MainTexTwo ("Main texture two", 2D) = "white" {}
-		_ColorTwo ("Color two", Color) = (1,1,1,1)
 		_MaskTex ("Mask texture", 2D) = "white" {}
 	}
 	SubShader {
-		Tags { "RenderType" = "Opaque" }
+		Tags { "RenderType" = "Transparent" }
 		Pass {
-			Tags { "RenderType" = "Opaque" }
+			Tags { "RenderType" = "Transparent" }
+			Blend SrcAlpha OneMinusSrcAlpha
 			ZWrite Off
 			GpuProgramID 62125
 			CGPROGRAM
@@ -21,7 +20,6 @@ Shader "Custom/Terrain hard blend" {
 			{
 				float4 position : SV_POSITION0;
 				float2 texcoord : TEXCOORD0;
-				float4 color : COLOR0;
 			};
 			struct fout
 			{
@@ -30,13 +28,11 @@ Shader "Custom/Terrain hard blend" {
 			// $Globals ConstantBuffers for Vertex Shader
 			// $Globals ConstantBuffers for Fragment Shader
 			float4 _Color;
-			float4 _ColorTwo;
 			// Custom ConstantBuffers for Vertex Shader
 			// Custom ConstantBuffers for Fragment Shader
 			// Texture params for Vertex Shader
 			// Texture params for Fragment Shader
 			sampler2D _MainTex;
-			sampler2D _MainTexTwo;
 			sampler2D _MaskTex;
 			
 			// Keywords: 
@@ -54,7 +50,6 @@ Shader "Custom/Terrain hard blend" {
                 tmp1 = unity_MatrixVP._m02_m12_m22_m32 * tmp0.zzzz + tmp1;
                 o.position = unity_MatrixVP._m03_m13_m23_m33 * tmp0.wwww + tmp1;
                 o.texcoord.xy = v.vertex.xz * float2(0.0625, 0.0625);
-				o.color = v.color;
                 return o;
 			}
 			// Keywords: 
@@ -62,12 +57,9 @@ Shader "Custom/Terrain hard blend" {
 			{
                 fout o;
                 float4 tmp0;
-				float4 tmp1;
-				float4 tmp2;
-				tmp0 = tex2D(_MaskTex, inp.texcoord.xy * 16);
-                tmp1 = tex2D(_MainTex, inp.texcoord.xy);
-				tmp2 = tex2D(_MainTexTwo, inp.texcoord.xy);
-                o.sv_target = tmp1 * _Color * (1 - tmp0.a) + tmp2 * _ColorTwo * tmp0.a;
+                tmp0 = tex2D(_MainTex, inp.texcoord.xy);
+                o.sv_target = tmp0 * _Color;
+				o.sv_target.a *= tex2D(_MaskTex, inp.texcoord.xy * 16 % 1).a;
                 return o;
 			}
 			ENDCG

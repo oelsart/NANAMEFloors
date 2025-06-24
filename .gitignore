@@ -367,5 +367,12 @@ Source/.vs/NanameFloors/v17/.suo
 /Source/.vs
 /Source/Shader
 /Source/obj/Release/NanameFloors.csproj.AssemblyReference.cache
+<<<<<<< HEAD
 /Source/obj
 /Source/obj/Release/NanameFloors.csproj.AssemblyReference.cache
+=======
+/Source/obj/Release/NanameFloors.csproj.AssemblyReference.cache
+/Source/obj/Release/DesignTimeResolveAssemblyReferencesInput.cache
+/Source/obj/Release/NanameFloors.dll
+/Source/obj/Release/NanameFloors.csproj.CoreCompileInputs.cache
+>>>>>>> a301f5d (カバーTerrainの_BurnColorを無効化。なぜかベースにまで色がつくため)
