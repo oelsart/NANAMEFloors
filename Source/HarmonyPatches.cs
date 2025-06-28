@@ -169,7 +169,7 @@ namespace NanameFloors
                 if (!terrainMatCache.ContainsKey(key))
                 {
                     Graphic graphic = polluted ? blendedTerrainDef.CoverGraphicPolluted ?? blendedTerrainDef.CoverGraphic : blendedTerrainDef.CoverGraphic;
-                    if (color != null)
+                    if (color != null && coverTerrain.isPaintable)
                     {
                         terrainMatCache[key] = graphic.GetColoredVersion(graphic.Shader, color.color, Color.white).MatSingle;
                         terrainMatCache[key].SetTexture(ShaderPropertyIDs.MaskTex, blendedTerrainDef.MaskTex);
@@ -225,13 +225,23 @@ namespace NanameFloors
             var pos = codes.FindIndex(c => c.Calls(m_GetColoredVersion));
             var label = generator.DefineLabel();
             var label2 = generator.DefineLabel();
+            var blendedTerrainDef = generator.DeclareLocal(typeof(BlendedTerrainDef));
+            var label3 = generator.DefineLabel();
 
             codes[pos].labels.Add(label);
             codes[pos + 1].labels.Add(label2);
             codes.InsertRange(pos, new[]
             {
-                new CodeInstruction(OpCodes.Ldarg_0),
-                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(TerrainDef), nameof(TerrainDef.isPaintable))),
+                new CodeInstruction(OpCodes.Ldarg_1),
+                new CodeInstruction(OpCodes.Dup),
+                new CodeInstruction(OpCodes.Isinst, typeof(BlendedTerrainDef)),
+                new CodeInstruction(OpCodes.Stloc_S, blendedTerrainDef),
+                new CodeInstruction(OpCodes.Ldloc_S, blendedTerrainDef),
+                new CodeInstruction(OpCodes.Brfalse_S, label3),
+                new CodeInstruction(OpCodes.Pop),
+                new CodeInstruction(OpCodes.Ldloc_S, blendedTerrainDef),
+                new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(BlendedTerrainDef), nameof(BlendedTerrainDef.BaseTerrain))),
+                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(TerrainDef), nameof(TerrainDef.isPaintable))).WithLabels(label3),
                 new CodeInstruction(OpCodes.Brtrue_S, label),
                 new CodeInstruction(OpCodes.Pop),
                 new CodeInstruction(OpCodes.Pop),
