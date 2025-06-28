@@ -229,7 +229,7 @@ namespace NanameFloors
             codes[pos + 1].labels.Add(label2);
             codes.InsertRange(pos, new[]
             {
-                new CodeInstruction(OpCodes.Ldarg_0),
+                new CodeInstruction(OpCodes.Ldarg_1),
                 new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(TerrainDef), nameof(TerrainDef.isPaintable))),
                 new CodeInstruction(OpCodes.Brtrue_S, label),
                 new CodeInstruction(OpCodes.Pop),
