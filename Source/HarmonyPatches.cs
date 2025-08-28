@@ -68,7 +68,7 @@ namespace NanameFloors
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             var codes = instructions.ToList();
-            var pos = codes.FindIndex(c => c.opcode == OpCodes.Call && c.operand as MethodInfo == AccessTools.PropertyGetter(typeof(DefDatabase<TerrainDef>), "AllDefs"));
+            var pos = codes.FindIndex(c => c.opcode == OpCodes.Call && (c.operand as MethodInfo) == AccessTools.PropertyGetter(typeof(DefDatabase<TerrainDef>), "AllDefs"));
             codes.Insert(pos + 1, CodeInstruction.Call(typeof(TerrainGrid_ExposeTerrainGrid_Patch), "ConcatDefs"));
             return codes;
         }
@@ -191,10 +191,10 @@ namespace NanameFloors
             if (subMesh != null && AllowRenderingFor(cellTerrain.def))
             {
                 int count = subMesh.verts.Count;
-                subMesh.verts.Add(new Vector3((float)intVec.x, y, (float)intVec.z));
-                subMesh.verts.Add(new Vector3((float)intVec.x, y, (float)(intVec.z + 1)));
-                subMesh.verts.Add(new Vector3((float)(intVec.x + 1), y, (float)(intVec.z + 1)));
-                subMesh.verts.Add(new Vector3((float)(intVec.x + 1), y, (float)intVec.z));
+                subMesh.verts.Add(new Vector3(intVec.x, y, intVec.z));
+                subMesh.verts.Add(new Vector3(intVec.x, y, intVec.z + 1));
+                subMesh.verts.Add(new Vector3(intVec.x + 1, y, intVec.z + 1));
+                subMesh.verts.Add(new Vector3(intVec.x + 1, y, intVec.z));
                 subMesh.colors.Add(Color.white);
                 subMesh.colors.Add(Color.white);
                 subMesh.colors.Add(Color.white);

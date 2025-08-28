@@ -1,4 +1,4 @@
-﻿    using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 using Verse;
 
@@ -21,9 +21,9 @@ namespace NanameFloors
             Widgets.CheckboxLabeled(Rect, "NAF.Settings.AllowPlaceFloor".Translate(), ref settings.allowPlaceFloor);
             var Rect2 = new Rect(inRect.x, Rect.yMax, inRect.width, Text.LineHeight);
             Widgets.Label(Rect2.LeftHalf(), "NAF.Settings.ButtonSize".Translate());
-            this.buttonSize = (int)NanameFloors.settings.buttonSize;
-            Widgets.IntEntry(Rect2.RightHalf(), ref this.buttonSize, ref this.buff, 1);
-            NanameFloors.settings.buttonSize = this.buttonSize;
+            buttonSize = (int)NanameFloors.settings.buttonSize;
+            Widgets.IntEntry(Rect2.RightHalf(), ref buttonSize, ref buff, 1);
+            NanameFloors.settings.buttonSize = buttonSize;
 
             var outRect = new Rect(inRect.x, Rect2.yMax, inRect.width, Text.LineHeight);
             outRect.yMax = inRect.yMax;
@@ -31,11 +31,11 @@ namespace NanameFloors
             Widgets.DrawMenuSection(outRect);
             var rect = new Rect(viewRect.x, viewRect.y, viewRect.width, Text.LineHeight);
             Widgets.BeginScrollView(outRect, ref scrollPosition, viewRect);
-            foreach(var terrainMask in TerrainMask.cachedTerrainMasks)
+            foreach (var terrainMask in TerrainMask.cachedTerrainMasks)
             {
                 Widgets.DrawTextureFitted(new Rect(rect.x, rect.y, Text.LineHeight, Text.LineHeight), terrainMask, 0.8f);
 
-                var labelRect = new Rect(rect.x + Text.LineHeight + 10f, rect.y, rect.width - Text.LineHeight * 2 - 20f, rect.height);
+                var labelRect = new Rect(rect.x + Text.LineHeight + 10f, rect.y, rect.width - (Text.LineHeight * 2) - 20f, rect.height);
                 Widgets.Label(labelRect, terrainMask.name.Translate().Truncate(labelRect.width));
 
                 var checkBoxRect = new Rect(rect.xMax - Text.LineHeight, rect.y, Text.LineHeight, Text.LineHeight);

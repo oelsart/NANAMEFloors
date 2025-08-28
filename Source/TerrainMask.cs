@@ -21,9 +21,9 @@ namespace NanameFloors
 
         public TerrainMask(string name, TerrainDef baseTerr, TerrainDef coverTerr)
         {
-            this.maskTextureName = name;
-            this.baseTerrain = baseTerr;
-            this.coverTerrain = coverTerr;
+            maskTextureName = name;
+            baseTerrain = baseTerr;
+            coverTerrain = coverTerr;
         }
 
         public void ExposeData()
