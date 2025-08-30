@@ -35,7 +35,7 @@ namespace NanameFloors
                 baseTerrain.PostLoad();
             }
 
-            newTerr.modExtensions = new List<DefModExtension>() { terrainMask };
+            newTerr.modExtensions = [terrainMask];
             DefGenerator.AddImpliedDef(newTerr);
         }
 
@@ -61,7 +61,7 @@ namespace NanameFloors
             }
             newTerr.defName = $"{baseTerrain.defName}_{terrainMask.maskTextureName}_{coverTerrain.defName}";
             newTerr.label = coverTerrain.label + "NAF.and".Translate() + baseTerrain.label;
-            newTerr.costList = new List<ThingDefCountClass>();
+            newTerr.costList = [];
             if (baseTerrain.CostList != null)
             {
                 newTerr.costList.AddRange(baseTerrain.CostList);

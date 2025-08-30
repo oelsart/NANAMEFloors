@@ -7,7 +7,7 @@ namespace NanameFloors
 {
     public class Settings : ModSettings
     {
-        public List<string> exceptMaskList = new List<string>();
+        public List<string> exceptMaskList = [];
         public Rect windowRect = new Rect(0f, 0f, 156f, 144f);
         public float buttonSize = 38f;
         public bool allowPlaceFloor = true;

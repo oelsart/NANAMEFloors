@@ -208,7 +208,7 @@ namespace NanameFloors
             }
         }
 
-        private static readonly Dictionary<(TerrainDef, bool, ColorDef, Texture2D), Material> terrainMatCache = new Dictionary<(TerrainDef, bool, ColorDef, Texture2D), Material>();
+        private static readonly Dictionary<(TerrainDef, bool, ColorDef, Texture2D), Material> terrainMatCache = [];
 
         private static readonly Type SectionLayer_Watergen = GenTypes.GetTypeInAnyAssembly("Verse.SectionLayer_Watergen", "Verse");
     }
@@ -227,8 +227,8 @@ namespace NanameFloors
 
             codes[pos].labels.Add(label);
             codes[pos + 1].labels.Add(label2);
-            codes.InsertRange(pos, new[]
-            {
+            codes.InsertRange(pos,
+            [
                 new CodeInstruction(OpCodes.Ldarg_1),
                 new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(TerrainDef), nameof(TerrainDef.isPaintable))),
                 new CodeInstruction(OpCodes.Brtrue_S, label),
@@ -236,7 +236,7 @@ namespace NanameFloors
                 new CodeInstruction(OpCodes.Pop),
                 new CodeInstruction(OpCodes.Pop),
                 new CodeInstruction(OpCodes.Br_S, label2)
-            });
+            ]);
             return codes;
         }
     }
@@ -252,15 +252,17 @@ namespace NanameFloors
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             var codes = instructions.ToList();
-            var pos = codes.FindIndex(c => c.opcode == OpCodes.Ldloc_S && ((LocalBuilder)c.operand).LocalIndex == 18);
+            var localBuilder = codes.Select(c => c.operand).OfType<LocalBuilder>().LastOrDefault(l => l.LocalType == typeof(Thing));
+            if (localBuilder is null) return codes;
+            var pos = codes.FindIndex(c => c.IsLdloc(localBuilder));
             var label = codes[pos + 2].operand;
 
-            codes.InsertRange(pos, new List<CodeInstruction>
-            {
+            codes.InsertRange(pos,
+            [
                 CodeInstruction.LoadArgument(0),
                 new CodeInstruction(OpCodes.Isinst, typeof(TerrainDef)),
                 new CodeInstruction(OpCodes.Brtrue_S, label)
-            });
+            ]);
 
             return codes;
         }
