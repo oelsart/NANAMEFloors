@@ -37,6 +37,14 @@ namespace NanameFloors
 
             newTerr.modExtensions = [terrainMask];
             DefGenerator.AddImpliedDef(newTerr);
+
+            if (newTerr.dominantStyleCategory != null && Find.World != null)
+            {
+                foreach (var ideo in Find.IdeoManager.IdeosListForReading)
+                {
+                    ideo.RecachePossibleBuildables();
+                }
+            }
         }
 
         private static BlendedTerrainDef BlendInner(TerrainMask terrainMask)
@@ -80,6 +88,11 @@ namespace NanameFloors
             GiveShortHash(newTerr, typeof(TerrainDef), takenHashesPerDeftype[typeof(TerrainDef)]);
             newTerr.modContentPack = NanameFloors.content;
             newTerr.edgeType = TerrainDef.TerrainEdgeType.Hard;
+            if (newTerr.dominantStyleCategory != null)
+            {
+                newTerr.dominantStyleCategory.addDesignators.Add(newTerr);
+                ((List<BuildableDef>)AccessTools.Field(typeof(StyleCategoryDef), "cachedAllDesignatorBuildables").GetValue(newTerr.dominantStyleCategory))?.Add(newTerr);
+            }
             return newTerr;
         }
 

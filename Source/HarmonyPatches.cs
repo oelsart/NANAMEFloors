@@ -141,19 +141,19 @@ namespace NanameFloors
             var codes = instructions.ToList();
             var m_MoveNext = AccessTools.Method(typeof(CellRect.Enumerator), nameof(CellRect.Enumerator.MoveNext));
             var pos = codes.FindIndex(c => c.Calls(m_MoveNext));
-            codes.InsertRange(pos, new[]
-            {
+            codes.InsertRange(pos,
+            [
                 CodeInstruction.LoadArgument(0),
                 CodeInstruction.LoadLocal(8),
                 CodeInstruction.LoadLocal(6),
                 CodeInstruction.Call(typeof(Patch_SectionLayer_Terrain_Regenerate), nameof(GenerateCover))
-            });
+            ]);
             return codes;
         }
 
         public static void GenerateCover(SectionLayer instance, CellTerrain cellTerrain, IntVec3 intVec)
         {
-            if (!(cellTerrain.def is BlendedTerrainDef blendedTerrainDef)) return;
+            if (cellTerrain.def is not BlendedTerrainDef blendedTerrainDef) return;
             Material GetMaterial()
             {
                 if (SectionLayer_Watergen.IsAssignableFrom(instance.GetType()))
