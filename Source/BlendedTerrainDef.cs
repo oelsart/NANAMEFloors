@@ -43,7 +43,7 @@ namespace NanameFloors
         {
             LongEventHandler.ExecuteWhenFinished(delegate
             {
-                TerrainMask terrainmask = GetModExtension<TerrainMask>();
+                var terrainmask = GetModExtension<TerrainMask>();
                 if (terrainmask == null) return;
 
                 BaseTerrain = terrainmask.baseTerrain;
@@ -64,7 +64,7 @@ namespace NanameFloors
                 MaskTex.mipMapBias = -2.5f;
                 if (CoverGraphic == null)
                 {
-                    Shader shader = BlendedTerrainUtil.GetBlendShader(CoverTerrain.Shader);
+                    var shader = BlendedTerrainUtil.GetBlendShader(CoverTerrain.Shader);
                     CoverGraphic = GraphicDatabase.Get<Graphic_Terrain>(CoverTerrain.texturePath, shader, Vector2.one, CoverTerrain.DrawColor, Color.white, null, maskPath);
                     if (shader == NAF_DefOf.TerrainFadeRoughBlend.Shader || shader == NAF_DefOf.TerrainWaterBlend.Shader)
                     {
@@ -79,7 +79,7 @@ namespace NanameFloors
                     CoverWaterDepthMaterial.SetTexture("_AlphaAddTex", TexGame.AlphaAddTex);
                     if (CoverTerrain.waterDepthShaderParameters != null)
                     {
-                        for (int j = 0; j < CoverTerrain.waterDepthShaderParameters.Count; j++)
+                        for (var j = 0; j < CoverTerrain.waterDepthShaderParameters.Count; j++)
                         {
                             CoverTerrain.waterDepthShaderParameters[j].Apply(CoverWaterDepthMaterial);
                         }
@@ -94,9 +94,9 @@ namespace NanameFloors
                     {
                         texture2D = ContentFinder<Texture2D>.Get(CoverTerrain.pollutionOverlayTexturePath, true);
                     }
-                    Shader shader = BlendedTerrainUtil.GetBlendShader(ShaderPolluted(CoverTerrain));
+                    var shader = BlendedTerrainUtil.GetBlendShader(ShaderPolluted(CoverTerrain));
                     CoverGraphicPolluted = GraphicDatabase.Get<Graphic_Terrain>(CoverTerrain.pollutedTexturePath ?? CoverTerrain.texturePath, shader, Vector2.one, CoverTerrain.DrawColor, Color.white, null, maskPath);
-                    Material matSingle = CoverGraphicPolluted.MatSingle;
+                    var matSingle = CoverGraphicPolluted.MatSingle;
                     if (texture2D != null)
                     {
                         matSingle.SetTexture("_BurnTex", texture2D);

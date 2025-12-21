@@ -46,7 +46,7 @@ namespace NanameFloors
             {
                 if (Input.GetMouseButton(0))
                 {
-                    Window window = Find.WindowStack.Windows.FirstOrDefault(w => w.ID == -9359779);
+                    var window = Find.WindowStack.Windows.FirstOrDefault(w => w.ID == -9359779);
                     windowRect = window.windowRect;
                 }
                 if (Input.GetMouseButtonUp(0))
@@ -69,9 +69,9 @@ namespace NanameFloors
             Widgets.BeginScrollView(outRect, ref scrollPosition, viewRect);
             foreach (var (terrainMaskTex, index) in terrainMasks.Select((t, i) => (t, i)))
             {
-                bool isSelected = terrainMaskTex == selectedMask;
-                Rect rect = new Rect(viewRect.x + (ButtonSize * (index % columnCount)), viewRect.y + (ButtonSize * (index / columnCount)), ButtonSize, ButtonSize);
-                Rect rect2 = rect.ContractedBy(5f);
+                var isSelected = terrainMaskTex == selectedMask;
+                var rect = new Rect(viewRect.x + (ButtonSize * (index % columnCount)), viewRect.y + (ButtonSize * (index / columnCount)), ButtonSize, ButtonSize);
+                var rect2 = rect.ContractedBy(5f);
                 Widgets.DrawTextureFitted(rect2, terrainMaskTex, 1f);
                 Widgets.DrawBox(rect2);
                 Widgets.DrawHighlightIfMouseover(rect);

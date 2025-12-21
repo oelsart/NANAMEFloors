@@ -11,7 +11,7 @@ using Verse;
 namespace NanameFloors
 {
     [StaticConstructorOnStartup]
-    class HarmonyPatches
+    internal class HarmonyPatches
     {
         static HarmonyPatches()
         {
@@ -28,19 +28,17 @@ namespace NanameFloors
         {
             __state = ___entDef;
             TerrainDef terrainDef;
-            if (NanameFloors.UI.selectedMask != null && (terrainDef = ___entDef as TerrainDef) != null)
+            if (NanameFloors.UI.selectedMask == null || (terrainDef = ___entDef as TerrainDef) == null) return;
+            var maskTextureName = NanameFloors.UI.selectedMask.name;
+            var baseTerr = c.GetTerrain(__instance.Map);
+            if (baseTerr is BlendedTerrainDef) baseTerr = baseTerr.GetModExtension<TerrainMask>().baseTerrain;
+            var defName = $"{baseTerr.defName}_{maskTextureName}_{terrainDef.defName}";
+            if (DefDatabase<BlendedTerrainDef>.GetNamedSilentFail(defName) == null)
             {
-                var maskTextureName = NanameFloors.UI.selectedMask.name;
-                var baseTerr = c.GetTerrain(__instance.Map);
-                if (baseTerr is BlendedTerrainDef) baseTerr = baseTerr.GetModExtension<TerrainMask>().baseTerrain;
-                var defName = $"{baseTerr.defName}_{maskTextureName}_{terrainDef.defName}";
-                if (DefDatabase<BlendedTerrainDef>.GetNamedSilentFail(defName) == null)
-                {
-                    var terrainMask = new TerrainMask(maskTextureName, baseTerr, terrainDef);
-                    BlendedTerrainUtil.MakeBlendedTerrain(terrainMask);
-                }
-                ___entDef = DefDatabase<BlendedTerrainDef>.GetNamed(defName);
+                var terrainMask = new TerrainMask(maskTextureName, baseTerr, terrainDef);
+                BlendedTerrainUtil.MakeBlendedTerrain(terrainMask);
             }
+            ___entDef = DefDatabase<BlendedTerrainDef>.GetNamed(defName);
         }
 
         public static void Postfix(ref BuildableDef ___entDef, BuildableDef __state)
@@ -79,7 +77,7 @@ namespace NanameFloors
         }
     }
 
-    [HarmonyPatch(typeof(MaterialPool), "MatFrom", new Type[] { typeof(MaterialRequest) })]
+    [HarmonyPatch(typeof(MaterialPool), "MatFrom", typeof(MaterialRequest))]
     public static class Patch_MaterialPool_MatFrom
     {
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -105,12 +103,13 @@ namespace NanameFloors
 
         public static Material ForceCreateMaterial(MaterialRequest req)
         {
-            Material material = new Material(req.shader);
-            material.name = req.shader.name;
+            var material = new Material(req.shader)
+            {
+                name = req.shader.name
+            };
             if (req.mainTex != null)
             {
-                Material material2 = material;
-                material2.name = material2.name + "_" + req.mainTex.name;
+                material.name = material.name + "_" + req.mainTex.name;
                 material.mainTexture = req.mainTex;
             }
             material.color = req.color;
@@ -122,12 +121,12 @@ namespace NanameFloors
             {
                 material.renderQueue = req.renderQueue;
             }
-            if (!req.shaderParameters.NullOrEmpty())
+
+            if (req.shaderParameters.NullOrEmpty()) return material;
+            
+            foreach (var t in req.shaderParameters)
             {
-                for (int i = 0; i < req.shaderParameters.Count; i++)
-                {
-                    req.shaderParameters[i].Apply(material);
-                }
+                t.Apply(material);
             }
             return material;
         }
@@ -154,43 +153,16 @@ namespace NanameFloors
         public static void GenerateCover(SectionLayer instance, CellTerrain cellTerrain, IntVec3 intVec)
         {
             if (cellTerrain.def is not BlendedTerrainDef blendedTerrainDef) return;
-            Material GetMaterial()
-            {
-                if (SectionLayer_Watergen.IsAssignableFrom(instance.GetType()))
-                {
-                    return blendedTerrainDef.CoverWaterDepthMaterial;
-                }
-
-                var coverTerrain = blendedTerrainDef.CoverTerrain;
-                var polluted = cellTerrain.polluted && cellTerrain.snowCoverage < 0.4f && cellTerrain.sandCoverage < 0.4f && blendedTerrainDef.CoverGraphicPolluted != BaseContent.BadGraphic;
-                var color = cellTerrain.color;
-                var key = (coverTerrain, polluted, color, blendedTerrainDef.MaskTex);
-                if (!terrainMatCache.ContainsKey(key))
-                {
-                    Graphic graphic = polluted ? blendedTerrainDef.CoverGraphicPolluted ?? blendedTerrainDef.CoverGraphic : blendedTerrainDef.CoverGraphic;
-                    if (color != null)
-                    {
-                        terrainMatCache[key] = graphic.GetColoredVersion(graphic.Shader, color.color, Color.white).MatSingle;
-                        terrainMatCache[key].SetTexture(ShaderPropertyIDs.MaskTex, blendedTerrainDef.MaskTex);
-                    }
-                    else
-                    {
-                        terrainMatCache[key] = graphic.MatSingle;
-                    }
-                }
-
-                return terrainMatCache[key];
-            }
 
             bool AllowRenderingFor(TerrainDef terrain)
             {
                 return DebugViewSettings.drawTerrainWater || !terrain.HasTag("Water");
             }
-            LayerSubMesh subMesh = instance.GetSubMesh(blendedTerrainDef.CoverTerrain.dontRender ? MatBases.ShadowMask : GetMaterial());
-            float y = AltitudeLayer.Terrain.AltitudeFor();
+            var subMesh = instance.GetSubMesh(blendedTerrainDef.CoverTerrain.dontRender ? MatBases.ShadowMask : GetMaterial());
+            var y = AltitudeLayer.Terrain.AltitudeFor();
             if (subMesh != null && AllowRenderingFor(cellTerrain.def))
             {
-                int count = subMesh.verts.Count;
+                var count = subMesh.verts.Count;
                 subMesh.verts.Add(new Vector3(intVec.x, y, intVec.z));
                 subMesh.verts.Add(new Vector3(intVec.x, y, intVec.z + 1));
                 subMesh.verts.Add(new Vector3(intVec.x + 1, y, intVec.z + 1));
@@ -205,6 +177,35 @@ namespace NanameFloors
                 subMesh.tris.Add(count);
                 subMesh.tris.Add(count + 2);
                 subMesh.tris.Add(count + 3);
+            }
+
+            return;
+
+            Material GetMaterial()
+            {
+                if (SectionLayer_Watergen.IsAssignableFrom(instance.GetType()))
+                {
+                    return blendedTerrainDef.CoverWaterDepthMaterial;
+                }
+
+                var coverTerrain = blendedTerrainDef.CoverTerrain;
+                var polluted = cellTerrain is { polluted: true, snowCoverage: < 0.4f, sandCoverage: < 0.4f } &&
+                               blendedTerrainDef.CoverGraphicPolluted != BaseContent.BadGraphic;
+                var color = cellTerrain.color;
+                var key = (coverTerrain, polluted, color, blendedTerrainDef.MaskTex);
+                if (terrainMatCache.TryGetValue(key, out var material)) return material;
+                var graphic = polluted ? blendedTerrainDef.CoverGraphicPolluted ?? blendedTerrainDef.CoverGraphic : blendedTerrainDef.CoverGraphic;
+                if (color != null)
+                {
+                    terrainMatCache[key] = graphic.GetColoredVersion(graphic.Shader, color.color, Color.white).MatSingle;
+                    terrainMatCache[key].SetTexture(ShaderPropertyIDs.MaskTex, blendedTerrainDef.MaskTex);
+                }
+                else
+                {
+                    terrainMatCache[key] = graphic.MatSingle;
+                }
+
+                return terrainMatCache[key];
             }
         }
 
