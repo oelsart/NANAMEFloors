@@ -1,0 +1,27 @@
+ManifestFileVersion: 0
+CRC: 3759437633
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 0a4ed5e8132dee356160156d3ea9546c
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 55d48f4ad9c3b13330b9eb5ee5686477
+HashAppended: 0
+ClassTypes:
+- Class: 48
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Data/NanameFloors/TerrainFadeRoughSoftLightBlend.shader
+- Assets/Data/NanameFloors/TerrainWaterPollutedBlend.shader
+- Assets/Data/NanameFloors/TerrainFadeBlend.shader
+- Assets/Data/NanameFloors/TerrainFadeLinearBurnBlend.shader
+- Assets/Data/NanameFloors/WaterDepthBlend.shader
+- Assets/Data/NanameFloors/TerrainFadeRoughBlend.shader
+- Assets/Data/NanameFloors/TerrainFadeRoughLinearAddBlend.shader
+- Assets/Data/NanameFloors/TerrainFadeRoughLinearBurnBlend.shader
+- Assets/Data/NanameFloors/TerrainHardLinearBurnBlend.shader
+- Assets/Data/NanameFloors/TerrainWaterBlend.shader
+- Assets/Data/NanameFloors/TerrainHardBlend.shader
+Dependencies: []
