@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using Verse;
 
@@ -6,6 +7,47 @@ namespace NanameFloors;
 
 public class NanameFloors : Mod
 {
+    public static ModContentPack content;
+    public static Settings settings;
+    public static UI_SelectTerrainShape UI;
+
+    private int buttonSize;
+    private string buff;
+    private Vector2 scrollPosition = Vector2.zero;
+
+    public static AssetBundle Bundle
+    {
+        get
+        {
+            if (field == null)
+            {
+                field = AssetBundle.LoadFromFile($@"{content.RootDir}\Shaders_1.5\oels_nanamefloors_shaders{PlatformInfo}");
+            }
+            return field;
+        }
+    }
+
+    private static string PlatformInfo
+    {
+        get
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return "_win";
+            }
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                return "_linux";
+            }
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                return "_mac";
+            }
+            Log.Error($"[VehicleMapFramework] {RuntimeInformation.OSDescription} is not supported platform. Please let the mod author know the OS info.");
+            return null;
+        }
+    }
+    
     public NanameFloors(ModContentPack content) : base(content)
     {
         settings = GetSettings<Settings>();
@@ -62,16 +104,4 @@ public class NanameFloors : Mod
     {
         return "Naname Floors";
     }
-
-    public static ModContentPack content;
-
-    public static Settings settings;
-
-    public static UI_SelectTerrainShape UI;
-
-    private int buttonSize;
-
-    private string buff;
-
-    private Vector2 scrollPosition = Vector2.zero;
 }

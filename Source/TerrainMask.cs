@@ -117,7 +117,7 @@ public class TerrainMask : DefModExtension, IExposable
                         OldSuffix._NorthWest => Rot4.West,
                         _ => Rot4.North
                     };
-                    name = name[..^suffixName.Length];
+                    name = name.Substring(0, name.Length - suffixName.Length);
                 }
             }
         

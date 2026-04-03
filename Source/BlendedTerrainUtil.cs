@@ -1,7 +1,7 @@
-﻿using HarmonyLib;
-using RimWorld;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using HarmonyLib;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -119,65 +119,65 @@ public static class BlendedTerrainUtil
         }
         if (shader == ShaderDatabase.TerrainHard)
         {
-            return NAF_DefOf.TerrainHardBlend.Shader;
+            return AddedShaders.TerrainHardBlend;
         }
         if (shader == ShaderDatabase.TerrainFade)
         {
-            return NAF_DefOf.TerrainFadeBlend.Shader;
+            return AddedShaders.TerrainFadeBlend;
         }
         if (shader == ShaderDatabase.TerrainWater)
         {
-            return NAF_DefOf.TerrainWaterBlend.Shader;
+            return AddedShaders.TerrainWaterBlend;
         }
         if (shader == ShaderDatabase.TerrainFadeRough)
         {
-            return NAF_DefOf.TerrainFadeRoughBlend.Shader;
+            return AddedShaders.TerrainFadeRoughBlend;
         }
         if (shader == ShaderTypeDefOf.TerrainFadeRoughLinearAdd.Shader)
         {
-            return NAF_DefOf.TerrainFadeRoughLinearAddBlend.Shader;
+            return AddedShaders.TerrainFadeRoughLinearAddBlend;
         }
         if (shader == DefDatabase<ShaderTypeDef>.GetNamed("TerrainFadeRoughSoftLight", false)?.Shader)
         {
-            return NAF_DefOf.TerrainFadeRoughSoftLightBlend.Shader;
+            return AddedShaders.TerrainFadeRoughSoftLightBlend;
         }
         if (shader == ShaderDatabase.LoadShader("Map/WaterDepth"))
         {
-            return NAF_DefOf.WaterDepthBlend.Shader;
+            return AddedShaders.WaterDepthBlend;
         }
         if (ModsConfig.BiotechActive)
         {
             if (shader == ShaderDatabase.TerrainHardPolluted)
             {
-                return NAF_DefOf.TerrainHardLinearBurnBlend.Shader;
+                return AddedShaders.TerrainHardLinearBurnBlend;
             }
             if (shader == ShaderDatabase.TerrainFadePolluted)
             {
-                return NAF_DefOf.TerrainFadeLinearBurnBlend.Shader;
+                return AddedShaders.TerrainFadeLinearBurnBlend;
             }
             if (shader == ShaderDatabase.TerrainFadeRoughPolluted)
             {
-                return NAF_DefOf.TerrainFadeRoughLinearBurnBlend.Shader;
+                return AddedShaders.TerrainFadeRoughLinearBurnBlend;
             }
             if (shader == DefDatabase<ShaderTypeDef>.GetNamed("TerrainWaterPolluted", false)?.Shader)
             {
-                return NAF_DefOf.TerrainWaterPollutedBlend.Shader;
+                return AddedShaders.TerrainWaterPollutedBlend;
             }
         }
         Log.Warning($"[NanameFloors] {shader.name} is unsupported terrain shader. Using TerrainHardBlend instead.");
-        return NAF_DefOf.TerrainHardBlend.Shader;
+        return AddedShaders.TerrainHardBlend;
     }
 
     public static bool IsAddedShader(Shader shader)
     {
-        return shader == NAF_DefOf.TerrainHardBlend.Shader || shader == NAF_DefOf.TerrainFadeBlend.Shader || shader == NAF_DefOf.TerrainWaterBlend.Shader ||
-               shader == NAF_DefOf.TerrainFadeRoughBlend.Shader || shader == NAF_DefOf.TerrainFadeRoughLinearAddBlend.Shader || shader == NAF_DefOf.TerrainFadeRoughSoftLightBlend.Shader ||
-               shader == NAF_DefOf.WaterDepthBlend.Shader || shader == NAF_DefOf.TerrainHardLinearBurnBlend.Shader || shader == NAF_DefOf.TerrainFadeLinearBurnBlend.Shader ||
-               shader == NAF_DefOf.TerrainFadeRoughLinearBurnBlend.Shader || shader == NAF_DefOf.TerrainWaterPollutedBlend.Shader;
+        return shader == AddedShaders.TerrainHardBlend || shader == AddedShaders.TerrainFadeBlend || shader == AddedShaders.TerrainWaterBlend ||
+               shader == AddedShaders.TerrainFadeRoughBlend || shader == AddedShaders.TerrainFadeRoughLinearAddBlend || shader == AddedShaders.TerrainFadeRoughSoftLightBlend ||
+               shader == AddedShaders.WaterDepthBlend || shader == AddedShaders.TerrainHardLinearBurnBlend || shader == AddedShaders.TerrainFadeLinearBurnBlend ||
+               shader == AddedShaders.TerrainFadeRoughLinearBurnBlend || shader == AddedShaders.TerrainWaterPollutedBlend;
     }
 
     extension(BuildableDef def)
     {
-        public bool IsNanameSupported => def is TerrainDef { isFoundation: false };
+        public bool IsNanameSupported => def is TerrainDef { bridge: false };
     }
 }

@@ -18,10 +18,8 @@ public class BlendedTerrains(Game game) : GameComponent
                 foreach (var c in map.AllCells)
                 {
                     var ind = map.cellIndices.CellToIndex(c);
-                    yield return terrainGrid.TopTerrainAt(ind);
-                    yield return terrainGrid.FoundationAt(ind);
+                    yield return terrainGrid.TerrainAt(ind);
                     yield return terrainGrid.UnderTerrainAt(ind);
-                    yield return terrainGrid.TempTerrainAt(ind);
                 }
             }
 

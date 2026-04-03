@@ -5,6 +5,12 @@ namespace NanameFloors;
 
 public class BlendedTerrainDef : TerrainDef
 {
+    private static readonly int AlphaAddTex = Shader.PropertyToID("_AlphaAddTex");
+    private static readonly int BurnTex = Shader.PropertyToID("_BurnTex");
+    private static readonly int ScrollSpeed = Shader.PropertyToID("_ScrollSpeed");
+    private static readonly int BurnScale = Shader.PropertyToID("_BurnScale");
+    private static readonly int PollutionTintColor = Shader.PropertyToID("_PollutionTintColor");
+
     public TerrainDef BaseTerrain { get; private set; }
 
     public TerrainDef CoverTerrain { get; private set; }
@@ -59,9 +65,9 @@ public class BlendedTerrainDef : TerrainDef
             {
                 var shader = CoverTerrain.Shader.GetBlendShader();
                 CoverGraphic = GraphicDatabase.Get<Graphic_Terrain>(CoverTerrain.texturePath, shader, Vector2.one, CoverTerrain.DrawColor, Color.white, null, maskPath);
-                if (shader == NAF_DefOf.TerrainFadeRoughBlend.Shader || shader == NAF_DefOf.TerrainWaterBlend.Shader)
+                if (shader == AddedShaders.TerrainFadeRoughBlend || shader == AddedShaders.TerrainWaterBlend)
                 {
-                    CoverGraphic.MatSingle.SetTexture(ShaderPropertyIDs.AlphaAddTex, TexGame.AlphaAddTex);
+                    CoverGraphic.MatSingle.SetTexture(AlphaAddTex, TexGame.AlphaAddTex);
                 }
                 CoverGraphic.MatSingle.SetTexture(ShaderPropertyIDs.MaskTex, MaskTex);
                 CoverGraphic.MatSingle.renderQueue = 2000;
@@ -69,7 +75,7 @@ public class BlendedTerrainDef : TerrainDef
             if (!CoverTerrain.waterDepthShader.NullOrEmpty())
             {
                 CoverWaterDepthMaterial = new Material(ShaderDatabase.LoadShader(CoverTerrain.waterDepthShader).GetBlendShader());
-                CoverWaterDepthMaterial.SetTexture(ShaderPropertyIDs.AlphaAddTex, TexGame.AlphaAddTex);
+                CoverWaterDepthMaterial.SetTexture(AlphaAddTex, TexGame.AlphaAddTex);
                 if (CoverTerrain.waterDepthShaderParameters != null)
                 {
                     for (var j = 0; j < CoverTerrain.waterDepthShaderParameters.Count; j++)
@@ -92,15 +98,15 @@ public class BlendedTerrainDef : TerrainDef
                 var matSingle = CoverGraphicPolluted.MatSingle;
                 if (texture2D != null)
                 {
-                    matSingle.SetTexture(ShaderPropertyIDs.BurnTex, texture2D);
+                    matSingle.SetTexture(BurnTex, texture2D);
                 }
                 //matSingle.SetColor("_BurnColor", CoverTerrain.pollutionColor);
-                matSingle.SetVector(ShaderPropertyIDs.ScrollSpeed, CoverTerrain.pollutionOverlayScrollSpeed);
-                matSingle.SetVector(ShaderPropertyIDs.BurnScale, CoverTerrain.pollutionOverlayScale);
-                matSingle.SetColor(ShaderPropertyIDs.PollutionTintColor, CoverTerrain.pollutionTintColor);
-                if (shader == NAF_DefOf.TerrainFadeRoughLinearBurnBlend.Shader)
+                matSingle.SetVector(ScrollSpeed, CoverTerrain.pollutionOverlayScrollSpeed);
+                matSingle.SetVector(BurnScale, CoverTerrain.pollutionOverlayScale);
+                matSingle.SetColor(PollutionTintColor, CoverTerrain.pollutionTintColor);
+                if (shader == AddedShaders.TerrainFadeRoughLinearBurnBlend)
                 {
-                    matSingle.SetTexture(ShaderPropertyIDs.AlphaAddTex, TexGame.AlphaAddTex);
+                    matSingle.SetTexture(AlphaAddTex, TexGame.AlphaAddTex);
                 }
                 matSingle.SetTexture(ShaderPropertyIDs.MaskTex, MaskTex);
                 matSingle.renderQueue = 2000;

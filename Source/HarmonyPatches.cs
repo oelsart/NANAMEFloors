@@ -1,15 +1,14 @@
-﻿using HarmonyLib;
-using RimWorld;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using RimWorld.Planet;
+using HarmonyLib;
+using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
-using CollectionExtensions = HarmonyLib.CollectionExtensions;
+using Verse.Steam;
 
 namespace NanameFloors;
 
@@ -70,11 +69,51 @@ public static class Patch_Designator_Place_DoExtraGuiControls
     {
         if (__instance.PlacingDef.IsNanameSupported)
         {
-            DesignatorUtility.GUIDoRotationControls(leftX, bottomY, NanameFloors.UI.rotation, rot =>
+            GUIDoRotationControls(leftX, bottomY, NanameFloors.UI.rotation, rot =>
             {
                 NanameFloors.UI.rotation = rot;
             });
         }
+    }
+    
+    public static void GUIDoRotationControls(float leftX, float bottomY, Rot4 rot, Action<Rot4> rotSetter)
+    {
+        var winRect = new Rect(leftX, bottomY - 90f, 200f, 90f);
+        Find.WindowStack.ImmediateWindow(619483, winRect, WindowLayer.GameUI, () =>
+        {
+            var rotationDirection = RotationDirection.None;
+            Text.Anchor = TextAnchor.MiddleCenter;
+            Text.Font = GameFont.Medium;
+            var rect = new Rect(winRect.width / 2f - 64f - 5f, 15f, 64f, 64f);
+            if (Widgets.ButtonImage(rect, TexUI.RotLeftTex))
+            {
+                SoundDefOf.DragSlider.PlayOneShotOnCamera();
+                rotationDirection = RotationDirection.Counterclockwise;
+                Event.current.Use();
+            }
+            if (!SteamDeck.IsSteamDeck)
+            {
+                Widgets.Label(rect, KeyBindingDefOf.Designator_RotateLeft.MainKeyLabel);
+            }
+            var rect2 = new Rect(winRect.width / 2f + 5f, 15f, 64f, 64f);
+            if (Widgets.ButtonImage(rect2, TexUI.RotRightTex))
+            {
+                SoundDefOf.DragSlider.PlayOneShotOnCamera();
+                rotationDirection = RotationDirection.Clockwise;
+                Event.current.Use();
+            }
+            if (!SteamDeck.IsSteamDeck)
+            {
+                Widgets.Label(rect2, KeyBindingDefOf.Designator_RotateRight.MainKeyLabel);
+            }
+            if (rotationDirection != RotationDirection.None)
+            {
+                rot.Rotate(rotationDirection);
+                rotSetter(rot);
+            }
+            Text.Anchor = TextAnchor.UpperLeft;
+            Text.Font = GameFont.Small;
+        });
     }
 }
 
@@ -136,7 +175,8 @@ public static class TerrainGrid_ExposeTerrainGrid_Patch
             .MatchStartForward(
                 CodeMatch.Calls(AccessTools.PropertyGetter(typeof(DefDatabase<TerrainDef>),
                     nameof(DefDatabase<>.AllDefs))))
-            .InsertAfter(CodeInstruction.Call(typeof(TerrainGrid_ExposeTerrainGrid_Patch), nameof(ConcatDefs)))
+            .Advance(1)
+            .Insert(CodeInstruction.Call(typeof(TerrainGrid_ExposeTerrainGrid_Patch), nameof(ConcatDefs)))
             .InstructionEnumeration();
     }
 
@@ -146,78 +186,62 @@ public static class TerrainGrid_ExposeTerrainGrid_Patch
     }
 }
 
-    [HarmonyPatch(typeof(MaterialPool), "MatFrom", new Type[] { typeof(MaterialRequest) })]
-    public static class Patch_MaterialPool_MatFrom
+[HarmonyPatch(typeof(MaterialPool), "MatFrom", typeof(MaterialRequest))]
+public static class Patch_MaterialPool_MatFrom
+{
+    public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
     {
-        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
-        {
-            var codes = instructions.ToList();
-            var f_colorTwo = AccessTools.Field(typeof(MaterialRequest), "colorTwo");
-            var pos = codes.FindIndex(c => c.StoresField(f_colorTwo)) + 1;
-            var label = generator.DefineLabel();
+        var codes = instructions.ToList();
+        var f_colorTwo = AccessTools.Field(typeof(MaterialRequest), "colorTwo");
+        var pos = codes.FindIndex(c => c.StoresField(f_colorTwo)) + 1;
+        var label = generator.DefineLabel();
 
-            codes[pos].labels.Add(label);
-            codes.InsertRange(pos, new[]
-            {
-                new CodeInstruction(OpCodes.Ldarg_0),
-                CodeInstruction.LoadField(typeof(MaterialRequest), "shader"),
-                CodeInstruction.Call(typeof(AddedShaders), nameof(AddedShaders.IsAddedShader)),
-                new CodeInstruction(OpCodes.Brfalse_S, label),
-                new CodeInstruction(OpCodes.Ldarg_0),
-                CodeInstruction.Call(typeof(Patch_MaterialPool_MatFrom), nameof(ForceCreateMaterial)),
-                new CodeInstruction(OpCodes.Ret)
-            });
-            return codes;
-        }
-
-        public static Material ForceCreateMaterial(MaterialRequest req)
-        {
-            Material material = new Material(req.shader);
-            material.name = req.shader.name;
-            if (req.mainTex != null)
-            {
-                Material material2 = material;
-                material2.name = material2.name + "_" + req.mainTex.name;
-                material.mainTexture = req.mainTex;
-            }
-            material.color = req.color;
-            if (req.maskTex != null)
-            {
-                material.SetTexture(ShaderPropertyIDs.MaskTex, req.maskTex);
-            }
-            if (req.renderQueue != 0)
-            {
-                material.renderQueue = req.renderQueue;
-            }
-            if (!req.shaderParameters.NullOrEmpty())
-            {
-                for (int i = 0; i < req.shaderParameters.Count; i++)
-                {
-                    req.shaderParameters[i].Apply(material);
-                }
-            }
-            return material;
-        }
+        codes[pos].labels.Add(label);
+        codes.InsertRange(pos,
+        [
+            new CodeInstruction(OpCodes.Ldarg_0),
+            CodeInstruction.LoadField(typeof(MaterialRequest), "shader"),
+            CodeInstruction.Call(typeof(AddedShaders), nameof(AddedShaders.IsAddedShader)),
+            new CodeInstruction(OpCodes.Brfalse_S, label),
+            new CodeInstruction(OpCodes.Ldarg_0),
+            CodeInstruction.Call(typeof(Patch_MaterialPool_MatFrom), nameof(ForceCreateMaterial)),
+            new CodeInstruction(OpCodes.Ret)
+        ]);
+        return codes;
     }
 
-    [HarmonyPatch("Verse.SectionLayer_Terrain", "Regenerate")]
-    public static class Patch_SectionLayer_Terrain_Regenerate
+    public static Material ForceCreateMaterial(MaterialRequest req)
     {
-        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        var material = new Material(req.shader)
         {
-            var codes = instructions.ToList();
-            var m_MoveNext = AccessTools.Method(typeof(CellRect.Enumerator), nameof(CellRect.Enumerator.MoveNext));
-            var pos = codes.FindIndex(c => c.Calls(m_MoveNext));
-            codes.InsertRange(pos, new[]
-            {
-                CodeInstruction.LoadArgument(0),
-                CodeInstruction.LoadLocal(2),
-                CodeInstruction.LoadLocal(10),
-                CodeInstruction.Call(typeof(Patch_SectionLayer_Terrain_Regenerate), nameof(GenerateCover))
-            });
-            return codes;
+            name = req.shader.name
+        };
+        if (req.mainTex != null)
+        {
+            material.name = material.name + "_" + req.mainTex.name;
+            material.mainTexture = req.mainTex;
         }
-[HarmonyPatch(typeof(SectionLayer_Terrain), nameof(SectionLayer_Terrain.Regenerate))]
+        material.color = req.color;
+        if (req.maskTex != null)
+        {
+            material.SetTexture(ShaderPropertyIDs.MaskTex, req.maskTex);
+        }
+        if (req.renderQueue != 0)
+        {
+            material.renderQueue = req.renderQueue;
+        }
+        if (!req.shaderParameters.NullOrEmpty())
+        {
+            for (var i = 0; i < req.shaderParameters.Count; i++)
+            {
+                req.shaderParameters[i].Apply(material);
+            }
+        }
+        return material;
+    }
+}
+
+[HarmonyPatch("Verse.SectionLayer_Terrain", "Regenerate")]
 public static class Patch_SectionLayer_Terrain_Regenerate
 {
     private static readonly Dictionary<(TerrainDef, bool, ColorDef, Texture2D), Material> terrainMatCache = [];
@@ -231,8 +255,8 @@ public static class Patch_SectionLayer_Terrain_Regenerate
         codes.InsertRange(pos,
         [
             CodeInstruction.LoadArgument(0),
-            CodeInstruction.LoadLocal(8),
-            CodeInstruction.LoadLocal(6),
+            CodeInstruction.LoadLocal(2),
+            CodeInstruction.LoadLocal(10),
             CodeInstruction.Call(typeof(Patch_SectionLayer_Terrain_Regenerate), nameof(GenerateCover))
         ]);
         return codes;
@@ -242,7 +266,7 @@ public static class Patch_SectionLayer_Terrain_Regenerate
     {
         if (cellTerrain.def is not BlendedTerrainDef blendedTerrainDef) return;
 
-        var subMesh = instance.GetSubMesh(blendedTerrainDef.CoverTerrain.dontRender ? MatBases.ShadowMask : GetMaterial());
+        var subMesh = instance.GetSubMesh(GetMaterial());
         var y = AltitudeLayer.Terrain.AltitudeFor();
         if (subMesh != null && AllowRenderingFor(cellTerrain.def))
         {
@@ -278,26 +302,8 @@ public static class Patch_SectionLayer_Terrain_Regenerate
                 return blendedTerrainDef.CoverWaterDepthMaterial;
             }
 
-                var baseTerrain = blendedTerrainDef.BaseTerrain;
-                var coverTerrain = blendedTerrainDef.CoverTerrain;
-                var polluted = cellTerrain.polluted && cellTerrain.snowCoverage < 0.4f && blendedTerrainDef.CoverGraphicPolluted != BaseContent.BadGraphic;
-                var color = cellTerrain.color;
-                var key = (coverTerrain, polluted, color, blendedTerrainDef.MaskTex);
-                if (!terrainMatCache.ContainsKey(key))
-                {
-                    Graphic graphic = polluted ? blendedTerrainDef.CoverGraphicPolluted ?? blendedTerrainDef.CoverGraphic : blendedTerrainDef.CoverGraphic;
-                    if (color != null && coverTerrain.isPaintable)
-                    {
-                        terrainMatCache[key] = graphic.GetColoredVersion(graphic.Shader, color.color, Color.white).MatSingle;
-                        terrainMatCache[key].SetTexture(ShaderPropertyIDs.MaskTex, blendedTerrainDef.MaskTex);
-                    }
-                    else
-                    {
-                        terrainMatCache[key] = graphic.MatSingle;
-                    }
-                }
             var coverTerrain = blendedTerrainDef.CoverTerrain;
-            var polluted = cellTerrain is { polluted: true, snowCoverage: < 0.4f, sandCoverage: < 0.4f } &&
+            var polluted = cellTerrain is { polluted: true, snowCoverage: < 0.4f } &&
                            blendedTerrainDef.CoverGraphicPolluted != BaseContent.BadGraphic;
             var color = cellTerrain.color;
             var key = (coverTerrain, polluted, color, blendedTerrainDef.MaskTex);
@@ -329,13 +335,23 @@ public static class Patch_TerrainGrid_GetMaterial
         var pos = codes.FindIndex(c => c.Calls(m_GetColoredVersion));
         var label = generator.DefineLabel();
         var label2 = generator.DefineLabel();
+        var blendedTerrainDef = generator.DeclareLocal(typeof(BlendedTerrainDef));
+        var label3 = generator.DefineLabel();
 
         codes[pos].labels.Add(label);
         codes[pos + 1].labels.Add(label2);
         codes.InsertRange(pos,
         [
             new CodeInstruction(OpCodes.Ldarg_1),
-            new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(TerrainDef), nameof(TerrainDef.isPaintable))),
+            new CodeInstruction(OpCodes.Dup),
+            new CodeInstruction(OpCodes.Isinst, typeof(BlendedTerrainDef)),
+            new CodeInstruction(OpCodes.Stloc_S, blendedTerrainDef),
+            new CodeInstruction(OpCodes.Ldloc_S, blendedTerrainDef),
+            new CodeInstruction(OpCodes.Brfalse_S, label3),
+            new CodeInstruction(OpCodes.Pop),
+            new CodeInstruction(OpCodes.Ldloc_S, blendedTerrainDef),
+            new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(BlendedTerrainDef), nameof(BlendedTerrainDef.BaseTerrain))),
+            new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(TerrainDef), nameof(TerrainDef.isPaintable))).WithLabels(label3),
             new CodeInstruction(OpCodes.Brtrue_S, label),
             new CodeInstruction(OpCodes.Pop),
             new CodeInstruction(OpCodes.Pop),
@@ -346,51 +362,6 @@ public static class Patch_TerrainGrid_GetMaterial
     }
 }
 
-    //斜め床の下のTerrainが着色されるのを防ぐためにisPaintableじゃなければGetColoredVersionをスキップするパッチ
-    [HarmonyPatch(typeof(TerrainGrid), nameof(TerrainGrid.GetMaterial))]
-    public static class Patch_TerrainGrid_GetMaterial
-    {
-        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
-        {
-            var codes = instructions.ToList();
-            var m_GetColoredVersion = AccessTools.Method(typeof(Graphic), nameof(Graphic.GetColoredVersion));
-            var pos = codes.FindIndex(c => c.Calls(m_GetColoredVersion));
-            var label = generator.DefineLabel();
-            var label2 = generator.DefineLabel();
-            var blendedTerrainDef = generator.DeclareLocal(typeof(BlendedTerrainDef));
-            var label3 = generator.DefineLabel();
-
-            codes[pos].labels.Add(label);
-            codes[pos + 1].labels.Add(label2);
-            codes.InsertRange(pos, new[]
-            {
-                new CodeInstruction(OpCodes.Ldarg_1),
-                new CodeInstruction(OpCodes.Dup),
-                new CodeInstruction(OpCodes.Isinst, typeof(BlendedTerrainDef)),
-                new CodeInstruction(OpCodes.Stloc_S, blendedTerrainDef),
-                new CodeInstruction(OpCodes.Ldloc_S, blendedTerrainDef),
-                new CodeInstruction(OpCodes.Brfalse_S, label3),
-                new CodeInstruction(OpCodes.Pop),
-                new CodeInstruction(OpCodes.Ldloc_S, blendedTerrainDef),
-                new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(BlendedTerrainDef), nameof(BlendedTerrainDef.BaseTerrain))),
-                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(TerrainDef), nameof(TerrainDef.isPaintable))).WithLabels(label3),
-                new CodeInstruction(OpCodes.Brtrue_S, label),
-                new CodeInstruction(OpCodes.Pop),
-                new CodeInstruction(OpCodes.Pop),
-                new CodeInstruction(OpCodes.Pop),
-                new CodeInstruction(OpCodes.Br_S, label2)
-            });
-            return codes;
-        }
-    }
-
-    [HarmonyPatch(typeof(GenConstruct), "CanPlaceBlueprintAt_NewTemp")]
-    public static class Patch_GenConstruct_CanPlaceBlueprintAt_NewTemp
-    {
-        public static bool Prepare()
-        {
-            return NanameFloors.settings.allowPlaceFloor;
-        }
 [HarmonyPatch(typeof(GenConstruct), "CanPlaceBlueprintAt")]
 public static class Patch_GenConstruct_CanPlaceBlueprintAt
 {
@@ -415,31 +386,5 @@ public static class Patch_GenConstruct_CanPlaceBlueprintAt
         ]);
 
         return codes;
-    }
-}
-
-[HarmonyPatch(typeof(Gravship), nameof(Gravship.Terrains), MethodType.Getter)]
-public static class Patch_Gravship_Terrains
-{
-    private static bool Prepare => ModsConfig.OdysseyActive;
-
-    public static void Prefix(Rot4 ___tmpTerrainRot, ref Rot4 __state)
-    {
-        __state = ___tmpTerrainRot;
-    }
-
-    public static void Postfix(Rot4 ___tmpTerrainRot, Rot4 __state, Dictionary<IntVec3, TerrainDef> __result)
-    {
-        if (___tmpTerrainRot != __state)
-        {
-            var relativeRotation = Rot4.GetRelativeRotation(__state, ___tmpTerrainRot);
-            foreach (var key in __result.Keys.ToArray())
-            {
-                if (__result[key] is BlendedTerrainDef blendedTerrainDef)
-                {
-                    __result[key] = blendedTerrainDef.Rotated(relativeRotation);
-                }
-            }
-        }
     }
 }

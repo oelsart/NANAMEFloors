@@ -21,8 +21,8 @@
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Krafs.Rimworld.Ref" Version="1.6.4566" />
-    <PackageReference Include="Lib.Harmony.Ref" Version="2.4.1" />
+    <PackageReference Include="Krafs.Rimworld.Ref" Version="1.5.4409" />
+    <PackageReference Include="Lib.Harmony.Ref" Version="2.3.3" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="NanameFloors_Unity\Library\**" />
@@ -33,6 +33,9 @@
     <Compile Remove="NanameFloors_Unity\Temp\**" />
     <Compile Remove="NanameFloors_Unity\UserSettings\**" />
     <Compile Remove="NanameFloors_Unity\**" />
+    <Compile Remove="NanameFloors_Unity1.5\**" />
+    <Compile Remove="LegacyShaders\**" />
+    <Compile Remove="packages\**" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Remove="NanameFloors_Unity\Library\**" />
@@ -43,6 +46,9 @@
     <EmbeddedResource Remove="NanameFloors_Unity\Temp\**" />
     <EmbeddedResource Remove="NanameFloors_Unity\UserSettings\**" />
     <EmbeddedResource Remove="NanameFloors_Unity\**" />
+    <EmbeddedResource Remove="NanameFloors_Unity1.5\**" />
+    <EmbeddedResource Remove="LegacyShaders\**" />
+    <EmbeddedResource Remove="packages\**" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="NanameFloors_Unity\Library\**" />
@@ -56,5 +62,8 @@
     <None Remove="NanameFloors_Unity\Unity.gitignore" />
     <None Remove="NanameFloors.csproj.DotSettings" />
     <None Remove="NanameFloors_Unity\**" />
+    <None Remove="NanameFloors_Unity1.5\**" />
+    <None Remove="LegacyShaders\**" />
+    <None Remove="packages\**" />
   </ItemGroup>
 </Project>
