@@ -173,8 +173,7 @@ public static class TerrainGrid_ExposeTerrainGrid_Patch
     {
         return new CodeMatcher(instructions)
             .MatchStartForward(
-                CodeMatch.Calls(AccessTools.PropertyGetter(typeof(DefDatabase<TerrainDef>),
-                    nameof(DefDatabase<>.AllDefs))))
+                new CodeMatch(OpCodes.Call, AccessTools.PropertyGetter(typeof(DefDatabase<TerrainDef>), nameof(DefDatabase<>.AllDefs))))
             .Advance(1)
             .Insert(CodeInstruction.Call(typeof(TerrainGrid_ExposeTerrainGrid_Patch), nameof(ConcatDefs)))
             .InstructionEnumeration();
@@ -254,9 +253,9 @@ public static class Patch_SectionLayer_Terrain_Regenerate
         var pos = codes.FindIndex(c => c.Calls(m_MoveNext));
         codes.InsertRange(pos,
         [
-            CodeInstruction.LoadArgument(0),
-            CodeInstruction.LoadLocal(2),
-            CodeInstruction.LoadLocal(10),
+            new CodeInstruction(OpCodes.Ldarg_0),
+            new CodeInstruction(OpCodes.Ldloc_2),
+            new CodeInstruction(OpCodes.Ldloc_S, 10),
             CodeInstruction.Call(typeof(Patch_SectionLayer_Terrain_Regenerate), nameof(GenerateCover))
         ]);
         return codes;
@@ -380,7 +379,7 @@ public static class Patch_GenConstruct_CanPlaceBlueprintAt
 
         codes.InsertRange(pos,
         [
-            CodeInstruction.LoadArgument(0),
+            new CodeInstruction(OpCodes.Ldarg_0),
             new CodeInstruction(OpCodes.Isinst, typeof(TerrainDef)),
             new CodeInstruction(OpCodes.Brtrue_S, label)
         ]);

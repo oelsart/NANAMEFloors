@@ -10,8 +10,8 @@ namespace NanameFloors;
 public static class BlendedTerrainUtil
 {
     private static readonly Action<Def, Type, HashSet<ushort>> GiveShortHash = (Action<Def, Type, HashSet<ushort>>)AccessTools.Method(typeof(ShortHashGiver), "GiveShortHash").CreateDelegate(typeof(Action<Def, Type, HashSet<ushort>>));
-    private static readonly Func<TerrainDef, bool, ThingDef> NewBlueprintDef_Terrain = (Func<TerrainDef, bool, ThingDef>)AccessTools.Method(typeof(ThingDefGenerator_Buildings), "NewBlueprintDef_Terrain").CreateDelegate(typeof(Func<TerrainDef, bool, ThingDef>));
-    private static readonly Func<TerrainDef, bool, ThingDef> NewFrameDef_Terrain = (Func<TerrainDef, bool, ThingDef>)AccessTools.Method(typeof(ThingDefGenerator_Buildings), "NewFrameDef_Terrain").CreateDelegate(typeof(Func<TerrainDef, bool, ThingDef>));
+    private static readonly Func<TerrainDef, ThingDef> NewBlueprintDef_Terrain = (Func<TerrainDef, ThingDef>)AccessTools.Method(typeof(ThingDefGenerator_Buildings), "NewBlueprintDef_Terrain").CreateDelegate(typeof(Func<TerrainDef, ThingDef>));
+    private static readonly Func<TerrainDef, ThingDef> NewFrameDef_Terrain = (Func<TerrainDef, ThingDef>)AccessTools.Method(typeof(ThingDefGenerator_Buildings), "NewFrameDef_Terrain").CreateDelegate(typeof(Func<TerrainDef, ThingDef>));
     private static readonly Dictionary<Type, HashSet<ushort>> takenHashesPerDeftype = AccessTools.StaticFieldRefAccess<Dictionary<Type, HashSet<ushort>>>(typeof(ShortHashGiver), "takenHashesPerDeftype");
  
     public static void MakeBlendedTerrain(TerrainMask terrainMask)
@@ -26,11 +26,11 @@ public static class BlendedTerrainUtil
             newTerr.burnedDef.graphicPolluted = baseTerrain.burnedDef.graphicPolluted;
             newTerr.burnedDef.PostLoad();
         }
-        var bluePrintDef = NewBlueprintDef_Terrain(newTerr, false);
+        var bluePrintDef = NewBlueprintDef_Terrain(newTerr);
         bluePrintDef.shortHash = 0;
         GiveShortHash(bluePrintDef, typeof(ThingDef), takenHashesPerDeftype[typeof(ThingDef)]);
         DefGenerator.AddImpliedDef(bluePrintDef);
-        var frameDef = NewFrameDef_Terrain(newTerr, false);
+        var frameDef = NewFrameDef_Terrain(newTerr);
         frameDef.shortHash = 0;
         GiveShortHash(frameDef, typeof(ThingDef), takenHashesPerDeftype[typeof(ThingDef)]);
         DefGenerator.AddImpliedDef(frameDef);

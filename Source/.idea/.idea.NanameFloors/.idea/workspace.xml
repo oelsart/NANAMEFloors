@@ -10,14 +10,17 @@
     <configurations />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="53b8081b-aeea-4411-ad11-cbc65c890749" name="変更" comment="" />
+    <list default="true" id="53b8081b-aeea-4411-ad11-cbc65c890749" name="変更" comment="">
+      <change beforePath="$PROJECT_DIR$/HarmonyPatches.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HarmonyPatches.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NanameFloors.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/NanameFloors.csproj" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="1357" />
+    <option name="cachedIndexableFilesCount" value="7" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="Git.Settings">
@@ -118,6 +121,7 @@
       <updated>1775220786855</updated>
       <workItem from="1775220787262" duration="4339000" />
       <workItem from="1775225908031" duration="482000" />
+      <workItem from="1775226425862" duration="371000" />
     </task>
     <task id="LOCAL-00001" summary="initial Rider">
       <option name="closed" value="true" />
@@ -143,7 +147,23 @@
       <option name="project" value="LOCAL" />
       <updated>1775226358681</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="init Rider">
+      <option name="closed" value="true" />
+      <created>1775226466138</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1775226466138</updated>
+    </task>
+    <task id="LOCAL-00005" summary="init Rider">
+      <option name="closed" value="true" />
+      <created>1775226482924</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1775226482924</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -165,7 +185,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="1.5" />
+                        <option value="1.4" />
                       </list>
                     </value>
                   </entry>
@@ -182,7 +202,8 @@
     <MESSAGE value="initial Rider" />
     <MESSAGE value="マスクの回転に対応1.5" />
     <MESSAGE value="build 1.5" />
-    <option name="LAST_COMMIT_MESSAGE" value="build 1.5" />
+    <MESSAGE value="init Rider" />
+    <option name="LAST_COMMIT_MESSAGE" value="init Rider" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
