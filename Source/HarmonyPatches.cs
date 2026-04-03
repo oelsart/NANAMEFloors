@@ -5,9 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using RimWorld.Planet;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
+using CollectionExtensions = HarmonyLib.CollectionExtensions;
 
 namespace NanameFloors;
 
@@ -279,5 +281,31 @@ public static class Patch_GenConstruct_CanPlaceBlueprintAt
         ]);
 
         return codes;
+    }
+}
+
+[HarmonyPatch(typeof(Gravship), nameof(Gravship.Terrains), MethodType.Getter)]
+public static class Patch_Gravship_Terrains
+{
+    private static bool Prepare => ModsConfig.OdysseyActive;
+
+    public static void Prefix(Rot4 ___tmpTerrainRot, ref Rot4 __state)
+    {
+        __state = ___tmpTerrainRot;
+    }
+
+    public static void Postfix(Rot4 ___tmpTerrainRot, Rot4 __state, Dictionary<IntVec3, TerrainDef> __result)
+    {
+        if (___tmpTerrainRot != __state)
+        {
+            var relativeRotation = Rot4.GetRelativeRotation(__state, ___tmpTerrainRot);
+            foreach (var key in __result.Keys.ToArray())
+            {
+                if (__result[key] is BlendedTerrainDef blendedTerrainDef)
+                {
+                    __result[key] = blendedTerrainDef.Rotated(relativeRotation);
+                }
+            }
+        }
     }
 }

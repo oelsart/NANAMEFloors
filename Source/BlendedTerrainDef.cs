@@ -108,4 +108,23 @@ public class BlendedTerrainDef : TerrainDef
         });
         base.PostLoad();
     }
+
+    public BlendedTerrainDef Rotated(RotationDirection direction)
+    {
+        var terrainMask = GetModExtension<TerrainMask>();
+        if (terrainMask?.rotation is null) return this;
+
+        var rot = terrainMask.rotation.Value.Rotated(direction);
+        if (DefDatabase<BlendedTerrainDef>.GetNamedSilentFail(
+                TerrainMask.GetDefName(
+                    terrainMask.maskTextureName,
+                    terrainMask.baseTerrain,
+                    terrainMask.coverTerrain,
+                    rot)) is { } rotated)
+            return rotated;
+        
+        var terrainMask2 = new TerrainMask(terrainMask.maskTextureName, terrainMask.baseTerrain, terrainMask.coverTerrain, rot);
+        BlendedTerrainUtil.MakeBlendedTerrain(terrainMask2);
+        return DefDatabase<BlendedTerrainDef>.GetNamedSilentFail(terrainMask2.DefName) ?? this;
+    }
 }

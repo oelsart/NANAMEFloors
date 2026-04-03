@@ -85,7 +85,7 @@ public class TerrainMask : DefModExtension, IExposable
         }
     }
 
-    public static readonly Dictionary<string, string> OldNameToNewName = new()
+    public static readonly Dictionary<string, string> OldToNewName = new()
     {
         {"Half", "HalfTriangle"}
     };
@@ -121,7 +121,7 @@ public class TerrainMask : DefModExtension, IExposable
                 }
             }
         
-            if (OldNameToNewName.TryGetValue(name, out var newName))
+            if (OldToNewName.TryGetValue(name, out var newName))
                 name = newName;
             
             terrainMask.maskTextureName = name;
