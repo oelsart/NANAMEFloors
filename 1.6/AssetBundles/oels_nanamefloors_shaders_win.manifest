@@ -1,0 +1,30 @@
+ManifestFileVersion: 0
+CRC: 1459472678
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 884e5e9d75fee144dd9da5d26429f38b
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 0df1dec30b5d061d422d3e6493d27647
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: 884e5e9d75fee144dd9da5d26429f38b
+HashAppended: 0
+ClassTypes:
+- Class: 48
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Data/oels.nanamefloors/Materials/NanameFloors/TerrainFadeRoughSoftLightBlend.shader
+- Assets/Data/oels.nanamefloors/Materials/NanameFloors/WaterDepthBlend.shader
+- Assets/Data/oels.nanamefloors/Materials/NanameFloors/TerrainWaterBlend.shader
+- Assets/Data/oels.nanamefloors/Materials/NanameFloors/TerrainHardBlend.shader
+- Assets/Data/oels.nanamefloors/Materials/NanameFloors/TerrainFadeLinearBurnBlend.shader
+- Assets/Data/oels.nanamefloors/Materials/NanameFloors/TerrainFadeRoughLinearAddBlend.shader
+- Assets/Data/oels.nanamefloors/Materials/NanameFloors/TerrainHardLinearBurnBlend.shader
+- Assets/Data/oels.nanamefloors/Materials/NanameFloors/TerrainFadeBlend.shader
+- Assets/Data/oels.nanamefloors/Materials/NanameFloors/TerrainFadeRoughLinearBurnBlend.shader
+- Assets/Data/oels.nanamefloors/Materials/NanameFloors/TerrainWaterPollutedBlend.shader
+- Assets/Data/oels.nanamefloors/Materials/NanameFloors/TerrainFadeRoughBlend.shader
+Dependencies: []
