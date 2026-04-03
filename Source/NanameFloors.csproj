@@ -20,4 +20,37 @@
     <PackageReference Include="Krafs.Rimworld.Ref" Version="1.6.4566" />
     <PackageReference Include="Lib.Harmony.Ref" Version="2.4.1" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="NanameFloors_Unity\Library\**" />
+    <Compile Remove="NanameFloors_Unity\Logs\**" />
+    <Compile Remove="NanameFloors_Unity\obj\**" />
+    <Compile Remove="NanameFloors_Unity\Packages\**" />
+    <Compile Remove="NanameFloors_Unity\ProjectSettings\**" />
+    <Compile Remove="NanameFloors_Unity\Temp\**" />
+    <Compile Remove="NanameFloors_Unity\UserSettings\**" />
+    <Compile Remove="NanameFloors_Unity\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="NanameFloors_Unity\Library\**" />
+    <EmbeddedResource Remove="NanameFloors_Unity\Logs\**" />
+    <EmbeddedResource Remove="NanameFloors_Unity\obj\**" />
+    <EmbeddedResource Remove="NanameFloors_Unity\Packages\**" />
+    <EmbeddedResource Remove="NanameFloors_Unity\ProjectSettings\**" />
+    <EmbeddedResource Remove="NanameFloors_Unity\Temp\**" />
+    <EmbeddedResource Remove="NanameFloors_Unity\UserSettings\**" />
+    <EmbeddedResource Remove="NanameFloors_Unity\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="NanameFloors_Unity\Library\**" />
+    <None Remove="NanameFloors_Unity\Logs\**" />
+    <None Remove="NanameFloors_Unity\obj\**" />
+    <None Remove="NanameFloors_Unity\Packages\**" />
+    <None Remove="NanameFloors_Unity\ProjectSettings\**" />
+    <None Remove="NanameFloors_Unity\Temp\**" />
+    <None Remove="NanameFloors_Unity\UserSettings\**" />
+    <None Remove="NanameFloors_Unity\.vsconfig" />
+    <None Remove="NanameFloors_Unity\Unity.gitignore" />
+    <None Remove="NanameFloors.csproj.DotSettings" />
+    <None Remove="NanameFloors_Unity\**" />
+  </ItemGroup>
 </Project>

@@ -6,12 +6,11 @@ namespace NanameFloors;
 
 public class NanameFloors : Mod
 {
-
     public NanameFloors(ModContentPack content) : base(content)
     {
-        NanameFloors.settings = GetSettings<Settings>();
+        settings = GetSettings<Settings>();
         NanameFloors.content = content;
-        NanameFloors.UI = new UI_SelectTerrainShape();
+        UI = new UI_SelectTerrainShape();
     }
 
     public override void DoSettingsWindowContents(Rect inRect)
@@ -21,12 +20,14 @@ public class NanameFloors : Mod
         Widgets.CheckboxLabeled(Rect, "NAF.Settings.AllowPlaceFloor".Translate(), ref settings.allowPlaceFloor);
         var Rect2 = new Rect(inRect.x, Rect.yMax, inRect.width, Text.LineHeight);
         Widgets.Label(Rect2.LeftHalf(), "NAF.Settings.ButtonSize".Translate());
-        buttonSize = (int)NanameFloors.settings.buttonSize;
-        Widgets.IntEntry(Rect2.RightHalf(), ref buttonSize, ref buff, 1);
-        NanameFloors.settings.buttonSize = buttonSize;
+        buttonSize = (int)settings.buttonSize;
+        Widgets.IntEntry(Rect2.RightHalf(), ref buttonSize, ref buff);
+        settings.buttonSize = buttonSize;
 
-        var outRect = new Rect(inRect.x, Rect2.yMax, inRect.width, Text.LineHeight);
-        outRect.yMax = inRect.yMax;
+        var outRect = new Rect(inRect.x, Rect2.yMax, inRect.width, Text.LineHeight)
+        {
+            yMax = inRect.yMax
+        };
         var viewRect = new Rect(outRect.x, outRect.y, outRect.width, TerrainMask.cachedTerrainMasks.Count() * Text.LineHeight);
         Widgets.DrawMenuSection(outRect);
         var rect = new Rect(viewRect.x, viewRect.y, viewRect.width, Text.LineHeight);

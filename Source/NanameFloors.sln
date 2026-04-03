@@ -5,6 +5,8 @@ VisualStudioVersion = 17.10.34928.147
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NanameFloors", "NanameFloors.csproj", "{8593EB6A-F506-41EC-8809-09A04DC5EF84}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "NanameFloors_Unity\Assembly-CSharp.csproj", "{CB870CDD-4C48-86AE-9B09-2AF940266BA7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,9 @@ Global
 		{8593EB6A-F506-41EC-8809-09A04DC5EF84}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8593EB6A-F506-41EC-8809-09A04DC5EF84}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8593EB6A-F506-41EC-8809-09A04DC5EF84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB870CDD-4C48-86AE-9B09-2AF940266BA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB870CDD-4C48-86AE-9B09-2AF940266BA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB870CDD-4C48-86AE-9B09-2AF940266BA7}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
