@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
+using static NanameFloors.ModCompat;
 
 namespace NanameFloors;
 
@@ -107,6 +108,12 @@ public static class BlendedTerrainUtil
         {
             newTerr.dominantStyleCategory.addDesignators.Add(newTerr);
             ((List<BuildableDef>)AccessTools.Field(typeof(StyleCategoryDef), "cachedAllDesignatorBuildables").GetValue(newTerr.dominantStyleCategory))?.Add(newTerr);
+        }
+
+        if (ReplaceStuff.Active)
+        {
+            if (ReplaceStuff.allBridgeTerrains.Contains(baseTerrain))
+                ReplaceStuff.allBridgeTerrains.Add(newTerr);
         }
         return newTerr;
     }
