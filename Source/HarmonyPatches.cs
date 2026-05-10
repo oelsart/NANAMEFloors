@@ -9,7 +9,6 @@ using RimWorld.Planet;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
-using CollectionExtensions = HarmonyLib.CollectionExtensions;
 
 namespace NanameFloors;
 
