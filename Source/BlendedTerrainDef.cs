@@ -5,8 +5,7 @@ namespace NanameFloors;
 
 public class BlendedTerrainDef : TerrainDef
 {
-    public TerrainDef BaseTerrain { get; private set; }
-
+    private static readonly int RippleTex = Shader.PropertyToID("_RippleTex");
     public TerrainDef CoverTerrain { get; private set; }
         
     public Rot4 Rotation { get; private set; }
@@ -25,7 +24,10 @@ public class BlendedTerrainDef : TerrainDef
         {
             return def.pollutionShaderType.Shader;
         }
-
+        if (def.customShader != null)
+        {
+            return def.customShader.Shader;
+        }
         return def.edgeType switch
         {
             TerrainEdgeType.Hard => ShaderDatabase.TerrainHardPolluted,
@@ -41,15 +43,14 @@ public class BlendedTerrainDef : TerrainDef
         {
             var terrainMask = GetModExtension<TerrainMask>();
             if (terrainMask == null) return;
-
-            BaseTerrain = terrainMask.baseTerrain;
+            
             CoverTerrain = terrainMask.coverTerrain;
             Rotation = terrainMask.rotation ?? Rot4.North;
 
-            graphic = graphic.GetColoredVersion(ShaderDatabase.TerrainHard, BaseTerrain.DrawColor, Color.white);
-            graphicPolluted = BaseTerrain.graphicPolluted == BaseContent.BadGraphic
-                ? BaseContent.BadGraphic
-                : BaseTerrain.graphicPolluted.GetColoredVersion(ShaderDatabase.TerrainHardPolluted, BaseTerrain.DrawColor, Color.white);
+            // graphic = graphic.GetColoredVersion(ShaderDatabase.TerrainHard, BaseTerrain.DrawColor, Color.white);
+            // graphicPolluted = BaseTerrain.graphicPolluted == BaseContent.BadGraphic
+            //     ? BaseContent.BadGraphic
+            //     : BaseTerrain.graphicPolluted.GetColoredVersion(ShaderDatabase.TerrainHardPolluted, BaseTerrain.DrawColor, Color.white);
             
             var maskPath = "NanameFloors/TerrainMasks/" + terrainMask.maskTextureName;
             MaskTex = ContentFinder<Texture2D>.Get("NanameFloors/TerrainMasks/" + terrainMask.maskTextureName, false);
@@ -63,8 +64,14 @@ public class BlendedTerrainDef : TerrainDef
                 {
                     CoverGraphic.MatSingle.SetTexture(ShaderPropertyIDs.AlphaAddTex, TexGame.AlphaAddTex);
                 }
+                if (CoverTerrain.customShader != null && CoverTerrain.customShaderParameters != null)
+                {
+                    for (var i = 0; i < CoverTerrain.customShaderParameters.Count; i++)
+                    {
+                        CoverTerrain.customShaderParameters[i].Apply(CoverGraphic.MatSingle);
+                    }
+                }
                 CoverGraphic.MatSingle.SetTexture(ShaderPropertyIDs.MaskTex, MaskTex);
-                CoverGraphic.MatSingle.renderQueue = 2000;
             }
             if (!CoverTerrain.waterDepthShader.NullOrEmpty())
             {
@@ -78,7 +85,6 @@ public class BlendedTerrainDef : TerrainDef
                     }
                 }
                 CoverWaterDepthMaterial.SetTexture(ShaderPropertyIDs.MaskTex, MaskTex);
-                CoverWaterDepthMaterial.renderQueue = 2000 + CoverTerrain.renderPrecedence;
             }
             if (ModsConfig.BiotechActive && CoverGraphicPolluted == null && (!CoverTerrain.pollutionOverlayTexturePath.NullOrEmpty() || !CoverTerrain.pollutedTexturePath.NullOrEmpty()))
             {
@@ -90,11 +96,11 @@ public class BlendedTerrainDef : TerrainDef
                 var shader = ShaderPolluted(CoverTerrain).GetBlendShader();
                 CoverGraphicPolluted = GraphicDatabase.Get<Graphic_Terrain>(CoverTerrain.pollutedTexturePath ?? CoverTerrain.texturePath, shader, Vector2.one, CoverTerrain.DrawColor, Color.white, null, maskPath);
                 var matSingle = CoverGraphicPolluted.MatSingle;
-                if (texture2D != null)
+                if (texture2D)
                 {
                     matSingle.SetTexture(ShaderPropertyIDs.BurnTex, texture2D);
                 }
-                //matSingle.SetColor("_BurnColor", CoverTerrain.pollutionColor);
+                matSingle.SetColor(ShaderPropertyIDs.BurnColor, CoverTerrain.pollutionColor);
                 matSingle.SetVector(ShaderPropertyIDs.ScrollSpeed, CoverTerrain.pollutionOverlayScrollSpeed);
                 matSingle.SetVector(ShaderPropertyIDs.BurnScale, CoverTerrain.pollutionOverlayScale);
                 matSingle.SetColor(ShaderPropertyIDs.PollutionTintColor, CoverTerrain.pollutionTintColor);
@@ -102,8 +108,18 @@ public class BlendedTerrainDef : TerrainDef
                 {
                     matSingle.SetTexture(ShaderPropertyIDs.AlphaAddTex, TexGame.AlphaAddTex);
                 }
+                if (matSingle != CoverGraphic.MatSingle)
+                {
+                    matSingle.SetFloat(ShaderPropertyIDs.IsPolluted, 1f);
+                }
+                if ((CoverTerrain.pollutionShaderType != null || CoverTerrain.customShader != null) && CoverTerrain.customShaderParameters != null)
+                {
+                    for (var k = 0; k < CoverTerrain.customShaderParameters.Count; k++)
+                    {
+                        CoverTerrain.customShaderParameters[k].Apply(matSingle);
+                    }
+                }
                 matSingle.SetTexture(ShaderPropertyIDs.MaskTex, MaskTex);
-                matSingle.renderQueue = 2000;
             }
         });
         base.PostLoad();

@@ -1,0 +1,7 @@
+ManifestFileVersion: 0
+CRC: 509881554
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: oels_nanamefloors_shaders_linux
+      Dependencies: {}

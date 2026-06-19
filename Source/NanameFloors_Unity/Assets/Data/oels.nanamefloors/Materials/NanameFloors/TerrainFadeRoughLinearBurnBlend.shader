@@ -82,15 +82,16 @@ Shader "Custom/Terrain fade rough Linear burn blend" {
 			    float2 finalBurnUV = rotatedBurnUV + 0.5;
 			    float4 burnTex = tex2D(_BurnTex, finalBurnUV);
 			    float3 burnColorRGB = burnTex.rgb * _BurnColor.rgb;
-
-			    float burnFactor = 1.0 - burnTex.a * _BurnColor.a;
-			    float3 combinedBurnRGB = (1.0 - burnFactor) * (burnTex.rgb * _BurnColor.rgb) + burnColorRGB;
+			    float burnAlpha = burnTex.a * _BurnColor.a;
+			    
+			    float3 combinedBurnRGB = lerp(float3(1.0, 1.0, 1.0), burnColorRGB, burnAlpha);
 
 			    float4 color;
 			    color.rgb = mainTex.rgb + combinedBurnRGB - 1.0;
 			    color.a = finalAlpha;
 			    color *= _Color * _PollutionTintColor;
 			    color.a *= tex2D(_MaskTex, RotateUV(frac(inp.texcoord.xy * 16.0), inp.rotation)).a;
+				
 			    o.sv_target = color;
 			    return o;
 			}
