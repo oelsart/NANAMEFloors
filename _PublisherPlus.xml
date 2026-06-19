@@ -2,7 +2,7 @@
 <Configuration>
   <Excluded>
     <exclude>.git</exclude>
-    <exclude>.vs</exclude>
+    <exclude>1.6\AssetBundles\AssetBundles</exclude>
     <exclude>Source</exclude>
   </Excluded>
 </Configuration>
