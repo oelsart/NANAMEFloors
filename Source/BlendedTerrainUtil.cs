@@ -71,6 +71,9 @@ public static class BlendedTerrainUtil
                 case "graphicPolluted":
                     newTerr.graphicPolluted = baseTerrain.graphicPolluted;
                     break;
+                case "waterDepthMaterial":
+                    newTerr.waterDepthMaterial = baseTerrain.waterDepthMaterial;
+                    break;
                 default:
                 {
                     if (field.FieldType == typeof(float)) field.SetValue(newTerr, ((float)field.GetValue(baseTerrain) + (float)field.GetValue(coverTerrain)) / 2f);
@@ -120,10 +123,6 @@ public static class BlendedTerrainUtil
 
     public static Shader GetBlendShader(this Shader shader)
     {
-        if (shader == null)
-        {
-            return BaseContent.BadGraphic.Shader;
-        }
         if (shader == ShaderDatabase.TerrainHard)
         {
             return NAF_DefOf.TerrainHardBlend.Shader;
@@ -148,10 +147,10 @@ public static class BlendedTerrainUtil
         {
             return NAF_DefOf.TerrainFadeRoughSoftLightBlend.Shader;
         }
-        if (shader == ShaderDatabase.LoadShader("Map/WaterDepth"))
-        {
-            return NAF_DefOf.WaterDepthBlend.Shader;
-        }
+        // if (shader == ShaderDatabase.LoadShader("Map/WaterDepth"))
+        // {
+        //     return NAF_DefOf.WaterDepthBlend.Shader;
+        // }
         if (ModsConfig.BiotechActive)
         {
             if (shader == ShaderDatabase.TerrainHardPolluted)
@@ -171,8 +170,8 @@ public static class BlendedTerrainUtil
                 return NAF_DefOf.TerrainWaterPollutedBlend.Shader;
             }
         }
-        Log.Warning($"[NanameFloors] {shader.name} is unsupported terrain shader. Using TerrainHardBlend instead.");
-        return NAF_DefOf.TerrainHardBlend.Shader;
+
+        return shader;
     }
 
     public static bool IsAddedShader(Shader shader)

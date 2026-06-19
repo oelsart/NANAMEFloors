@@ -201,7 +201,7 @@ public static class Patch_SectionLayer_Terrain_Regenerate
 
         Material GetMaterial()
         {
-            if (SectionLayer_Watergen.IsAssignableFrom(instance.GetType()))
+            if (instance.GetType().SameOrSubclassOf(SectionLayer_Watergen))
             {
                 return blendedTerrainDef.CoverWaterDepthMaterial;
             }

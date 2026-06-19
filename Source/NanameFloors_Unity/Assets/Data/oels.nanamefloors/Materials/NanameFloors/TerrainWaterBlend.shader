@@ -1,7 +1,7 @@
 Shader "Custom/Terrain water blend" {
 	Properties {
 		_MainTex ("Main texture", 2D) = "white" {}
-		_RippleTex ("Main texture", 2D) = "white" {}
+		_RippleTex ("Ripple texture", 2D) = "white" {}
 		_Color ("Color", Color) = (1,1,1,1)
 		_AlphaAddTex ("Alpha add texture", 2D) = "" {}
 		_MaskTex ("Mask texture", 2D) = "white" {}
