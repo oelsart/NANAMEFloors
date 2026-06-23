@@ -147,10 +147,10 @@ public static class BlendedTerrainUtil
         {
             return NAF_DefOf.TerrainFadeRoughSoftLightBlend.Shader;
         }
-        // if (shader == ShaderDatabase.LoadShader("Map/WaterDepth"))
-        // {
-        //     return NAF_DefOf.WaterDepthBlend.Shader;
-        // }
+        if (shader == ShaderDatabase.LoadShader("Map/WaterDepth"))
+        {
+            return NAF_DefOf.WaterDepthBlend.Shader;
+        }
         if (ModsConfig.BiotechActive)
         {
             if (shader == ShaderDatabase.TerrainHardPolluted)

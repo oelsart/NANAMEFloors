@@ -46,11 +46,6 @@ public class BlendedTerrainDef : TerrainDef
             
             CoverTerrain = terrainMask.coverTerrain;
             Rotation = terrainMask.rotation ?? Rot4.North;
-
-            // graphic = graphic.GetColoredVersion(ShaderDatabase.TerrainHard, BaseTerrain.DrawColor, Color.white);
-            // graphicPolluted = BaseTerrain.graphicPolluted == BaseContent.BadGraphic
-            //     ? BaseContent.BadGraphic
-            //     : BaseTerrain.graphicPolluted.GetColoredVersion(ShaderDatabase.TerrainHardPolluted, BaseTerrain.DrawColor, Color.white);
             
             var maskPath = "NanameFloors/TerrainMasks/" + terrainMask.maskTextureName;
             MaskTex = ContentFinder<Texture2D>.Get("NanameFloors/TerrainMasks/" + terrainMask.maskTextureName, false);
@@ -85,6 +80,7 @@ public class BlendedTerrainDef : TerrainDef
                     }
                 }
                 CoverWaterDepthMaterial.SetTexture(ShaderPropertyIDs.MaskTex, MaskTex);
+                CoverWaterDepthMaterial.renderQueue = 2000 + CoverTerrain.renderPrecedence;
             }
             if (ModsConfig.BiotechActive && CoverGraphicPolluted == null && (!CoverTerrain.pollutionOverlayTexturePath.NullOrEmpty() || !CoverTerrain.pollutedTexturePath.NullOrEmpty()))
             {
