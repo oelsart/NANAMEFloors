@@ -8,7 +8,7 @@ Shader "Custom/Terrain hard Linear burn blend" {
 		_MaskTex ("Mask texture", 2D) = "white" {}
 	}
 	SubShader {
-		Tags { "RenderType" = "Transparent" "Queue" = "Transparent" }
+		Tags { "RenderType" = "Transparent" "Queue" = "Transparent-600" }
 		Pass {
 			Blend SrcAlpha OneMinusSrcAlpha
             ZWrite Off

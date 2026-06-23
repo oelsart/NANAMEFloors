@@ -7,7 +7,7 @@ Shader "Custom/Water depth blend" {
 		_MaskTex ("Mask texture", 2D) = "white" {}
 	}
 	SubShader {
-		Tags { "QUEUE" = "Transparent" "Queue" = "Transparent" }
+		Tags { "QUEUE" = "Transparent" "Queue" = "Transparent-600" }
 		Pass {
 			Blend SrcAlpha OneMinusSrcAlpha
 			ZWrite Off

@@ -286,7 +286,7 @@ public static class Patch_GenConstruct_CanPlaceBlueprintAt
 [HarmonyPatch(typeof(Gravship), nameof(Gravship.Terrains), MethodType.Getter)]
 public static class Patch_Gravship_Terrains
 {
-    private static bool Prepare => ModsConfig.OdysseyActive;
+    private static bool Prepare() => ModsConfig.OdysseyActive;
 
     public static void Prefix(Rot4 ___tmpTerrainRot, ref Rot4 __state)
     {
