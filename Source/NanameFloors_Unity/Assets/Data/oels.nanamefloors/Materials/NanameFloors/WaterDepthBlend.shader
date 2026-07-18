@@ -7,7 +7,7 @@ Shader "Custom/Water depth blend" {
 		_MaskTex ("Mask texture", 2D) = "white" {}
 	}
 	SubShader {
-		Tags { "QUEUE" = "Transparent" "Queue" = "Transparent-600" }
+		Tags { "Queue" = "Geometry+1" }
 		Pass {
 			Blend SrcAlpha OneMinusSrcAlpha
 			ZWrite Off
@@ -56,20 +56,20 @@ Shader "Custom/Water depth blend" {
 			    }
 				
 			    float2 ripplePos = rippleBaseUV * _WaterRippleDensity;
-			    float2 scale1 = ripplePos * float2(0.0495, 0.10225);
-				
-			    o.texcoord2.x = dot(float2(0.9553365, -0.2955202), scale1);
-			    o.texcoord2.y = dot(float2(0.2955202,  0.9553365), scale1) + (_GameSeconds * 0.025);
+                float2 scale1_xy = ripplePos * float2(0.0495, 0.10225);
+                float2 scale1_zw = ripplePos * float2(0.04, 0.06);
 
-			    o.texcoord2.z = dot(float2(-0.1288445, -0.9916648), scale1);
-			    o.texcoord2.w = dot(float2(0.9916648,  -0.1288445), scale1) + _GameSeconds * 0.016665;
+                o.texcoord2.x = dot(float2(0.9553365, -0.2955202), scale1_xy);
+                o.texcoord2.y = dot(float2(0.2955202,  0.9553365), scale1_xy) + _GameSeconds * 0.025;
+                o.texcoord2.z = dot(float2(-0.1288445, -0.9916648), scale1_zw) + _GameSeconds * 0.0105;
+                o.texcoord2.w = dot(float2(0.9916648,  -0.1288445), scale1_zw) + _GameSeconds * 0.016665;
 
-			    float2 scale2 = ripplePos * float2(0.0705, 0.0775);
-			    o.texcoord3.x = dot(float2( 0.6967067,  0.7173561), scale2) + (_GameSeconds * -0.0115);
-			    o.texcoord3.y = dot(float2(-0.7173561,  0.6967067), scale2) + (_GameSeconds * 0.009385);
-
-			    o.texcoord3.z = dot(float2(-0.1288445, -0.9916648), scale2) + (_GameSeconds * 0.01656);
-			    o.texcoord3.w = dot(float2(0.9916648,  -0.1288445), scale2) + (_GameSeconds * 0.00222);
+                float2 scale2_xy = ripplePos * float2(0.0705, 0.0775);
+                float2 scale2_zw = ripplePos * float2(0.07215, 0.025);
+                o.texcoord3.x = dot(float2( 0.6967067,  0.7173561), scale2_xy) + _GameSeconds * -0.0115;
+                o.texcoord3.y = dot(float2(-0.7173561,  0.6967067), scale2_xy) + _GameSeconds * 0.009385;
+                o.texcoord3.z = dot(float2(-0.1288445, -0.9916648), scale2_zw) + _GameSeconds * 0.01656;
+                o.texcoord3.w = dot(float2(0.9916648,  -0.1288445), scale2_zw) + _GameSeconds * 0.00222;
 
 			    o.texcoord.xy = v.vertex.xz * 0.0625;
 			    o.texcoord.z = v.color.w;
@@ -91,7 +91,7 @@ Shader "Custom/Water depth blend" {
 			    o.sv_target.yz = 0;
 			    o.sv_target.w = inp.texcoord.z * inp.texcoord.z;
 
-			    o.sv_target.a *= tex2D(_MaskTex, RotateUV(frac(inp.texcoord.xy * 16.0), inp.rotation)).a;
+			    o.sv_target.a = tex2D(_MaskTex, RotateUV(inp.texcoord.xy * 16.0, inp.rotation)).a;
 
 			    return o;
 			}

@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using HarmonyLib;
 using UnityEngine;
 using Verse;
 
@@ -7,72 +6,77 @@ namespace NanameFloors;
 
 public class NanameFloors : Mod
 {
-    public NanameFloors(ModContentPack content) : base(content)
+  public NanameFloors(ModContentPack content) : base(content)
+  {
+    settings = GetSettings<Settings>();
+    NanameFloors.content = content;
+    UI = new UI_SelectTerrainShape();
+  }
+
+  public override void DoSettingsWindowContents(Rect inRect)
+  {
+    Text.Font = GameFont.Medium;
+    var Rect = new Rect(inRect.x, inRect.y, inRect.width, Text.LineHeight);
+    Widgets.CheckboxLabeled(Rect, "NAF.Settings.AllowPlaceFloor".Translate(), ref settings.allowPlaceFloor);
+    var Rect2 = new Rect(inRect.x, Rect.yMax, inRect.width, Text.LineHeight);
+    Widgets.Label(Rect2.LeftHalf(), "NAF.Settings.ButtonSize".Translate());
+    buttonSize = (int)settings.buttonSize;
+    Widgets.IntEntry(Rect2.RightHalf(), ref buttonSize, ref buff);
+    settings.buttonSize = buttonSize;
+
+    var outRect = new Rect(inRect.x, Rect2.yMax, inRect.width, Text.LineHeight)
     {
-        settings = GetSettings<Settings>();
-        NanameFloors.content = content;
-        UI = new UI_SelectTerrainShape();
-    }
-
-    public override void DoSettingsWindowContents(Rect inRect)
+      yMax = inRect.yMax
+    };
+    var viewRect = new Rect(outRect.x, outRect.y, outRect.width,
+      TerrainMask.cachedTerrainMasks.Count() * Text.LineHeight);
+    Widgets.DrawMenuSection(outRect);
+    var rect = new Rect(viewRect.x, viewRect.y, viewRect.width, Text.LineHeight);
+    Widgets.BeginScrollView(outRect, ref scrollPosition, viewRect);
+    foreach (var terrainMask in TerrainMask.cachedTerrainMasks)
     {
-        Text.Font = GameFont.Medium;
-        var Rect = new Rect(inRect.x, inRect.y, inRect.width, Text.LineHeight);
-        Widgets.CheckboxLabeled(Rect, "NAF.Settings.AllowPlaceFloor".Translate(), ref settings.allowPlaceFloor);
-        var Rect2 = new Rect(inRect.x, Rect.yMax, inRect.width, Text.LineHeight);
-        Widgets.Label(Rect2.LeftHalf(), "NAF.Settings.ButtonSize".Translate());
-        buttonSize = (int)settings.buttonSize;
-        Widgets.IntEntry(Rect2.RightHalf(), ref buttonSize, ref buff);
-        settings.buttonSize = buttonSize;
+      Widgets.DrawTextureFitted(new Rect(rect.x, rect.y, Text.LineHeight, Text.LineHeight), terrainMask, 0.8f);
 
-        var outRect = new Rect(inRect.x, Rect2.yMax, inRect.width, Text.LineHeight)
+      var labelRect = new Rect(rect.x + Text.LineHeight + 10f, rect.y, rect.width - (Text.LineHeight * 2) - 20f,
+        rect.height);
+      Widgets.Label(labelRect, terrainMask.name.Translate().Truncate(labelRect.width));
+
+      var checkBoxRect = new Rect(rect.xMax - Text.LineHeight, rect.y, Text.LineHeight, Text.LineHeight);
+      Widgets.CheckboxDraw(checkBoxRect.x, checkBoxRect.y, !settings.exceptMaskList.Contains(terrainMask.name), false,
+        Text.LineHeight);
+      if (Widgets.ButtonInvisible(checkBoxRect))
+      {
+        if (settings.exceptMaskList.Contains(terrainMask.name))
         {
-            yMax = inRect.yMax
-        };
-        var viewRect = new Rect(outRect.x, outRect.y, outRect.width, TerrainMask.cachedTerrainMasks.Count() * Text.LineHeight);
-        Widgets.DrawMenuSection(outRect);
-        var rect = new Rect(viewRect.x, viewRect.y, viewRect.width, Text.LineHeight);
-        Widgets.BeginScrollView(outRect, ref scrollPosition, viewRect);
-        foreach (var terrainMask in TerrainMask.cachedTerrainMasks)
-        {
-            Widgets.DrawTextureFitted(new Rect(rect.x, rect.y, Text.LineHeight, Text.LineHeight), terrainMask, 0.8f);
-
-            var labelRect = new Rect(rect.x + Text.LineHeight + 10f, rect.y, rect.width - (Text.LineHeight * 2) - 20f, rect.height);
-            Widgets.Label(labelRect, terrainMask.name.Translate().Truncate(labelRect.width));
-
-            var checkBoxRect = new Rect(rect.xMax - Text.LineHeight, rect.y, Text.LineHeight, Text.LineHeight);
-            Widgets.CheckboxDraw(checkBoxRect.x, checkBoxRect.y, !settings.exceptMaskList.Contains(terrainMask.name), false, Text.LineHeight);
-            if (Widgets.ButtonInvisible(checkBoxRect))
-            {
-                if (settings.exceptMaskList.Contains(terrainMask.name))
-                {
-                    settings.exceptMaskList.Remove(terrainMask.name);
-                }
-                else
-                {
-                    settings.exceptMaskList.Add(terrainMask.name);
-                }
-            }
-            rect.y += Text.LineHeight;
+          settings.exceptMaskList.Remove(terrainMask.name);
         }
-        Widgets.EndScrollView();
-        Text.Font = GameFont.Small;
+        else
+        {
+          settings.exceptMaskList.Add(terrainMask.name);
+        }
+      }
+
+      rect.y += Text.LineHeight;
     }
 
-    public override string SettingsCategory()
-    {
-        return "Naname Floors";
-    }
+    Widgets.EndScrollView();
+    Text.Font = GameFont.Small;
+  }
 
-    public static ModContentPack content;
+  public override string SettingsCategory()
+  {
+    return "Naname Floors";
+  }
 
-    public static Settings settings;
+  public static ModContentPack content;
 
-    public static UI_SelectTerrainShape UI;
+  public static Settings settings;
 
-    private int buttonSize;
+  public static UI_SelectTerrainShape UI;
 
-    private string buff;
+  private int buttonSize;
 
-    private Vector2 scrollPosition = Vector2.zero;
+  private string buff;
+
+  private Vector2 scrollPosition = Vector2.zero;
 }

@@ -8,93 +8,99 @@ namespace NanameFloors;
 
 public class UI_SelectTerrainShape
 {
-    public List<Texture2D> terrainMasks;
+  public List<Texture2D> terrainMasks;
 
-    public Texture2D selectedMask;
+  public Texture2D selectedMask;
 
-    public Rot4 rotation;
+  public Rot4 rotation;
 
-    public Rect windowRect = NanameFloors.settings.windowRect;
+  public Rect windowRect = NanameFloors.settings.windowRect;
 
-    private Vector2 scrollPosition = Vector2.zero;
+  private Vector2 scrollPosition = Vector2.zero;
 
-    private readonly WindowResizer resizer = new()
+  private readonly WindowResizer resizer = new()
+  {
+    minWindowSize = new Vector2(ButtonSize + Margin * 2f,
+      ButtonSize + Margin * 2f + Text.LineHeightOf(GameFont.Small) + 2f)
+  };
+
+  private Designator designator;
+
+  public static float ButtonSize => NanameFloors.settings.buttonSize;
+
+  protected static float Margin => 2f;
+
+  public void DoWindowContents()
+  {
+    var selectedDesignator = Find.DesignatorManager.SelectedDesignator;
+    if (selectedDesignator != designator)
     {
-        minWindowSize = new Vector2(ButtonSize + Margin * 2f, ButtonSize + Margin * 2f + Text.LineHeightOf(GameFont.Small) + 2f)
-    };
-
-    private Designator designator;
-    
-    public static float ButtonSize => NanameFloors.settings.buttonSize;
-
-    protected static float Margin => 2f;
-
-    public void DoWindowContents()
-    {
-        var selectedDesignator = Find.DesignatorManager.SelectedDesignator;
-        if (selectedDesignator != designator)
-        {
-            designator = selectedDesignator;
-            selectedMask = null;
-        }
-
-        var inRect = windowRect.AtZero().ContractedBy(Margin);
-        if (terrainMasks.Count == 0) return;
-        Rect labelRect;
-        using (new TextBlock(GameFont.Small))
-        {
-            labelRect = new Rect(inRect.x, inRect.y, windowRect.width, Text.LineHeight);
-            Widgets.Label(labelRect, "NAF.FloorShapes".Translate());
-            Widgets.DrawLineHorizontal(labelRect.x, labelRect.yMax, labelRect.width);
-        }
-
-        GUI.DragWindow(labelRect);
-        if (Mouse.IsOver(labelRect))
-        {
-            if (Input.GetMouseButton(0))
-            {
-                var window = Find.WindowStack.Windows.FirstOrDefault(w => w.ID == -9359779);
-                if (window is null) return;
-                
-                windowRect = window.windowRect;
-            }
-            if (Input.GetMouseButtonUp(0))
-            {
-                NanameFloors.settings.windowRect = windowRect;
-                NanameFloors.settings.Write();
-            }
-        }
-        windowRect = resizer.DoResizeControl(windowRect);
-
-        var parentRect = new Rect(inRect.x, labelRect.yMax + 2f, inRect.width, inRect.height - labelRect.height);
-
-        var columnCount = Math.Min(terrainMasks.Count, (int)(inRect.width / ButtonSize));
-        var rowCount = Mathf.CeilToInt((float)terrainMasks.Count / columnCount);
-
-        var outRect = parentRect;
-        var viewRect = outRect;
-        viewRect.height = Math.Max(outRect.height - 1f, rowCount * ButtonSize);
-
-        Widgets.BeginScrollView(outRect, ref scrollPosition, viewRect);
-        foreach (var (terrainMaskTex, index) in terrainMasks.Select((t, i) => (t, i)))
-        {
-            var isSelected = terrainMaskTex == selectedMask;
-            var rect = new Rect(viewRect.x + ButtonSize * (index % columnCount), viewRect.y + ButtonSize * Mathf.Floor((float)index / columnCount), ButtonSize, ButtonSize);
-            var rect2 = rect.ContractedBy(5f);
-            Widgets.DrawTextureRotated(rect2, terrainMaskTex, rotation.AsAngle);
-            Widgets.DrawBox(rect2);
-            Widgets.DrawHighlightIfMouseover(rect);
-            if (Widgets.ButtonInvisible(rect))
-            {
-                selectedMask = isSelected ? null : terrainMaskTex;
-                Event.current.Use();
-            }
-            if (isSelected)
-            {
-                Widgets.DrawStrongHighlight(rect, Color.yellow * 0.8f);
-            }
-        }
-        Widgets.EndScrollView();
-        Text.Font = GameFont.Small;
+      designator = selectedDesignator;
+      selectedMask = null;
     }
+
+    var inRect = windowRect.AtZero().ContractedBy(Margin);
+    if (terrainMasks.Count == 0) return;
+    Rect labelRect;
+    using (new TextBlock(GameFont.Small))
+    {
+      labelRect = new Rect(inRect.x, inRect.y, windowRect.width, Text.LineHeight);
+      Widgets.Label(labelRect, "NAF.FloorShapes".Translate());
+      Widgets.DrawLineHorizontal(labelRect.x, labelRect.yMax, labelRect.width);
+    }
+
+    GUI.DragWindow(labelRect);
+    if (Mouse.IsOver(labelRect))
+    {
+      if (Input.GetMouseButton(0))
+      {
+        var window = Find.WindowStack.Windows.FirstOrDefault(w => w.ID == -9359779);
+        if (window is null) return;
+
+        windowRect = window.windowRect;
+      }
+
+      if (Input.GetMouseButtonUp(0))
+      {
+        NanameFloors.settings.windowRect = windowRect;
+        NanameFloors.settings.Write();
+      }
+    }
+
+    windowRect = resizer.DoResizeControl(windowRect);
+
+    var parentRect = new Rect(inRect.x, labelRect.yMax + 2f, inRect.width, inRect.height - labelRect.height);
+
+    var columnCount = Math.Min(terrainMasks.Count, (int)(inRect.width / ButtonSize));
+    var rowCount = Mathf.CeilToInt((float)terrainMasks.Count / columnCount);
+
+    var outRect = parentRect;
+    var viewRect = outRect;
+    viewRect.height = Math.Max(outRect.height - 1f, rowCount * ButtonSize);
+
+    Widgets.BeginScrollView(outRect, ref scrollPosition, viewRect);
+    foreach (var (terrainMaskTex, index) in terrainMasks.Select((t, i) => (t, i)))
+    {
+      var isSelected = terrainMaskTex == selectedMask;
+      var rect = new Rect(viewRect.x + ButtonSize * (index % columnCount),
+        viewRect.y + ButtonSize * Mathf.Floor((float)index / columnCount), ButtonSize, ButtonSize);
+      var rect2 = rect.ContractedBy(5f);
+      Widgets.DrawTextureRotated(rect2, terrainMaskTex, rotation.AsAngle);
+      Widgets.DrawBox(rect2);
+      Widgets.DrawHighlightIfMouseover(rect);
+      if (Widgets.ButtonInvisible(rect))
+      {
+        selectedMask = isSelected ? null : terrainMaskTex;
+        Event.current.Use();
+      }
+
+      if (isSelected)
+      {
+        Widgets.DrawStrongHighlight(rect, Color.yellow * 0.8f);
+      }
+    }
+
+    Widgets.EndScrollView();
+    Text.Font = GameFont.Small;
+  }
 }
