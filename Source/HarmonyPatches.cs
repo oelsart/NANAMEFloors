@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using RimWorld;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -76,6 +75,8 @@ public static class Patch_Designator_Place_DoExtraGuiControls
   {
     if (__instance.PlacingDef.IsNanameSupported)
     {
+	    if (__instance.DrawStyleCategory is { styles.Count: > 1 })
+		    bottomY -= 90f;
       DesignatorUtility.GUIDoRotationControls(leftX, bottomY, NanameFloors.UI.rotation,
         rot => { NanameFloors.UI.rotation = rot; });
     }
@@ -87,7 +88,7 @@ public static class Patch_Designator_Place_SelectedProcessInput
 {
   public static void Postfix(Designator_Place __instance)
   {
-    if (__instance.PlacingDef.IsNanameSupported)
+    if (__instance.PlacingDef.IsNanameSupported && __instance.DrawStyleCategory is not { styles.Count: > 1 })
     {
       HandleRotationShortcuts();
     }
