@@ -33,7 +33,7 @@ public class NanameFloors : Mod
     Widgets.IntEntry(Rect3.RightHalf(), ref buttonSize, ref buff);
     settings.buttonSize = buttonSize;
 
-    var outRect = new Rect(inRect.x, Rect2.yMax, inRect.width, Text.LineHeight)
+    var outRect = new Rect(inRect.x, Rect3.yMax, inRect.width, Text.LineHeight)
     {
       yMax = inRect.yMax
     };
