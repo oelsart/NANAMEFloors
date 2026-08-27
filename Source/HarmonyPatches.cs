@@ -18,7 +18,11 @@ internal class HarmonyPatches
   static HarmonyPatches()
   {
     var harmony = new Harmony("com.harmony.rimworld.nanamefloors");
-    harmony.PatchAll(Assembly.GetExecutingAssembly());
+    var assembly = Assembly.GetExecutingAssembly();
+    harmony.PatchAllUncategorized(assembly);
+    
+    if (AsAboveSoBelow.Active)
+	    harmony.PatchCategory(assembly, AsAboveSoBelow.PatchCategory);
   }
 }
 
@@ -153,10 +157,6 @@ public static class TerrainGrid_ExposeTerrainGrid_Patch
 [HarmonyPatch(typeof(SectionLayer_Terrain), nameof(SectionLayer_Terrain.Regenerate))]
 public static class Patch_SectionLayer_Terrain_Regenerate
 {
-  private static readonly Dictionary<(TerrainDef, bool, ColorDef, Texture2D), Material> terrainMatCache = [];
-  private static readonly Type SectionLayer_Watergen =
-    GenTypes.GetTypeInAnyAssembly("Verse.SectionLayer_Watergen", "Verse");
-
   public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
   {
     var codes = instructions.ToList();
@@ -167,71 +167,10 @@ public static class Patch_SectionLayer_Terrain_Regenerate
       CodeInstruction.LoadArgument(0),
       CodeInstruction.LoadLocal(8),
       CodeInstruction.LoadLocal(6),
-      CodeInstruction.Call(typeof(Patch_SectionLayer_Terrain_Regenerate), nameof(GenerateCover))
+      new CodeInstruction(OpCodes.Ldnull),
+      CodeInstruction.Call(typeof(BlendedTerrainUtil), nameof(BlendedTerrainUtil.GenerateCover))
     ]);
     return codes;
-  }
-
-  public static void GenerateCover(SectionLayer_Terrain instance, CellTerrain cellTerrain, IntVec3 intVec)
-  {
-    if (cellTerrain.def is not BlendedTerrainDef blendedTerrainDef) return;
-
-    var subMesh = instance.GetSubMesh(blendedTerrainDef.CoverTerrain.dontRender
-      ? MatBases.ShadowMask
-      : instance.GetType().SameOrSubclassOf(SectionLayer_Watergen)
-        ? blendedTerrainDef.CoverWaterDepthMaterial
-        : GetMaterial(cellTerrain, blendedTerrainDef));
-    var y = AltitudeLayer.Terrain.AltitudeFor();
-    if (subMesh != null && AllowRenderingFor(cellTerrain.def))
-    {
-      var count = subMesh.verts.Count;
-      var color = new Color(blendedTerrainDef.Rotation.AsInt / 255f, 1f, 1f, 1f);
-      subMesh.verts.Add(new Vector3(intVec.x, y, intVec.z));
-      subMesh.verts.Add(new Vector3(intVec.x, y, intVec.z + 1));
-      subMesh.verts.Add(new Vector3(intVec.x + 1, y, intVec.z + 1));
-      subMesh.verts.Add(new Vector3(intVec.x + 1, y, intVec.z));
-      subMesh.colors.Add(color);
-      subMesh.colors.Add(color);
-      subMesh.colors.Add(color);
-      subMesh.colors.Add(color);
-      subMesh.tris.Add(count);
-      subMesh.tris.Add(count + 1);
-      subMesh.tris.Add(count + 2);
-      subMesh.tris.Add(count);
-      subMesh.tris.Add(count + 2);
-      subMesh.tris.Add(count + 3);
-    }
-
-    return;
-
-    static bool AllowRenderingFor(TerrainDef terrain)
-    {
-      return DebugViewSettings.drawTerrainWater || !terrain.HasTag("Water");
-    }
-
-    static Material GetMaterial(CellTerrain cellTerrain, BlendedTerrainDef blendedTerrainDef)
-    {
-      var coverTerrain = blendedTerrainDef.CoverTerrain;
-      var polluted = cellTerrain is { polluted: true, snowCoverage: < 0.4f, sandCoverage: < 0.4f } &&
-                     blendedTerrainDef.CoverGraphicPolluted != BaseContent.BadGraphic;
-      var color = cellTerrain.color;
-      var key = (coverTerrain, polluted, color, blendedTerrainDef.MaskTex);
-      if (terrainMatCache.TryGetValue(key, out var material)) return material;
-      var graphic = polluted
-        ? blendedTerrainDef.CoverGraphicPolluted ?? blendedTerrainDef.CoverGraphic
-        : blendedTerrainDef.CoverGraphic;
-      if (color != null)
-      {
-        terrainMatCache[key] = graphic.GetColoredVersion(graphic.Shader, color.color, Color.white).MatSingle;
-        terrainMatCache[key].SetTexture(ShaderPropertyIDs.MaskTex, blendedTerrainDef.MaskTex);
-      }
-      else
-      {
-        terrainMatCache[key] = graphic.MatSingle;
-      }
-
-      return terrainMatCache[key];
-    }
   }
 }
 
