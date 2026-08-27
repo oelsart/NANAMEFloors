@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  
+  <KeyBindingCategoryDef>
+    <defName>NanameFloors</defName>
+    <label>naname floors</label>
+    <description>Shortcuts related to Naname Floors.</description>
+    <checkForConflicts>
+      <li>Architect</li>
+      <li>Development</li>
+      <li>GameMapCamera</li>
+      <li>Game</li>
+    </checkForConflicts>
+  </KeyBindingCategoryDef>
+  
+</Defs>

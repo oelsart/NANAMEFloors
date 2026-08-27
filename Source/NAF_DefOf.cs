@@ -32,4 +32,8 @@ public static class NAF_DefOf
   public static ShaderTypeDef TerrainFadeRoughLinearBurnBlend;
 
   public static ShaderTypeDef WaterDepthBlend;
+
+  public static KeyBindingDef NAF_Designator_RotateLeft;
+
+  public static KeyBindingDef NAF_Designator_RotateRight;
 }

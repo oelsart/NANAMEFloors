@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using System;
+using HarmonyLib;
 using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using RimWorld.Planet;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
+using Verse.Steam;
 
 namespace NanameFloors;
 
@@ -77,9 +79,44 @@ public static class Patch_Designator_Place_DoExtraGuiControls
     {
 	    if (__instance.DrawStyleCategory is { styles.Count: > 1 })
 		    bottomY -= 90f;
-      DesignatorUtility.GUIDoRotationControls(leftX, bottomY, NanameFloors.UI.rotation,
-        rot => { NanameFloors.UI.rotation = rot; });
+      GUIDoRotationControls(leftX, bottomY, NanameFloors.UI.rotation, rot => { NanameFloors.UI.rotation = rot; });
     }
+  }
+  
+  private static void GUIDoRotationControls(float leftX, float bottomY, Rot4 rot, Action<Rot4> rotSetter)
+  {
+	  var winRect = new Rect(leftX, bottomY - 90f, 200f, 90f);
+	  Find.WindowStack.ImmediateWindow(73095, winRect, WindowLayer.GameUI, (Action) (() =>
+	  {
+		  var RotDir = RotationDirection.None;
+		  Text.Anchor = TextAnchor.MiddleCenter;
+		  Text.Font = GameFont.Medium;
+		  var rect1 = new Rect((float) (winRect.width / 2.0 - 64.0 - 5.0), 15f, 64f, 64f);
+		  if (Widgets.ButtonImage(rect1, TexUI.RotLeftTex))
+		  {
+			  SoundDefOf.DragSlider.PlayOneShotOnCamera();
+			  RotDir = RotationDirection.Counterclockwise;
+			  Event.current.Use();
+		  }
+		  if (!SteamDeck.IsSteamDeck && NAF_DefOf.NAF_Designator_RotateLeft.MainKey != KeyCode.None)
+			  Widgets.Label(rect1, NAF_DefOf.NAF_Designator_RotateLeft.MainKeyLabel);
+		  var rect2 = new Rect((float) (winRect.width / 2.0 + 5.0), 15f, 64f, 64f);
+		  if (Widgets.ButtonImage(rect2, TexUI.RotRightTex))
+		  {
+			  SoundDefOf.DragSlider.PlayOneShotOnCamera();
+			  RotDir = RotationDirection.Clockwise;
+			  Event.current.Use();
+		  }
+		  if (!SteamDeck.IsSteamDeck && NAF_DefOf.NAF_Designator_RotateRight.MainKey != KeyCode.None)
+			  Widgets.Label(rect2, NAF_DefOf.NAF_Designator_RotateRight.MainKeyLabel);
+		  if (RotDir != RotationDirection.None)
+		  {
+			  rot.Rotate(RotDir);
+			  rotSetter(rot);
+		  }
+		  Text.Anchor = TextAnchor.UpperLeft;
+		  Text.Font = GameFont.Small;
+	  }));
   }
 }
 
@@ -88,7 +125,7 @@ public static class Patch_Designator_Place_SelectedProcessInput
 {
   public static void Postfix(Designator_Place __instance)
   {
-    if (__instance.PlacingDef.IsNanameSupported && __instance.DrawStyleCategory is not { styles.Count: > 1 })
+    if (__instance.PlacingDef.IsNanameSupported)
     {
       HandleRotationShortcuts();
     }
@@ -113,12 +150,12 @@ public static class Patch_Designator_Place_SelectedProcessInput
       }
     }
 
-    if (KeyBindingDefOf.Designator_RotateRight.KeyDownEvent)
+    if (NAF_DefOf.NAF_Designator_RotateRight.KeyDownEvent)
     {
       rotationDirection = RotationDirection.Clockwise;
     }
 
-    if (KeyBindingDefOf.Designator_RotateLeft.KeyDownEvent)
+    if (NAF_DefOf.NAF_Designator_RotateLeft.KeyDownEvent)
     {
       rotationDirection = RotationDirection.Counterclockwise;
     }
