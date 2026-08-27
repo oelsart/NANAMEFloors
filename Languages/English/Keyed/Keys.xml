@@ -4,5 +4,6 @@
   <NAF.FloorShapes>Floor Shapes</NAF.FloorShapes>
   
   <NAF.Settings.AllowPlaceFloor>Allow to place floors under buildings. (Restart required)</NAF.Settings.AllowPlaceFloor>
+  <NAF.Settings.ShowExtraGui>Show additional GUI from Naname Floors.</NAF.Settings.ShowExtraGui>
   <NAF.Settings.ButtonSize>Button Size</NAF.Settings.ButtonSize>
 </LanguageData>

@@ -17,8 +17,8 @@
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Krafs.Rimworld.Ref" Version="1.6.4566" />
-    <PackageReference Include="Lib.Harmony.Ref" Version="2.4.1" />
+    <PackageReference Include="Krafs.Rimworld.Ref" Version="1.6.*" />
+    <PackageReference Include="Lib.Harmony.Ref" Version="2.4.2" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="NanameFloors_Unity\Library\**" />
