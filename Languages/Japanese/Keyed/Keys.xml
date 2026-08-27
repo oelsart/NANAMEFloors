@@ -4,5 +4,6 @@
   <NAF.FloorShapes>床形状</NAF.FloorShapes>
   
   <NAF.Settings.AllowPlaceFloor>建物の後から床を敷くことを許可 (この設定は再起動が必要です)</NAF.Settings.AllowPlaceFloor>
+  <NAF.Settings.ShowExtraGui>Naname Floorsによる追加GUIを表示する.</NAF.Settings.ShowExtraGui>
   <NAF.Settings.ButtonSize>ボタンサイズ</NAF.Settings.ButtonSize>
 </LanguageData>

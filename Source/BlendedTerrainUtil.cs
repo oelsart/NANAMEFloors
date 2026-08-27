@@ -228,6 +228,6 @@ public static class BlendedTerrainUtil
 
   extension(BuildableDef def)
   {
-    public bool IsNanameSupported => def is TerrainDef { isFoundation: false };
+    public bool IsNanameSupported => NanameFloors.settings.showExtraGui && def is TerrainDef { isFoundation: false };
   }
 }

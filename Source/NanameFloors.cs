@@ -6,6 +6,13 @@ namespace NanameFloors;
 
 public class NanameFloors : Mod
 {
+	public static ModContentPack content;
+	public static Settings settings;
+	public static UI_SelectTerrainShape UI;
+	private int buttonSize;
+	private string buff;
+	private Vector2 scrollPosition = Vector2.zero;
+	
   public NanameFloors(ModContentPack content) : base(content)
   {
     settings = GetSettings<Settings>();
@@ -19,9 +26,11 @@ public class NanameFloors : Mod
     var Rect = new Rect(inRect.x, inRect.y, inRect.width, Text.LineHeight);
     Widgets.CheckboxLabeled(Rect, "NAF.Settings.AllowPlaceFloor".Translate(), ref settings.allowPlaceFloor);
     var Rect2 = new Rect(inRect.x, Rect.yMax, inRect.width, Text.LineHeight);
-    Widgets.Label(Rect2.LeftHalf(), "NAF.Settings.ButtonSize".Translate());
+    Widgets.CheckboxLabeled(Rect2, "NAF.Settings.ShowExtraGui".Translate(), ref settings.showExtraGui);
+    var Rect3 = new Rect(inRect.x, Rect2.yMax, inRect.width, Text.LineHeight);
+    Widgets.Label(Rect3.LeftHalf(), "NAF.Settings.ButtonSize".Translate());
     buttonSize = (int)settings.buttonSize;
-    Widgets.IntEntry(Rect2.RightHalf(), ref buttonSize, ref buff);
+    Widgets.IntEntry(Rect3.RightHalf(), ref buttonSize, ref buff);
     settings.buttonSize = buttonSize;
 
     var outRect = new Rect(inRect.x, Rect2.yMax, inRect.width, Text.LineHeight)
@@ -67,16 +76,4 @@ public class NanameFloors : Mod
   {
     return "Naname Floors";
   }
-
-  public static ModContentPack content;
-
-  public static Settings settings;
-
-  public static UI_SelectTerrainShape UI;
-
-  private int buttonSize;
-
-  private string buff;
-
-  private Vector2 scrollPosition = Vector2.zero;
 }
