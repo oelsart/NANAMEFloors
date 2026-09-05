@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
   <NAF.and> and </NAF.and>
-  <NAF.FloorShapes>Floor Shapes</NAF.FloorShapes>
+  <NAF.FloorShapes>Floor shapes</NAF.FloorShapes>
   
-  <NAF.Settings.AllowPlaceFloor>Allow to place floors under buildings. (Restart required)</NAF.Settings.AllowPlaceFloor>
+  <NAF.Settings.AllowPlaceFloor>Allow placing floors under buildings. (Restart required)</NAF.Settings.AllowPlaceFloor>
   <NAF.Settings.ShowExtraGui>Show additional GUI from Naname Floors.</NAF.Settings.ShowExtraGui>
   <NAF.Settings.ButtonSize>Button Size</NAF.Settings.ButtonSize>
 </LanguageData>
