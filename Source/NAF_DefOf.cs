@@ -11,27 +11,27 @@ public static class NAF_DefOf
     DefOfHelper.EnsureInitializedInCtor(typeof(NAF_DefOf));
   }
 
-  public static ShaderTypeDef TerrainHardBlend;
+  public static ShaderDef TerrainHardBlend;
 
-  public static ShaderTypeDef TerrainFadeBlend;
-
-  public static ShaderTypeDef TerrainFadeRoughBlend;
-
-  public static ShaderTypeDef TerrainWaterBlend;
-
-  public static ShaderTypeDef TerrainWaterPollutedBlend;
-
-  public static ShaderTypeDef TerrainHardLinearBurnBlend;
-
-  public static ShaderTypeDef TerrainFadeLinearBurnBlend;
-
-  public static ShaderTypeDef TerrainFadeRoughSoftLightBlend;
-
-  public static ShaderTypeDef TerrainFadeRoughLinearAddBlend;
-
-  public static ShaderTypeDef TerrainFadeRoughLinearBurnBlend;
-
-  public static ShaderTypeDef WaterDepthBlend;
+  public static ShaderDef TerrainFadeBlend;
+  
+  public static ShaderDef TerrainFadeRoughBlend;
+  
+  public static ShaderDef TerrainWaterBlend;
+  
+  public static ShaderDef TerrainWaterPollutedBlend;
+  
+  public static ShaderDef TerrainHardLinearBurnBlend;
+  
+  public static ShaderDef TerrainFadeLinearBurnBlend;
+  
+  public static ShaderDef TerrainFadeRoughSoftLightBlend;
+  
+  public static ShaderDef TerrainFadeRoughLinearAddBlend;
+  
+  public static ShaderDef TerrainFadeRoughLinearBurnBlend;
+  
+  public static ShaderDef WaterDepthBlend;
 
   public static KeyBindingDef NAF_Designator_RotateLeft;
 
