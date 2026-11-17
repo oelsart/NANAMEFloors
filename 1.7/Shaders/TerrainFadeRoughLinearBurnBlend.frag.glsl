@@ -62,7 +62,7 @@ float roughFade(vec2 position, float rawAlpha)
 void main()
 {
     vec2 uv = vUv / 16.0;
-    vec4 rawCol = texture(_MainTex, flipV(uv)) * vColor;
+    vec4 rawCol = texture(_MainTex, flipV(uv));
 
     vec2 burnUv = randomizeAngleWithUV(uv * u._BurnScale.xy);
     vec4 burnTex = texture(_BurnTex, flipV(burnUv));

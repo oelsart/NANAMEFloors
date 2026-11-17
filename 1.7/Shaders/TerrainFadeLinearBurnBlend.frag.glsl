@@ -48,6 +48,6 @@ void main()
     vec2 burnUv = randomizeAngleWithUV(uv * u._BurnScale.xy);
     vec4 burnTex = texture(_BurnTex, flipV(burnUv));
     vec3 sampleCol = linearBurn(mix(burnTex.rgb * u._BurnColor.rgb, vec3(1.0), 1.0 - u._BurnColor.a * burnTex.a), texture(_MainTex, flipV(uv)).rgb);
-    outColor = vec4(sampleCol, 1.0) * vColor * u._Color * u._PollutionTintColor;
+    outColor = vec4(sampleCol, 1.0) * u._Color * u._PollutionTintColor;
     outColor.a *= texture(_MaskTex, RotateUV(fract(vec2(vUv.x, -vUv.y)), vColor.r * 255)).a;
 }

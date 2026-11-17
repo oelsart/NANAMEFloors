@@ -41,7 +41,7 @@ void main()
 {
     vec2 uv = vUv / 16.0;
     uv.y = -uv.y; 
-    vec4 rawCol = texture(_MainTex, uv) * vColor;
+    vec4 rawCol = texture(_MainTex, uv);
 
     vec4 burnTex = texture(_BurnTex, uv * u._BurnScale.xy);
     vec3 blendedCol = linearDodge(mix(burnTex.rgb * u._BurnColor.rgb, vec3(0.0), 1.0 - u._BurnColor.a * burnTex.a), rawCol.rgb);

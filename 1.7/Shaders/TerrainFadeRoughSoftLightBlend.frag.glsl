@@ -51,7 +51,7 @@ float roughFade(vec2 position, float rawAlpha)
 void main()
 {
     vec2 uv = vUv / 16.0;
-    vec4 rawCol = texture(_MainTex, flipV(uv)) * vColor;
+    vec4 rawCol = texture(_MainTex, flipV(uv));
 
     vec4 burnTex = texture(_BurnTex, flipV(uv * u._BurnScale.xy + u._GameSeconds * u._ScrollSpeed));
     burnTex.rgb = mix(burnTex.rgb, vec3(0.5), 1.0 - burnTex.a * u._BurnColor.a);
